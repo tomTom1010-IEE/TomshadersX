@@ -64,11 +64,24 @@ function PixelBandHash([string]$path){
 $groups=@($report.shots | Group-Object group)
 Assert ($groups.Count -eq 24) 'Unexpected report groups'
 $readme=Get-Content -LiteralPath (Join-Path $Root 'README.md') -Raw
+$readmeChinese=Get-Content -LiteralPath (Join-Path $Root 'README.zh-CN.md') -Raw
+Assert ($readme -match '^# Tom Shaders X\r?\n\r?\n\*\*English\*\* \| \[简体中文\]\(README.zh-CN.md\)') 'English README language row missing'
+Assert ($readmeChinese -match '^# Tom Shaders X\r?\n\r?\n\[English\]\(README.md\) \| \*\*简体中文\*\*') 'Chinese README language row missing'
+Assert ($readme -notmatch 'English/Chinese switching|Chinese boards remain available|\[中文展示\]|\[中文手册\]') 'Redundant language navigation or explanation in English README'
+foreach($document in @($readme,$readmeChinese)){
+    foreach($match in [regex]::Matches($document,'\]\(([^)]+)\)')){
+        $link=$match.Groups[1].Value
+        if($link -notmatch '^https://'){
+            Assert (Test-Path -LiteralPath (Join-Path $Root $link) -PathType Leaf) ('Missing README link: '+$link)
+        }
+    }
+}
 foreach($group in $groups){
     $english=Join-Path $site ($group.Name+'-board.png')
     $chinese=Join-Path $site ($group.Name+'-board.zh-CN.png')
     Assert ((PixelBandHash $english) -eq (PixelBandHash $chinese)) ('Translated board changed rendered pixels: '+$group.Name)
     Assert ($readme.Contains('docs/'+$group.Name+'-board.png')) ('Missing README board: '+$group.Name)
+    Assert ($readmeChinese.Contains('docs/'+$group.Name+'-board.zh-CN.png')) ('Missing Chinese README board: '+$group.Name)
 }
 if($OriginalReportDirectory){
     foreach($shot in $report.shots){

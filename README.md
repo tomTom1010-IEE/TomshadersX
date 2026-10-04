@@ -1,18 +1,17 @@
 # Tom Shaders X
 
+**English** | [简体中文](README.zh-CN.md)
+
 Toon-first shaders for Koikatsu Sunshine and Unity 2019.4 Built-in Forward.
 
 **[Interactive showcase](https://tomtom1010-iee.github.io/TomshadersX/)** ·
 [User manual](https://tomtom1010-iee.github.io/TomshadersX/UserManual.html) ·
-[中文展示](https://tomtom1010-iee.github.io/TomshadersX/Gallery.zh-CN.html) ·
-[中文手册](https://tomtom1010-iee.github.io/TomshadersX/UserManual.zh-CN.html) ·
 [Source and build guide](Documents/Development.md)
 
 96 actual Unity GPU renders, in 24 comparisons. Every subject uses the same
 standard UV sphere and fixed exposure. No per-image brightening or generated
-illustrations. Open the interactive showcase for full-resolution images, complete
-material settings and English/Chinese switching. The comparison boards below use
-English titles; Chinese boards remain available in the Chinese gallery.
+illustrations. Open the interactive showcase for full-resolution images and complete
+material settings.
 
 Eight shaders cover opaque/cutout surfaces, three transparency strategies, hair,
 eye-area surfaces, iris optics, and shared face/body skin. Common features include
