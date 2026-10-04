@@ -1,0 +1,408 @@
+{
+    "unity": "2019.4.9f1",
+    "api": "Direct3D11",
+    "checks": [
+        {
+            "name": "MainAlphaX emission fixture visible",
+            "error": 0.5,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-0.00 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-0.00 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-0.25 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-0.25 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-0.50 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-0.50 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-1.00 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-alpha-1.00 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX main*mask*global",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX global cutoff",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX qualifying depth occludes marker",
+            "error": 0.7699999809265137,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX single-pass threshold also clips color",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX zero alpha leaves no depth",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX global cutoff leaves no depth",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX additional lights active",
+            "error": 0.6243885159492493,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX ForwardAdd premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX separate renderer Base/Add order",
+            "error": 2.384185791015625e-7,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX documented unsorted self-overlap",
+            "error": 0.6961249113082886,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX all art and outline vanish at zero",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Directional casts at coverage .25",
+            "error": 0.34999996423721316,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Directional shared threshold",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Directional zero alpha",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Directional global cutoff",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Point casts at coverage .25",
+            "error": 0.44673532247543337,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Point shared threshold",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Point zero alpha",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Point global cutoff",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Spot casts at coverage .25",
+            "error": 0.40271610021591189,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Spot shared threshold",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Spot zero alpha",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX-shadow-Spot global cutoff",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass emission fixture visible",
+            "error": 0.5,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-0.00 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-0.00 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-0.25 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-0.25 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-0.50 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-0.50 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-1.00 coverage",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-alpha-1.00 premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass main*mask*global",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass global cutoff",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass qualifying depth occludes marker",
+            "error": 0.7699999809265137,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass depth threshold preserves color",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass zero alpha leaves no depth",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass global cutoff leaves no depth",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass additional lights active",
+            "error": 0.6243885159492493,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass ForwardAdd premult equivalence",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass separate renderer Base/Add order",
+            "error": 2.384185791015625e-7,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass prepass removes rear Base/Add",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass all art and outline vanish at zero",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Directional casts at coverage .25",
+            "error": 0.34999996423721316,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Directional shared threshold",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Directional zero alpha",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Directional global cutoff",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Point casts at coverage .25",
+            "error": 0.44673532247543337,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Point shared threshold",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Point zero alpha",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Point global cutoff",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Spot casts at coverage .25",
+            "error": 0.40271610021591189,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Spot shared threshold",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Spot zero alpha",
+            "error": 0.0,
+            "passed": true
+        },
+        {
+            "name": "MainAlphaX2Pass-shadow-Spot global cutoff",
+            "error": 0.0,
+            "passed": true
+        }
+    ],
+    "images": [
+        "background",
+        "MainAlphaX-full",
+        "MainAlphaX-alpha-0.00",
+        "MainAlphaX-alpha-0.00-premult",
+        "MainAlphaX-alpha-0.25",
+        "MainAlphaX-alpha-0.25-premult",
+        "MainAlphaX-alpha-0.50",
+        "MainAlphaX-alpha-0.50-premult",
+        "MainAlphaX-alpha-1.00",
+        "MainAlphaX-alpha-1.00-premult",
+        "MainAlphaX-coverage-product",
+        "MainAlphaX-global-cut",
+        "MainAlphaX-no-depth",
+        "MainAlphaX-depth",
+        "MainAlphaX-depth-threshold",
+        "MainAlphaX-zero-marker",
+        "MainAlphaX-zero-depth",
+        "MainAlphaX-hidden-depth",
+        "MainAlphaX-global-depth",
+        "MainAlphaX-main-only",
+        "MainAlphaX-multi-light",
+        "MainAlphaX-multi-premult",
+        "MainAlphaX-rear-only",
+        "MainAlphaX-two-renderers",
+        "MainAlphaX-merged-overlap",
+        "MainAlphaX-zero-art",
+        "MainAlphaX-shadow-Directional-disabled",
+        "MainAlphaX-shadow-Directional-enabled",
+        "MainAlphaX-shadow-Directional-threshold",
+        "MainAlphaX-shadow-Directional-zero",
+        "MainAlphaX-shadow-Directional-global",
+        "MainAlphaX-shadow-Point-disabled",
+        "MainAlphaX-shadow-Point-enabled",
+        "MainAlphaX-shadow-Point-threshold",
+        "MainAlphaX-shadow-Point-zero",
+        "MainAlphaX-shadow-Point-global",
+        "MainAlphaX-shadow-Spot-disabled",
+        "MainAlphaX-shadow-Spot-enabled",
+        "MainAlphaX-shadow-Spot-threshold",
+        "MainAlphaX-shadow-Spot-zero",
+        "MainAlphaX-shadow-Spot-global",
+        "MainAlphaX2Pass-full",
+        "MainAlphaX2Pass-alpha-0.00",
+        "MainAlphaX2Pass-alpha-0.00-premult",
+        "MainAlphaX2Pass-alpha-0.25",
+        "MainAlphaX2Pass-alpha-0.25-premult",
+        "MainAlphaX2Pass-alpha-0.50",
+        "MainAlphaX2Pass-alpha-0.50-premult",
+        "MainAlphaX2Pass-alpha-1.00",
+        "MainAlphaX2Pass-alpha-1.00-premult",
+        "MainAlphaX2Pass-coverage-product",
+        "MainAlphaX2Pass-global-cut",
+        "MainAlphaX2Pass-no-depth",
+        "MainAlphaX2Pass-depth",
+        "MainAlphaX2Pass-depth-threshold",
+        "MainAlphaX2Pass-zero-depth",
+        "MainAlphaX2Pass-hidden-depth",
+        "MainAlphaX2Pass-global-depth",
+        "MainAlphaX2Pass-main-only",
+        "MainAlphaX2Pass-multi-light",
+        "MainAlphaX2Pass-multi-premult",
+        "MainAlphaX2Pass-rear-only",
+        "MainAlphaX2Pass-two-renderers",
+        "MainAlphaX2Pass-merged-overlap",
+        "MainAlphaX2Pass-zero-art",
+        "MainAlphaX2Pass-shadow-Directional-disabled",
+        "MainAlphaX2Pass-shadow-Directional-enabled",
+        "MainAlphaX2Pass-shadow-Directional-threshold",
+        "MainAlphaX2Pass-shadow-Directional-zero",
+        "MainAlphaX2Pass-shadow-Directional-global",
+        "MainAlphaX2Pass-shadow-Point-disabled",
+        "MainAlphaX2Pass-shadow-Point-enabled",
+        "MainAlphaX2Pass-shadow-Point-threshold",
+        "MainAlphaX2Pass-shadow-Point-zero",
+        "MainAlphaX2Pass-shadow-Point-global",
+        "MainAlphaX2Pass-shadow-Spot-disabled",
+        "MainAlphaX2Pass-shadow-Spot-enabled",
+        "MainAlphaX2Pass-shadow-Spot-threshold",
+        "MainAlphaX2Pass-shadow-Spot-zero",
+        "MainAlphaX2Pass-shadow-Spot-global"
+    ]
+}

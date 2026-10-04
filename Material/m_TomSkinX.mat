@@ -1,0 +1,278 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: m_TomSkinX
+  m_Shader: {fileID: 4800000, guid: a839aa15f7d58ad4aa8090988682d318, type: 3}
+  m_ShaderKeywords: _NOTUSETEXSPECULAR_ON _OUTLINESCREENSPACE_ON _USEMATERIALROUGHNESSFORENVIRONMENT_ON
+    _USERAMPFORSHADOWS_ON _USERAMP_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearCoatMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearCoatNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 2800000, guid: 05749d728efacaf47a134306adf31d5b, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LayerMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LineMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MatCap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaterialMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMapDetail:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OutlineWidthMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectionMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecondaryRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SkinControlMap:
+        m_Texture: {fileID: 2800000, guid: e66941d86104ff54da611efcf451b61a, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _liquidmask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _overtex1:
+        m_Texture: {fileID: 2800000, guid: 277439da930f12141b242d87fd58a526, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _overtex2:
+        m_Texture: {fileID: 2800000, guid: 277439da930f12141b242d87fd58a526, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _overtex3:
+        m_Texture: {fileID: 2800000, guid: 277439da930f12141b242d87fd58a526, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _AdditionalLightIntensity: 1
+    - _ClearCoat: 0
+    - _ClearCoatDebugView: 0
+    - _ClearCoatEnergyBlend: 1
+    - _ClearCoatEnvironmentStrength: 1
+    - _ClearCoatIOR: 1.5
+    - _ClearCoatNormalScale: 1
+    - _ClearCoatNormalSource: 0
+    - _ClearCoatRoughness: 0.1
+    - _CullOption: 2
+    - _CustomSHVolumeBlend: 1
+    - _Cutoff: 0.5
+    - _DebugView: 0
+    - _DetailNormalMapScale: 1
+    - _DiffuseEnergyBlend: 0
+    - _EmissionIntensity: 0
+    - _EmissionKeepCol: 0
+    - _EnvironmentBaseColorTint: 0
+    - _EnvironmentColorWeight: 0.5
+    - _EnvironmentExposure: 1
+    - _EnvironmentFresnelStrength: 1
+    - _EnvironmentIntensity: 1
+    - _EnvironmentRoughness: 0.5
+    - _EnvironmentSoftness: 0.2
+    - _EnvironmentThreshold: 0.6
+    - _EnvironmentToonBlend: 1
+    - _FresnelStrength: 1
+    - _IndirectDiffuseIntensity: 0.25
+    - _IndirectShadeLevel: 0.3
+    - _IndirectToonBlend: 0
+    - _IndirectToonSoftness: 0.2
+    - _IndirectToonThreshold: 0.4
+    - _LightProbeBlend: 1
+    - _MainLightIntensity: 1
+    - _MatCapBlendMode: 1
+    - _MatCapIntensity: 1
+    - _MatCapMip: 0
+    - _MatCapNormalSource: 2
+    - _Metallic: 0
+    - _NormalHorizonFade: 0.05
+    - _NormalMapScale: 1
+    - _OcclusionStrength: 1
+    - _OutlineDepthOffset: 0
+    - _OutlineNormalSource: 0
+    - _OutlineOn: 0
+    - _OutlineScreenSpace: 1
+    - _OutlineWidth: 1
+    - _RampMode: 0
+    - _ReflectionMode: 0
+    - _ReflectionShadowStrength: 0
+    - _RimLightInfluence: 0
+    - _RimShadowStrength: 0
+    - _RimSoftness: 0.2
+    - _RimStrength: 0
+    - _RimWidth: 0.3
+    - _Roughness: 0.5
+    - _RoughnessBias: 0
+    - _SecondaryToneStrength: 0
+    - _ShadowOffsetFactor: 0
+    - _ShadowOffsetUnits: 0
+    - _ShadowRemapStrength: 0
+    - _ShadowSoftness: 0.2
+    - _ShadowStrength: 1
+    - _ShadowThreshold: 0.5
+    - _SkinCoatCoverage: 0
+    - _SkinDebugView: 0
+    - _SkinDiffuseNormalDetail: 1
+    - _SkinFaceNormalStrength: 0
+    - _SkinGameGloss: 1
+    - _SkinGameLineColor: 0
+    - _SkinLineStrength: 1
+    - _SkinLiquidCoatNormal: 0
+    - _SkinLiquidColorStrength: 1
+    - _SkinLiquidMaterial: 1
+    - _SkinLiquidNormalScale: 1
+    - _SkinLiquidRoughness: 0.25
+    - _SkinMainAlphaClip: 0
+    - _SkinPatternStrength: 1
+    - _SkinShadeStrength: 1
+    - _SkinStrength: 0
+    - _SkinWarmWidth: 0.4
+    - _SkinWarmth: 0.25
+    - _SkinWetness: 0
+    - _SkinWrap: 0.25
+    - _SpeclarHeight: 0.98
+    - _SpecularAA: 0.5
+    - _SpecularBands: 1
+    - _SpecularIOR: 1.5
+    - _SpecularOcclusionStrength: 1
+    - _SpecularPower: 1
+    - _SpecularPowerNail: 1
+    - _SpecularShadowStrength: 1
+    - _SpecularSize: 0.5
+    - _SpecularSoftness: 0.15
+    - _SpecularStrength: 0.5
+    - _SpecularThreshold: 0.5
+    - _SpecularToonBlend: 1
+    - _ToonShadeLevel: 0.15
+    - _ToonSoftness: 0.1
+    - _ToonThreshold: 0.5
+    - _UseDetailRAsSpecularMap: 0
+    - _UseMaterialRoughnessForEnvironment: 1
+    - _UsePackedMaterialMap: 0
+    - _UseRamp: 1
+    - _UseRampForShadows: 1
+    - _VertexLightIntensity: 0.5
+    - _alpha_a: 0
+    - _alpha_b: 0
+    - _linetexon: 1
+    - _liquidbbot: 0
+    - _liquidbtop: 0
+    - _liquidface: 0
+    - _liquidfbot: 0
+    - _liquidftop: 0
+    - _nip: 0
+    - _nip_specular: 0
+    - _nipsize: 0.5
+    - _notusetexspecular: 1
+    - _tex1mask: 0
+    m_Colors:
+    - _AmbientColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Col0: {r: 1, g: 1, b: 1, a: 1}
+    - _Col1: {r: 1, g: 1, b: 1, a: 1}
+    - _Col2: {r: 1, g: 1, b: 1, a: 1}
+    - _Col3: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EnvironmentColor: {r: 1, g: 1, b: 1, a: 1}
+    - _LiquidTiling: {r: 0, g: 0, b: 1, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.65, g: 0.65, b: 0.7, a: 1}
+    - _SkinLineColor: {r: 0.2, g: 0.16, b: 0.16, a: 1}
+    - _SkinLiquidColor: {r: 0.85, g: 0.85, b: 0.8, a: 1}
+    - _SkinWarmColor: {r: 1, g: 0.45, b: 0.3, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _overcolor1: {r: 1, g: 1, b: 1, a: 0}
+    - _overcolor2: {r: 1, g: 1, b: 1, a: 0}
+    - _overcolor3: {r: 1, g: 1, b: 1, a: 0}

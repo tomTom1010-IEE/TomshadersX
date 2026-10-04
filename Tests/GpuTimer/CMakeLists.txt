@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(TomXGpuTimer LANGUAGES CXX)
+add_library(TomXGpuTimer SHARED GpuTimer.cpp)
+target_compile_features(TomXGpuTimer PRIVATE cxx_std_17)
+target_compile_definitions(TomXGpuTimer PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX)
+target_link_libraries(TomXGpuTimer PRIVATE d3d11)

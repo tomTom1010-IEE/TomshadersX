@@ -1,0 +1,10 @@
+# Native assets and .meta files are intentionally tracked.
+/Library/
+/Temp/
+/Logs/
+/Build/
+/.vs/
+/.idea/
+*.csproj
+*.sln
+*.user

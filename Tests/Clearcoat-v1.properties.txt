@@ -1,0 +1,10 @@
+_ClearCoat ("Clearcoat Weight", Range(0,1)) = 0
+_ClearCoatRoughness ("Clearcoat Roughness", Range(0.04,1)) = 0.1
+_ClearCoatIOR ("Clearcoat IOR", Range(1,2.5)) = 1.5
+_ClearCoatMap ("Clearcoat Map (Weight/Roughness)", 2D) = "white" {}
+[Enum(Geometry,0,MainNormal,1,CombinedNormal,2,CoatNormal,3)] _ClearCoatNormalSource ("Clearcoat Normal Source", Float) = 0
+_ClearCoatNormalMap ("Clearcoat Normal Map", 2D) = "bump" {}
+_ClearCoatNormalScale ("Clearcoat Normal Scale", Range(0,2)) = 1
+_ClearCoatEnvironmentStrength ("Clearcoat Environment Strength", Range(0,2)) = 1
+_ClearCoatEnergyBlend ("Clearcoat Body Energy Blend", Range(0,1)) = 1
+[Enum(Off,0,Direct,1,Environment,2,Normal,3,Weight,4,BodyRetention,5)] _ClearCoatDebugView ("Clearcoat Debug View", Float) = 0

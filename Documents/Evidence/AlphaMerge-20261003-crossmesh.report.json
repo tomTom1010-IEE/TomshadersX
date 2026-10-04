@@ -1,0 +1,175 @@
+{
+    "unity": "2019.4.9f1",
+    "api": "Direct3D11",
+    "colorSpace": "Gamma",
+    "scene": "Assets/Mods/TomShadersX/Tests/ReferenceAssets/CrossMeshAlphaMerged-20261002-175256-402/CrossMeshAlphaComparison.unity",
+    "sourceScene": "Assets/Mods/TomShadersX/Tests/ReferenceAssets/TwistedAlpha-20261002-161732-800/TwistedAlphaComparison.unity",
+    "queueProfile": "2450/2451/2452",
+    "mergedPrepass": true,
+    "foregroundQueue": 2452,
+    "rearQueue": 2451,
+    "backgroundQueue": 2450,
+    "foregroundAlpha": 0.44999998807907107,
+    "rearAlpha": 0.5,
+    "rearZ": 2.200000047683716,
+    "backgroundZ": 4.0,
+    "geometry": "Three columns share the twisted open-cube mesh. Each column has a separate ordinary-alpha Quad fully behind the twisted mesh and a farther opaque grid Quad.",
+    "settings": "Front: Alpha/Cull Off/ZWrite Off; Depth2Pass/Cull Off/prepass On; BackFront/Cull Back/both color ZWrite On. Rear: MainAlphaX, Cull Off, ZWrite Off. Continuous alpha, no shadows, Outline, Rim, probes or MatCap. Background: opaque Unlit/Texture, ZWrite On.",
+    "validation": "Cross-renderer over-compositing checked as frontBlack + (frontWhite-frontBlack)*rearOverBackground, per RGB pixel in the object regions. Checks do not establish correct triangle sorting inside the front object, camera depth-texture contents or post-processing stability. The late-rear image is an intentionally incorrect-order control.",
+    "shots": [
+        {
+            "file": "01-full-coverage.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "coverage-rear-and-background.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "coverage-background-only.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "coverage-front-over-black.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "coverage-front-over-white.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "coverage-zero-foreground.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "coverage-clipped-foreground.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "02-full-toon.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "toon-rear-and-background.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "toon-background-only.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "toon-front-over-black.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "toon-front-over-white.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "toon-zero-foreground.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "toon-clipped-foreground.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": -20.0
+        },
+        {
+            "file": "03-side-coverage.png",
+            "mode": "coverage",
+            "rearQueue": 2451,
+            "yaw": 80.0
+        },
+        {
+            "file": "04-side-toon.png",
+            "mode": "toon",
+            "rearQueue": 2451,
+            "yaw": 80.0
+        },
+        {
+            "file": "05-control-late-rear.png",
+            "mode": "coverage-control",
+            "rearQueue": 2453,
+            "yaw": -20.0
+        }
+    ],
+    "checks": [
+        {
+            "name": "coverage rear over background through MainAlphaX",
+            "maxError": 2.9802322387695315e-8,
+            "passed": true
+        },
+        {
+            "name": "coverage rear over background through MainAlphaX + DepthPrepass",
+            "maxError": 0.0,
+            "passed": true
+        },
+        {
+            "name": "coverage rear over background through MainAlphaXBackFront",
+            "maxError": 2.9802322387695315e-8,
+            "passed": true
+        },
+        {
+            "name": "coverage zero foreground leaves rear intact",
+            "maxError": 0.0,
+            "passed": true
+        },
+        {
+            "name": "coverage clipped foreground leaves rear intact",
+            "maxError": 0.0,
+            "passed": true
+        },
+        {
+            "name": "toon rear over background through MainAlphaX",
+            "maxError": 8.940696716308594e-8,
+            "passed": true
+        },
+        {
+            "name": "toon rear over background through MainAlphaX + DepthPrepass",
+            "maxError": 5.960464477539063e-8,
+            "passed": true
+        },
+        {
+            "name": "toon rear over background through MainAlphaXBackFront",
+            "maxError": 8.940696716308594e-8,
+            "passed": true
+        },
+        {
+            "name": "toon zero foreground leaves rear intact",
+            "maxError": 0.0,
+            "passed": true
+        },
+        {
+            "name": "toon clipped foreground leaves rear intact",
+            "maxError": 0.0,
+            "passed": true
+        }
+    ]
+}

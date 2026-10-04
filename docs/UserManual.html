@@ -1,0 +1,387 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tom Shaders X User Manual</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#101312;color:#e8ebea;font:16px/1.7 "Segoe UI","Microsoft YaHei UI",sans-serif;letter-spacing:0}header,main,footer{max-width:1500px;margin:auto;padding:28px}header{border-bottom:1px solid #39413d}h1{font-size:30px;margin:8px 0}h2{font-size:23px;margin:28px 0 12px}h3{font-size:19px}p{max-width:100ch}a{color:#81c9b5;text-underline-offset:3px}section{padding:12px 0 22px;border-bottom:1px solid #39413d}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}figure{margin:0;min-width:0}img{display:block;width:100%;height:auto;background:#000}figcaption{padding:10px 0;line-height:1.4;overflow-wrap:anywhere}span{color:#aab6ae;font-size:14px}summary{cursor:pointer;color:#81c9b5}details{font-size:13px;overflow-wrap:anywhere}table{border-collapse:collapse;max-width:100%;display:block;overflow-x:auto;font-size:14px}td,th{padding:8px 12px;border:1px solid #39413d;text-align:left;vertical-align:top}code{color:#e6c78d;overflow-wrap:anywhere}nav{display:flex;gap:16px;flex-wrap:wrap}article{max-width:1060px;margin:auto}article h2{padding-top:16px;border-top:1px solid #39413d}li{margin:5px 0}footer{color:#aab6ae}@media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){header,main,footer{padding:16px}.grid{grid-template-columns:1fr}h1{font-size:25px}table{font-size:13px}}@media print{body{background:white;color:#111}a,code{color:#254d40}header,main,footer{max-width:none}.grid{grid-template-columns:repeat(2,1fr)}details{display:none}section{break-inside:avoid}}</style></head><body><header><nav><a href="Gallery.html">Sphere showcase</a><a href="TomShadersX-UserManual.en.md">Markdown source</a><a href="UserManual.zh-CN.html">中文</a><a href="https://github.com/tomTom1010-IEE/TomshadersX">GitHub</a></nav></header><main><article><h1 id="tom-shaders-x-user-manual">Tom Shaders X User Manual</h1>
+<p>For Tom Shaders X <strong>0.3.1</strong>, Koikatsu Sunshine, Unity 2019.4 Built-in Forward.
+Optional companions: Hair Feather 0.3.0 and Tom Lighting Probes 0.2.1.
+Property names below follow MaterialEditor (ME), without the leading underscore.</p>
+<p>The closing audit covers code, ME metadata and Unity rendering. It does not include a new in-game acceptance run or whole-character performance certification. Showcase spheres are reproducible examples, not presets automatically applied to characters.</p>
+<h2 id="installation-and-shader-selection">1. Installation and Shader Selection</h2>
+<p>Place the main zipmod in the game's <code>mods</code> directory. Sideloader and MaterialEditor register the shaders. The separated V+ LTS package can coexist with X; do not also install an older combined package that registers the same <code>tom/*</code> names.</p>
+<table>
+<thead>
+<tr>
+<th>Shader</th>
+<th>Purpose and distinction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tom/MainOpaqueX</code></td>
+<td>General opaque or cutout surfaces; not alpha-blended glass</td>
+</tr>
+<tr>
+<td><code>tom/MainAlphaX</code></td>
+<td>Conventional transparency; optional DepthPrepass is off by default</td>
+</tr>
+<tr>
+<td><code>tom/MainAlphaXBackFront</code></td>
+<td>Back/front color layers for transparent shells; not a solution to arbitrary intersecting-mesh sorting</td>
+</tr>
+<tr>
+<td><code>tom/MainAlphaX2Pass</code></td>
+<td>Legacy depth-prepass compatibility entry; not BackFront, and not the first choice for new materials</td>
+</tr>
+<tr>
+<td><code>tom/HairX</code></td>
+<td>Cutout hair, anisotropic highlights, stencil-based front-hair transparency and optional feathering</td>
+</tr>
+<tr>
+<td><code>tom/EyeWX</code></td>
+<td>Eye-area surfaces such as sclera and eyelines; cutout plus stencil writer, with no automatic mesh-role detection</td>
+</tr>
+<tr>
+<td><code>tom/EyeX</code></td>
+<td>Iris and pupil shading, local refraction, shallow parallax, depth maps and optional RGB dispersion</td>
+</tr>
+<tr>
+<td><code>tom/SkinX</code></td>
+<td>One face/body shader preserving game skin layers, overlays, clothing masks and liquid conventions</td>
+</tr>
+</tbody>
+</table>
+<p>Ordinary surface shading, Clearcoat and EyeX optics need no additional plugin. HairX Feather mode requires <code>TomHairFeather.dll</code> and <code>hairx-feather.unity3d</code> in the same plugin directory. Unsupported configurations fall back to a hard edge; feathering is not available automatically without its provider.</p>
+<p>For Studio probe items, install the separate Tom Lighting Probes zipmod and place <code>KKS_TomProbe.dll</code> and <code>TomProbe.Runtime.dll</code> in <code>BepInEx/plugins/TomProbe</code>. Do not keep duplicate older DLLs. Probe-control shaders belong on the probe items, not character materials.</p>
+<h2 id="a-consistent-editing-workflow">2. A Consistent Editing Workflow</h2>
+<ol>
+<li>Select the appropriate shader and preserve game-managed textures, colors and UV parameters. Keep a card or scene backup before switching.</li>
+<li>Turn off every Debug View. Check base texture, transparency and clipping before styling.</li>
+<li>Start with Toon Shading and Lighting to establish the light/dark balance.</li>
+<li>Adjust Material and Direct Specular next, distinguishing continuous highlights from Toon highlights.</li>
+<li>Choose Environment Reflection or MatCap, then add Clearcoat, Rim and Outline as needed.</li>
+<li>Tune eye, hair and skin features on top of the common baseline; there is no need to replace the stencil or transparency design.</li>
+</ol>
+<p>Shared controls use consistent categories, types and ranges across the eight shaders. Game-compatible aliases deliberately retain their original spelling, including <code>SpeclarHeight</code>. If your ME version presents an enumeration as a numeric slider, enter the documented <strong>integer</strong>, not an intermediate value. The shaders use ME's existing texture, number and color controls; this manual does not assume custom dropdown support in every version.</p>
+<p><code>IndirectDiffuseIntensity</code> defaults to <strong>0.25</strong> for new materials. It scales indirect diffuse only, not direct lights, reflections or Clearcoat. Explicitly saved older values are not automatically changed. If skin looks washed out in Maker, check indirect illumination and exposure before renaming game color properties.</p>
+<h3 id="useful-starting-points">Useful Starting Points</h3>
+<p>These are diagnostic starting points, not universal character presets. Keep lighting fixed and change one group at a time.</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Starting settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Continuous diffuse</td>
+<td><code>UseRamp=0</code></td>
+</tr>
+<tr>
+<td>Clear two-tone shading</td>
+<td><code>UseRamp=1</code>, <code>RampMode=0</code>, <code>ToonThreshold=0.5</code>, <code>ToonSoftness=0.05</code></td>
+</tr>
+<tr>
+<td>Softer Toon transition</td>
+<td>Increase <code>ToonSoftness</code> from the settings above, rather than only increasing indirect light</td>
+</tr>
+<tr>
+<td>Continuous GGX highlight</td>
+<td><code>SpecularToonBlend=0</code>; adjust <code>Roughness</code></td>
+</tr>
+<tr>
+<td>Toon highlight</td>
+<td><code>SpecularToonBlend=1</code>; adjust <code>SpecularSize/Threshold/Softness</code>; enter integer <code>SpecularBands</code> from 1 to 4</td>
+</tr>
+<tr>
+<td>Wet-looking coat</td>
+<td><code>ClearCoat=0.5</code>, <code>ClearCoatRoughness=0.12</code>, <code>ClearCoatIOR=1.5</code></td>
+</tr>
+<tr>
+<td>Shallow recessed iris</td>
+<td><code>EyeOpticsMode=1</code>, <code>IrisDepth=0.08</code>, <code>EyeOpticsStrength=1</code>; inspect from an oblique angle</td>
+</tr>
+</tbody>
+</table>
+<h2 id="lighting-and-stylization">3. Lighting and Stylization</h2>
+<p><strong>Toon Shading:</strong> <code>UseRamp</code> blends continuous diffuse with Toon shading. <code>RampMode=0</code> uses procedural thresholds; 1 uses the R channel of RampTex. SecondaryRamp is blended through LayerMask R and SecondaryToneStrength. RampTex is a light-response curve, not a directly applied multicolor gradient.</p>
+<p><strong>Shadows:</strong> ShadowStrength controls diffuse shadow participation. ShadowRemapStrength / Threshold / Softness reshape shadow visibility. UseRampForShadows controls how shadows enter the Toon curve. External occlusion is distinct from the unlit side of a curved surface. Direct Clearcoat highlights remain shadowed; they are not unshadowed emission.</p>
+<p><strong>Direct specular:</strong> SpecularStrength is intensity, Roughness controls continuous-highlight roughness, and SpecularSize controls Toon-highlight size. These are not interchangeable. SpecularIOR / FresnelStrength govern the substrate's dielectric response; increasing Metallic reduces substrate diffuse. SpecularAA helps reduce normal/highlight-edge aliasing but does not replace all temporal antialiasing.</p>
+<p><strong>Multiple lights:</strong> MainLightIntensity / AdditionalLightIntensity scale the main and per-pixel additional lights. Direct diffuse, specular and Clearcoat respond to additional lights. SH, environment reflection, additive MatCap, Rim and emission are not added again for each light. Multiplicative MatCap still modulates each light's diffuse.</p>
+<p><strong>Indirect diffuse:</strong> LightProbeBlend transitions from AmbientColor to Unity's SH / Light Probe path. CustomSHVolumeBlend controls a ready custom SH Volume. IndirectToonBlend can stylize indirect shading but cannot create missing directional information. If no volume is ready, the built-in indirect path remains available.</p>
+<p><strong>Environment reflection:</strong> ReflectionMode: 0 off, 1 MatCap, 2 environment, 3 both. Environment mode needs an available probe or sky reflection. EnvironmentIntensity, Roughness and ToonBlend control its intensity, blur and stylization. With the default UseMaterialRoughnessForEnvironment=1, material roughness takes precedence over EnvironmentRoughness. Box Projection is useful for bounded interiors; it is not ray tracing.</p>
+<p><strong>MatCap:</strong> A view-space 2D appearance texture, not a live scene reflection. MatCapBlendMode: 0 multiply, 1 add. MatCapNormalSource: 0 geometric normal, 1 main normal, 2 main plus detail.</p>
+<p><strong>Rim / Outline / Emission:</strong> Rim is a view-dependent edge term; Outline is an expanded-shell contour. They are independent. Screen-space OutlineWidth is measured in pixels. Emission does not automatically illuminate nearby objects. SkinX uses UV4 for game overlays, so it cannot also store smoothed outline normals there.</p>
+<h2 id="texture-channel-reference">4. Texture Channel Reference</h2>
+<p>Import color textures as color and disable sRGB for data textures. Import normal textures using Unity's normal-map workflow. Do not interchange ordinary RGB normals, RG flow directions and grayscale depth. For runtime ME imports, check the behavior of your installed version; this audit did not verify every in-game importer's color-space handling.</p>
+<table>
+<thead>
+<tr>
+<th>Texture</th>
+<th>Channels</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MainTex</td>
+<td>RGB color; A coverage, with behavior depending on the shader</td>
+</tr>
+<tr>
+<td>MaterialMap</td>
+<td>R metallic, G roughness, B AO, A direct-specular mask; replaces separate maps when UsePackedMaterialMap=1</td>
+</tr>
+<tr>
+<td>LayerMask</td>
+<td>R secondary Toon, G Rim, B MatCap, A environment reflection</td>
+</tr>
+<tr>
+<td>MetallicMap / RoughnessMap</td>
+<td>R multiplies the matching scalar; RoughnessBias is added afterward</td>
+</tr>
+<tr>
+<td>OcclusionMap</td>
+<td>R AO; white means unoccluded; affects indirect terms, not a direct main-light switch</td>
+</tr>
+<tr>
+<td>SpecularMask</td>
+<td>R direct specular; not environment, MatCap or Rim; ignored in packed mode</td>
+</tr>
+<tr>
+<td>ReflectionMask</td>
+<td>R common reflection coverage, multiplied by LayerMask B/A</td>
+</tr>
+<tr>
+<td>ClearCoatMap</td>
+<td>R coat weight, G coat roughness multiplier; B/A unused; white is neutral</td>
+</tr>
+<tr>
+<td>StrandDirectionMap</td>
+<td>Linear RG decoded to a tangent-space axis in [-1,1]; not a Unity normal map</td>
+</tr>
+<tr>
+<td>EyeSurfaceMap</td>
+<td>Grayscale height by default, or R depth / A region; see the eye section</td>
+</tr>
+</tbody>
+</table>
+<p>Some textures share samplers to fit the Unity/D3D11 sampler budget. Shared filtering/wrap state does not imply shared ST transforms. In particular, SkinX UV0 masks need compatible atlas import settings. EyeSurfaceMap uses the final iris UV and has no independent ST.</p>
+<h2 id="clearcoat">5. Clearcoat</h2>
+<p>Clearcoat is a colorless dielectric specular/environment layer over the substrate. It is not parallax. Parallax changes the sampled position of internal detail; Clearcoat represents the glossy outer surface. Both can be enabled together.</p>
+<ul>
+<li><code>ClearCoat=0</code> disables the layer without changing alpha or stencil.</li>
+<li><code>ClearCoatRoughness</code> is independent of substrate Roughness. Lower values concentrate the highlight.</li>
+<li><code>ClearCoatIOR</code> affects coat Fresnel and layer energy only. A value of 1 removes coat reflection but <strong>does not change EyeX parallax displacement</strong>.</li>
+<li><code>ClearCoatEnvironmentStrength</code> is independent of substrate ReflectionMode. Disabling substrate reflection does not disable coat reflection.</li>
+<li><code>ClearCoatEnergyBlend=0</code> preserves Toon diffuse brightness; 1 uses a layered attenuation approximation. Substrate specular is still attenuated by the coat.</li>
+<li><code>ClearCoatNormalSource</code>: 0 geometric, 1 main, 2 main plus detail, 3 independent coat normal. EyeX evaluates its interface normal on the unshifted surface.</li>
+</ul>
+<p>A bright coat can visually obscure iris contrast without disabling parallax. Temporarily turn off the coat or inspect displacement with EyeDebugView to distinguish the two.</p>
+<h2 id="hairx">6. HairX</h2>
+<p>StrandAngle: U direction is 0 degrees; V is 90 degrees. StrandDirectionBlend blends the manual direction with a flow map. HairAnisotropy controls elongated highlights. The current model has one specular lobe, not dual-layer hair scattering or anisotropic environment reflection.</p>
+<p>HairFrontMode: 0 off, 1 hard stencil, 2 inward feather. HairFrontOpacity=1 is opaque. Outside stencil, hair remains ordinary cutout. Changing camera-side transparency does not punch holes in the cast shadow.</p>
+<p>Feather Width Mode: 0 pixels, 1 projected world units. Pixels preserve legacy behavior; world units project with distance, FOV and resolution. Width, Midpoint and Power are independent. The provider caps large projected radii at a 256-pixel budget and reports clamping in its log.</p>
+<p>Eye writers must render before hair. Typical queues are EyeWX 2472, EyeX 2474 and HairX 2475. Avoid arbitrary queue changes to expose one layer. The feather proxy recognizes supported writers; it is not an exact stencil copy for arbitrary shaders. Unsupported sclera can cause iris/sclera joins to become false boundaries. Use a supported EyeWX/EyeWPlus writer and check its queue. Mode 1 is a diagnostic comparison, not proof that feathering is universally correct.</p>
+<p>The current provider targets monoscopic D3D11 Forward. Unsupported configurations, including stereo cameras, fall back to hard edges.</p>
+<h2 id="eyewx-and-eyex">7. EyeWX and EyeX</h2>
+<p>EyeWX uses the game's <code>_Color</code> alias, with 0.5 neutral, followed by BaseColor. EyeX retains native iris rotation, expression overlays and highlight layers; do not indiscriminately clear those game aliases. Painted surface highlights can coexist with Clearcoat, but excessive stacking may look like duplicated reflections.</p>
+<p>AlphaMask / Alpha / Cutoff control unshifted source coverage. StencilCutoff additionally gates stencil writing. EyeWX draws surviving coverage as cutout; EyeX continues to alpha-blend surviving coverage. <strong>Optical region, transparency coverage and stencil coverage are separate.</strong></p>
+<h3 id="procedural-parallax">Procedural Parallax</h3>
+<p>Enable EyeOpticsMode=1. IrisCenterX/Y and IrisRadiusX/Y define an ellipse in final MainTex UV. IrisDepthShape: 0 legacy flat floor, 1 shallow cone, 2 shallow bowl. IrisDepth is the shared global recess gain for both procedural and mapped modes, scaled relative to local iris radius, not meters or pixels. EyeOpticsStrength=0 restores original sampling.</p>
+<p>EyeRefractionIOR is independent of ClearCoatIOR. Increasing refraction IOR reduces lateral parallax by design in this ray model. IOR=1 removes refractive bending, not the parallax caused by a recessed surface. To reproduce an older material's pre-separation result, manually copy its former ClearCoatIOR value to EyeRefractionIOR once. Saved materials are not forcibly migrated.</p>
+<h3 id="painted-depth-and-region">Painted Depth and Region</h3>
+<p>UseEyeSurfaceMask=1 replaces the procedural ellipse boundary and EdgeFade with the texture. Align it with the main iris texture and its rotation/ST.</p>
+<table>
+<thead>
+<tr>
+<th>EyeSurfaceMapMode</th>
+<th>Encoding</th>
+<th>No-effect region</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 grayscale height</td>
+<td>White = surface / zero depth; black = maximum depth; A ignored</td>
+<td>Paint white</td>
+</tr>
+<tr>
+<td>1 R depth + A region</td>
+<td>R white = deepest, black = zero depth; A white = inside region</td>
+<td>A=0, with a smooth boundary transition</td>
+</tr>
+</tbody>
+</table>
+<p>Both modes multiply IrisDepth. In mapped mode, radii still calibrate depth/displacement scale but no longer clip the painted region. A affects depth and entry transition, not surface transparency.</p>
+<p>Suitable shapes include shallow flat floors, shallow cones, shallow bowls and smooth single-valued height fields. Do not convert painted highlights or iris color brightness directly into geometry. Avoid vertical walls, high-frequency noise and folded multilayer surfaces.</p>
+<p>EyeOpticsMaxOffset limits extreme displacement. EyeUVMin/Max define safe atlas bounds. Shifted samples outside that region, or invalid geometric conditions, fall back to original UV. Increasing gain without limit is not a way to obtain a deep cavity.</p>
+<h3 id="dispersion-and-viewing-angle">Dispersion and Viewing Angle</h3>
+<p>EyeDispersion=0 uses a single path. Positive values use a three-ray RGB geometric approximation. This is not wave optics and does not turn the whole coat into a rainbow. The difference is generally clearest at high-contrast edges and oblique angles.</p>
+<p>Change the camera's actual direction relative to the eye surface when testing. Reframing alone, or an eye that continuously faces the camera, may show little change. Start with a clear texture and a shallow cone/bowl, then adjust Depth, IOR, maximum offset and safe bounds gradually.</p>
+<p>This is not POM and does not guarantee that a near-side cavity wall hides far-side iris content. If that genuine self-occlusion becomes necessary, consider <strong>POM / first-visible-hit search</strong>. Weak angle response alone is not a reason to upgrade. No additional corneal mesh is needed.</p>
+<h2 id="skinx-and-standard-character-textures">8. SkinX and Standard Character Textures</h2>
+<p>The game already composites main skin color into MainTex. BaseColor is an additional tint, not a replacement for that composition. ColMask provides optional extra regional tinting; it is not the game texture compositor's ColorMask.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ColMask + Col0..3</td>
+<td>Blend Col0 toward Col1 by R, then Col2 by G, then Col3 by B</td>
+</tr>
+<tr>
+<td>DetailMask</td>
+<td>R painted-highlight/specular gating, G painted shadow, B Rim/Outline suppression, A skin versus nail/lip gloss</td>
+</tr>
+<tr>
+<td>LineMask</td>
+<td>R internal lines, G game line-width exponent, B detail shadow; A unused</td>
+</tr>
+<tr>
+<td>NormalMask</td>
+<td>G can reduce diffuse normal detail; not a normal map and does not inherit the legacy B shadow fallback</td>
+</tr>
+<tr>
+<td>overtex1</td>
+<td>UV1 (Unity UV2), controlled by vertex R; body nipple / face lip layers, with legacy tex1mask RG encoding</td>
+</tr>
+<tr>
+<td>overtex2</td>
+<td>UV2 (Unity UV3), controlled by vertex B; the corresponding body layer or dynamic face blush</td>
+</tr>
+<tr>
+<td>overtex3</td>
+<td>UV3 (Unity UV4); face eyeshadow, with body meaning dependent on the asset</td>
+</tr>
+<tr>
+<td>AlphaMask</td>
+<td>Clothing R/G masks activated by alpha_a/b; fixed threshold 0.5</td>
+</tr>
+<tr>
+<td>SkinControlMap</td>
+<td>R softening, G warm transition, B painted wet region; not a replacement for original DetailMask</td>
+</tr>
+</tbody>
+</table>
+<p>DetailNormalMapScale also participates in game internal lines and painted shadows. SkinDiffuseNormalDetail reduces diffuse detail only, preserving specular/coat detail. SkinStrength / Wrap / Warmth provide front-side softening and a warm light-dark transition. They are not screen-space or volumetric SSS and do not transmit through external occluders.</p>
+<p>SpecularPower / SpecularPowerNail preserve the game's skin and nail/lip gloss gains. SkinGameGloss controls their participation. They are not Roughness and do not automatically tune Clearcoat. SkinPatternStrength / notusetexspecular control the moving painted-highlight mask.</p>
+<h3 id="liquid-and-wetness">Liquid and Wetness</h3>
+<p><code>liquidmask</code> uses RGB combinations to encode five game regions. <code>liquidftop/fbot/btop/bbot/face</code> are the corresponding amounts from 0 to 2. <code>Texture2</code> R/G hold first- and second-stage liquid coverage. <code>Texture3</code> is the liquid tangent normal, not depth or color. These are final Skin material slots; do not confuse them with identically named game-compositor inputs.</p>
+<p>For compatibility, ME presents LiquidTiling as a color control, but it is a raw vector: R/G are UV offsets; B/A are UV scales, default <code>(0,0,1,1)</code>. Do not apply color gamma correction to it.</p>
+<p>SkinLiquidColorStrength controls liquid base color. SkinLiquidMaterial blends substrate roughness. SkinCoatCoverage: 0 ordinary coat map, 1 game liquid, 2 painted wetness, 3 union of both. This only limits Clearcoat coverage; ClearCoat must also be enabled. SkinWetness multiplies SkinControlMap B.</p>
+<h2 id="reflection-probes-and-sh-volumes">9. Reflection Probes and SH Volumes</h2>
+<p>In Studio, add an item from Tom Lighting &gt; Probes and edit its control material through ME. RP 256/512/1024 and SH grid variants are starting configurations, not locked item types. There is no need to delete and reimport an item to change parameters. The plugin reads those parameters; the control shader does not capture lighting itself.</p>
+<table>
+<thead>
+<tr>
+<th>Common control</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ProbeEnabled / Intensity</td>
+<td>Enable and contribution strength; intensity changes do not recapture</td>
+</tr>
+<tr>
+<td>ProbeRefresh</td>
+<td>Either 0-to-1 or 1-to-0 requests one refresh; holding 1 does not refresh every frame</td>
+</tr>
+<tr>
+<td>ProbeRefreshScope / Group</td>
+<td>Scope 0 self, 1 same group, 2 all; Group is an integer</td>
+</tr>
+<tr>
+<td>ProbeUpdateMode</td>
+<td>0 load, 1 position change, 2 interval, 3 manual</td>
+</tr>
+<tr>
+<td>ProbeCaptureOnLoad</td>
+<td>Capture on initial activation or re-enabling, independent of update mode</td>
+</tr>
+<tr>
+<td>ProbeInterval</td>
+<td>Request interval in seconds; RP minimum 0.5, SH minimum 5; not a completion-time guarantee</td>
+</tr>
+<tr>
+<td>ProbeSize / Offset X/Y/Z</td>
+<td>World-axis-aligned bounds/offset; use these instead of item scale/rotation</td>
+</tr>
+<tr>
+<td>ProbeNearClip / FarClip</td>
+<td>Each cube face's clipping planes; NearClip is not a spherical exclusion radius</td>
+</tr>
+<tr>
+<td>ProbeCapturePreset</td>
+<td>0 environment layers, 1 including characters, 2 custom 32-bit layer mask</td>
+</tr>
+<tr>
+<td>ProbeQuality</td>
+<td>RP: 0=256, 1=512, 2=1024 pixels per cubemap face</td>
+</tr>
+<tr>
+<td>SHGridX/Y/Z</td>
+<td>2-8 per axis; total samples equal their product</td>
+</tr>
+<tr>
+<td>SHCaptureQuality</td>
+<td>0/1/2/3 mean 8/16/32/64 pixels per face</td>
+</tr>
+<tr>
+<td>SHSamplesPerFrame</td>
+<td>Request 1-4 points per frame, also subject to the plugin's shared budget</td>
+</tr>
+</tbody>
+</table>
+<p>RP supplies specular environment reflection; SH supplies low-frequency directional diffuse, not sharp highlights or real-time shadows. Custom SH selects one volume per renderer using bounds center, priority and edge weight. It is not per-pixel blending of multiple volumes.</p>
+<p>Capture axes remain world-aligned when the item rotates. A parent rotation that changes the item's world position is still a real position change. Near clip only clips nearby geometry. Prefer capture layers to avoid capturing the character itself; characters on unusual layers are not guaranteed to be excluded by the environment preset.</p>
+<p>The shared queue performs one capture task at a time. A group refresh schedules SH before RP. During SH refresh, the previous atlas and matching bounds remain active until the replacement is complete and rebound. The first capture, without historical data, uses the built-in indirect fallback. RP resolution/HDR changes recreate its helper and may temporarily fall back to other probes or the sky.</p>
+<p>Only parameters are saved with the scene, not captured lighting; reloads require recapture. Each SH sample renders six faces and performs synchronous readback. Spreading work across frames is not free asynchronous GI; complex scenes can still stall. RP requires Unity's Realtime Reflection Probes quality option. The plugin does not silently change that global setting.</p>
+<h2 id="troubleshooting-and-limits">10. Troubleshooting and Limits</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Washed-out color</td>
+<td>Indirect diffuse/environment strength, Clearcoat, exposure, duplicate highlights; new indirect default is 0.25</td>
+</tr>
+<tr>
+<td>Roughness seems ineffective</td>
+<td>Toon versus continuous specular, material-driven environment roughness, zero texture G</td>
+</tr>
+<tr>
+<td>Missing coat reflection</td>
+<td>ClearCoat, IOR=1, coat coverage map, SkinCoatCoverage, available environment</td>
+</tr>
+<tr>
+<td>Weak parallax</td>
+<td>Relative view angle, Optics mode, Depth/Strength, IOR, depth-map color space, bounds fallback</td>
+</tr>
+<tr>
+<td>Internal seams in eye-area feathering</td>
+<td>Complete supported sclera/iris/eyeline writers and queues before hair</td>
+</tr>
+<tr>
+<td>Incorrect intersecting transparency</td>
+<td>Queue, mesh intersections and depth writing; BackFront is not OIT</td>
+</tr>
+<tr>
+<td>No SH response</td>
+<td>Plugin/item, completed capture, bounds, CustomSHVolumeBlend, Debug View</td>
+</tr>
+<tr>
+<td>Mask colors instead of shading</td>
+<td>Reset Eye/Skin/Clearcoat/Lighting Debug modes</td>
+</tr>
+</tbody>
+</table>
+<p>Deferred without reducing current effects: EyeX targeted multi-light optimization (not a closing blocker); POM only when true self-occlusion is required; separately designed HairX dual lobes and other additions; the EyeWX sclera versus brow/eyeline split. Probe capture budgets and whole-/multi-character game GPU cost require separate measurements, not inference from spheres.</p>
+<h2 id="showcase-and-development-evidence">11. Showcase and Development Evidence</h2>
+<p>The companion gallery provides standard-sphere comparisons, eye-angle views, individual PNGs, generated texture inputs and a <code>report.json</code> recording all material parameters. Comparisons use consistent camera/lighting and a fixed display transform except where a documented angle or lighting change is the subject of the comparison. The SH showcase isolates diffuse response with known coefficients; an independent Unity runtime regression checks actual probe capture/refresh behavior.</p>
+<p>This manual does not replace the precise material contracts. Developers should also read <code>XSeriesSkinTextureContract.md</code>, <code>XSeriesEyeSurface.md</code>, <code>XSeriesHairContract.md</code> and <code>XSeriesClosingAudit.md</code> in the source repository's Documents directory. Run <code>Tests/Test-XSeriesMetadata.ps1</code> after regenerating property metadata.</p>
+</article></main></body></html>

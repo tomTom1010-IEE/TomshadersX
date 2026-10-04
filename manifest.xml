@@ -1,0 +1,1004 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<manifest schema-ver="1">
+  <guid>tom.Shaders.X</guid>
+  <name>Tom Shaders X</name>
+  <version>0.3.1</version>
+  <author>tomTom</author>
+  <description>Toon-first X-series shaders for KKS, Unity 2019 Built-in. Independent of Vanilla Plus LTS.</description>
+  <MaterialEditor>
+    <TooltipCatalog AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="tom_x_tooltips" />
+    <Shader Name="tom/MainOpaqueX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomMainOpaqueX">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="ShadowOffsetFactor" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="ShadowOffsetUnits" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="OutlineWidthMask" Category="Outline" Type="Texture" />
+      <Property Name="OutlineOn" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineColor" Category="Outline" Type="Color" />
+      <Property Name="OutlineWidth" Category="Outline" Type="Float" Range="0, 8" />
+      <Property Name="OutlineScreenSpace" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineDepthOffset" Category="Outline" Type="Float" Range="-1, 1" />
+      <Property Name="OutlineNormalSource" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+    </Shader>
+    <!-- Primary alpha: optional depth prepass, independent color-pass ZWrite. -->
+    <Shader Name="tom/MainAlphaX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomMainAlphaX">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="Alpha" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="AlphaBlendMode" Category="Render Options" Type="Float" Range="1, 5" />
+      <Property Name="AlphaOptionCutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="AlphaOptionZWrite" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="DepthPrepass" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="DepthShadowCutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CastShadows" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="ShadowOffsetFactor" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="ShadowOffsetUnits" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="OutlineWidthMask" Category="Outline" Type="Texture" />
+      <Property Name="OutlineOn" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineColor" Category="Outline" Type="Color" />
+      <Property Name="OutlineWidth" Category="Outline" Type="Float" Range="0, 8" />
+      <Property Name="OutlineScreenSpace" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineDepthOffset" Category="Outline" Type="Float" Range="-1, 1" />
+      <Property Name="OutlineNormalSource" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+    </Shader>
+    <!-- Compatibility only: preserve the old depth-prepass identity and properties. -->
+    <Shader Name="tom/MainAlphaX2Pass" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomMainAlphaX2Pass">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="Alpha" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="AlphaBlendMode" Category="Render Options" Type="Float" Range="1, 5" />
+      <Property Name="AlphaOptionCutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="AlphaOptionZWrite" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="DepthShadowCutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CastShadows" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="ShadowOffsetFactor" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="ShadowOffsetUnits" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="OutlineWidthMask" Category="Outline" Type="Texture" />
+      <Property Name="OutlineOn" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineColor" Category="Outline" Type="Color" />
+      <Property Name="OutlineWidth" Category="Outline" Type="Float" Range="0, 8" />
+      <Property Name="OutlineScreenSpace" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineDepthOffset" Category="Outline" Type="Float" Range="-1, 1" />
+      <Property Name="OutlineNormalSource" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+    </Shader>
+    <!-- Primary two-color-layer alpha; keep its public BackFront name stable. -->
+    <Shader Name="tom/MainAlphaXBackFront" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomMainAlphaXBackFront">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="Alpha" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="AlphaBlendMode" Category="Render Options" Type="Float" Range="1, 5" />
+      <Property Name="AlphaOptionCutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="AlphaOptionZWrite" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="BackfaceZWrite" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="DepthShadowCutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CastShadows" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="ShadowOffsetFactor" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="ShadowOffsetUnits" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="OutlineWidthMask" Category="Outline" Type="Texture" />
+      <Property Name="OutlineOn" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineColor" Category="Outline" Type="Color" />
+      <Property Name="OutlineWidth" Category="Outline" Type="Float" Range="0, 8" />
+      <Property Name="OutlineScreenSpace" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineDepthOffset" Category="Outline" Type="Float" Range="-1, 1" />
+      <Property Name="OutlineNormalSource" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+    </Shader>
+    <Shader Name="tom/HairX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomHairX">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="ShadowOffsetFactor" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="ShadowOffsetUnits" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="OutlineWidthMask" Category="Outline" Type="Texture" />
+      <Property Name="OutlineOn" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineColor" Category="Outline" Type="Color" />
+      <Property Name="OutlineWidth" Category="Outline" Type="Float" Range="0, 8" />
+      <Property Name="OutlineScreenSpace" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineDepthOffset" Category="Outline" Type="Float" Range="-1, 1" />
+      <Property Name="OutlineNormalSource" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="StrandDirectionMap" Category="Hair Direction" Type="Texture" />
+      <Property Name="StrandDirectionBlend" Category="Hair Direction" Type="Float" Range="0, 1" />
+      <Property Name="StrandAngle" Category="Hair Direction" Type="Float" Range="-180, 180" />
+      <Property Name="HairAnisotropy" Category="Hair Direction" Type="Float" Range="0, 1" />
+      <Property Name="HairFrontMode" Category="HairFront" Type="Float" Range="0, 2" />
+      <Property Name="HairFrontOpacity" Category="HairFront" Type="Float" Range="0, 1" />
+      <Property Name="HairFeatherWidth" Category="HairFront" Type="Float" Range="0, 32" />
+      <Property Name="HairFeatherWidthMode" Category="HairFront" Type="Float" Range="0, 1" />
+      <Property Name="HairFeatherWorldWidth" Category="HairFront" Type="Float" Range="0, 0.05" />
+      <Property Name="HairFeatherThreshold" Category="HairFront" Type="Float" Range="0.05, 0.95" />
+      <Property Name="HairFeatherPower" Category="HairFront" Type="Float" Range="0.5, 4" />
+      <Property Name="HairFrontZWrite" Category="HairFront" Type="Float" Range="0, 1" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+    </Shader>
+    <Shader Name="tom/EyeWX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomEyeWX">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+      <Property Name="Alpha" Category="Render Options" Type="Float" Range="0,1" />
+      <Property Name="StencilCutoff" Category="Render Options" Type="Float" Range="0,1" />
+      <Property Name="Color" Category="Eye Surface" Type="Color" />
+      <Property Name="EyeDebugView" Category="Eye Surface" Type="Float" Range="0,2" />
+    </Shader>
+    <Shader Name="tom/EyeX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomEyeX">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+      <Property Name="Alpha" Category="Render Options" Type="Float" Range="0,1" />
+      <Property Name="StencilCutoff" Category="Render Options" Type="Float" Range="0,1" />
+      <Property Name="overtex1" Category="Eye Surface" Type="Texture" />
+      <Property Name="overtex2" Category="Eye Surface" Type="Texture" />
+      <Property Name="overcolor1" Category="Eye Surface" Type="Color" />
+      <Property Name="overcolor2" Category="Eye Surface" Type="Color" />
+      <Property Name="isHighLight" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="expression" Category="Eye Surface" Type="Texture" />
+      <Property Name="exppower" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="ExpressionSize" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="ExpressionDepth" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="rotation" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeOpticsMode" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeOpticsStrength" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="IrisCenterX" Category="Eye Surface" Type="Float" />
+      <Property Name="IrisCenterY" Category="Eye Surface" Type="Float" />
+      <Property Name="IrisRadiusX" Category="Eye Surface" Type="Float" Range="0.001,1" />
+      <Property Name="IrisRadiusY" Category="Eye Surface" Type="Float" Range="0.001,1" />
+      <Property Name="IrisDepth" Category="Eye Surface" Type="Float" Range="0,0.5" />
+      <Property Name="EyeOpticsEdgeFade" Category="Eye Surface" Type="Float" Range="0.01,0.5" />
+      <Property Name="EyeOpticsMaxOffset" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeUVMinX" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeUVMinY" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeUVMaxX" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeUVMaxY" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeDispersion" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeDebugView" Category="Eye Surface" Type="Float" Range="0,8" />
+      <Property Name="EyeRefractionIOR" Category="Eye Surface" Type="Float" Range="1,2.5" />
+      <Property Name="IrisDepthShape" Category="Eye Surface" Type="Float" Range="0,2" />
+      <Property Name="UseEyeSurfaceMask" Category="Eye Surface" Type="Float" Range="0,1" />
+      <Property Name="EyeSurfaceMap" Category="Eye Surface" Type="Texture" />
+      <Property Name="EyeSurfaceMapMode" Category="Eye Surface" Type="Float" Range="0,1" />
+    </Shader>
+    <Shader Name="tom/SkinX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomSkinX">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="MaterialMap" Category="Textures" Type="Texture" />
+      <Property Name="LayerMask" Category="Textures" Type="Texture" />
+      <Property Name="BaseColor" Category="Base Color" Type="Color" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="DetailNormalMapScale" Category="Base Color" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0, 4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0, 2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001, 1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0, 1" />
+      <Property Name="ShadowOffsetFactor" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="ShadowOffsetUnits" Category="Lighting" Type="Float" Range="-4, 4" />
+      <Property Name="UsePackedMaterialMap" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="MetallicMap" Category="Material" Type="Texture" />
+      <Property Name="RoughnessMap" Category="Material" Type="Texture" />
+      <Property Name="OcclusionMap" Category="Material" Type="Texture" />
+      <Property Name="Metallic" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Category="Material" Type="Float" Range="0.04, 1" />
+      <Property Name="RoughnessBias" Category="Material" Type="Float" Range="-1, 1" />
+      <Property Name="SpecularIOR" Category="Material" Type="Float" Range="1, 2.5" />
+      <Property Name="FresnelStrength" Category="Material" Type="Float" Range="0, 2" />
+      <Property Name="DiffuseEnergyBlend" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001, 0.25" />
+      <Property Name="OcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularOcclusionStrength" Category="Material" Type="Float" Range="0, 1" />
+      <Property Name="SpecularMask" Category="Direct Specular" Type="Texture" />
+      <Property Name="SpecularColor" Category="Direct Specular" Type="Color" />
+      <Property Name="SpecularStrength" Category="Direct Specular" Type="Float" Range="0, 4" />
+      <Property Name="SpecularShadowStrength" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularToonBlend" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSize" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularThreshold" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="SpecularSoftness" Category="Direct Specular" Type="Float" Range="0.001, 1" />
+      <Property Name="SpecularBands" Category="Direct Specular" Type="Float" Range="1, 4" />
+      <Property Name="SpecularAA" Category="Direct Specular" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionMode" Category="Environment Reflection" Type="Float" Range="0, 3" />
+      <Property Name="ReflectionMask" Category="Environment Reflection" Type="Texture" />
+      <Property Name="EnvironmentIntensity" Category="Environment Reflection" Type="Float" Range="0, 4" />
+      <Property Name="EnvironmentRoughness" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="UseMaterialRoughnessForEnvironment" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionShadowStrength" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentToonBlend" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentThreshold" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentSoftness" Category="Environment Reflection" Type="Float" Range="0.001, 1" />
+      <Property Name="EnvironmentExposure" Category="Environment Reflection" Type="Float" Range="0.01, 8" />
+      <Property Name="EnvironmentColorWeight" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentBaseColorTint" Category="Environment Reflection" Type="Float" Range="0, 1" />
+      <Property Name="EnvironmentFresnelStrength" Category="Environment Reflection" Type="Float" Range="0, 2" />
+      <Property Name="EnvironmentColor" Category="Environment Reflection" Type="Color" />
+      <Property Name="MatCap" Category="MatCap" Type="Texture" />
+      <Property Name="MatCapBlendMode" Category="MatCap" Type="Float" Range="0, 1" />
+      <Property Name="MatCapIntensity" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="MatCapMip" Category="MatCap" Type="Float" Range="0, 8" />
+      <Property Name="MatCapNormalSource" Category="MatCap" Type="Float" Range="0, 2" />
+      <Property Name="RimColor" Category="Rim" Type="Color" />
+      <Property Name="RimStrength" Category="Rim" Type="Float" Range="0, 4" />
+      <Property Name="RimShadowStrength" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimWidth" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="RimSoftness" Category="Rim" Type="Float" Range="0.001, 1" />
+      <Property Name="RimLightInfluence" Category="Rim" Type="Float" Range="0, 1" />
+      <Property Name="OutlineWidthMask" Category="Outline" Type="Texture" />
+      <Property Name="OutlineOn" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineColor" Category="Outline" Type="Color" />
+      <Property Name="OutlineWidth" Category="Outline" Type="Float" Range="0, 8" />
+      <Property Name="OutlineScreenSpace" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="OutlineDepthOffset" Category="Outline" Type="Float" Range="-1, 1" />
+      <Property Name="OutlineNormalSource" Category="Outline" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Category="Emission" Type="Texture" />
+      <Property Name="EmissionColor" Category="Emission" Type="Color" />
+      <Property Name="EmissionIntensity" Category="Emission" Type="Float" Range="0, 10" />
+      <Property Name="EmissionKeepCol" Category="Emission" Type="Float" Range="0, 1" />
+      <Property Name="DebugView" Category="Debug" Type="Float" Range="0, 6" />
+      <Property Name="ClearCoat" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatRoughness" Category="Clearcoat" Type="Float" Range="0.04,1" />
+      <Property Name="ClearCoatIOR" Category="Clearcoat" Type="Float" Range="1,2.5" />
+      <Property Name="ClearCoatMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalSource" Category="Clearcoat" Type="Float" Range="0,3" />
+      <Property Name="ClearCoatNormalMap" Category="Clearcoat" Type="Texture" />
+      <Property Name="ClearCoatNormalScale" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
+      <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
+      <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
+    
+      <Property Name="DetailMask" Category="Skin Response" Type="Texture" />
+      <Property Name="LineMask" Category="Skin Response" Type="Texture" />
+      <Property Name="NormalMask" Category="Skin Response" Type="Texture" />
+      <Property Name="ColMask" Category="KKS Color Layers" Type="Texture" />
+      <Property Name="Col0" Category="KKS Color Layers" Type="Color" />
+      <Property Name="Col1" Category="KKS Color Layers" Type="Color" />
+      <Property Name="Col2" Category="KKS Color Layers" Type="Color" />
+      <Property Name="Col3" Category="KKS Color Layers" Type="Color" />
+      <Property Name="overtex1" Category="KKS Color Layers" Type="Texture" />
+      <Property Name="overtex2" Category="KKS Color Layers" Type="Texture" />
+      <Property Name="overtex3" Category="KKS Color Layers" Type="Texture" />
+      <Property Name="overcolor1" Category="KKS Color Layers" Type="Color" />
+      <Property Name="overcolor2" Category="KKS Color Layers" Type="Color" />
+      <Property Name="overcolor3" Category="KKS Color Layers" Type="Color" />
+      <Property Name="nip" Category="KKS Color Layers" Type="Float" Range="0,1" />
+      <Property Name="nipsize" Category="KKS Color Layers" Type="Float" Range="0,1" />
+      <Property Name="nip_specular" Category="KKS Color Layers" Type="Float" Range="0,1" />
+      <Property Name="tex1mask" Category="KKS Color Layers" Type="Float" Range="0,1" />
+      <Property Name="alpha_a" Category="KKS Clothing Coverage" Type="Float" Range="0,1" />
+      <Property Name="alpha_b" Category="KKS Clothing Coverage" Type="Float" Range="0,1" />
+      <Property Name="SkinMainAlphaClip" Category="KKS Clothing Coverage" Type="Float" Range="0,1" />
+      <Property Name="SpecularPower" Category="KKS Gloss" Type="Float" Range="0,1" />
+      <Property Name="SpecularPowerNail" Category="KKS Gloss" Type="Float" Range="0,1" />
+      <Property Name="SkinGameGloss" Category="KKS Gloss" Type="Float" Range="0,1" />
+      <Property Name="UseDetailRAsSpecularMap" Category="KKS Gloss" Type="Float" Range="0,1" />
+      <Property Name="notusetexspecular" Category="KKS Gloss" Type="Float" Range="0,1" />
+      <Property Name="SpeclarHeight" Category="KKS Gloss" Type="Float" Range="0,1" />
+      <Property Name="SkinPatternStrength" Category="KKS Gloss" Type="Float" Range="0,1" />
+      <Property Name="linetexon" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinLineStrength" Category="Skin Response" Type="Float" Range="0,2" />
+      <Property Name="SkinLineColor" Category="Skin Response" Type="Color" />
+      <Property Name="SkinGameLineColor" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinShadeStrength" Category="Skin Response" Type="Float" Range="0,2" />
+      <Property Name="SkinDiffuseNormalDetail" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinFaceNormalStrength" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinControlMap" Category="Skin Response" Type="Texture" />
+      <Property Name="SkinStrength" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinWrap" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinWarmth" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinWarmWidth" Category="Skin Response" Type="Float" Range="0.001,1" />
+      <Property Name="SkinWarmColor" Category="Skin Response" Type="Color" />
+      <Property Name="liquidmask" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture2" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture3" Category="KKS Liquid" Type="Texture" />
+      <Property Name="LiquidTiling" Category="KKS Liquid" Type="Color" />
+      <Property Name="liquidftop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidfbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbtop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidface" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidColor" Category="KKS Liquid" Type="Color" />
+      <Property Name="SkinLiquidColorStrength" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidNormalScale" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidMaterial" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidRoughness" Category="KKS Liquid" Type="Float" Range="0.04,1" />
+      <Property Name="SkinCoatCoverage" Category="Skin Wet Surface" Type="Float" Range="0,3" />
+      <Property Name="SkinWetness" Category="Skin Wet Surface" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidCoatNormal" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinDebugView" Category="Debug" Type="Float" Range="0,13" /></Shader>
+  </MaterialEditor>
+  <game>Koikatsu Sunshine</game>
+</manifest>
