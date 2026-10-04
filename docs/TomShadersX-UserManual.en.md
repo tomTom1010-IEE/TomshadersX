@@ -220,8 +220,8 @@ Only parameters are saved with the scene, not captured lighting; reloads require
 
 Deferred without reducing current effects: EyeX targeted multi-light optimization (not a closing blocker); POM only when true self-occlusion is required; separately designed HairX dual lobes and other additions; the EyeWX sclera versus brow/eyeline split. Probe capture budgets and whole-/multi-character game GPU cost require separate measurements, not inference from spheres.
 
-## 11. Showcase and Development Evidence
+## 11. Showcase Reference
 
-The companion gallery provides standard-sphere comparisons, eye-angle views, individual PNGs, generated texture inputs and a `report.json` recording all material parameters. Comparisons use consistent camera/lighting and a fixed display transform except where a documented angle or lighting change is the subject of the comparison. The SH showcase isolates diffuse response with known coefficients; an independent Unity runtime regression checks actual probe capture/refresh behavior.
+The companion gallery provides standard-sphere comparisons, eye-angle views, individual PNGs, generated texture inputs and expandable tables recording all material parameters. Comparisons use consistent camera/lighting and a fixed display transform except where a documented angle or lighting change is the subject of the comparison. The SH showcase isolates diffuse response with known coefficients; an independent Unity runtime regression checks actual probe capture/refresh behavior.
 
-This manual does not replace the precise material contracts. Developers should also read `XSeriesSkinTextureContract.md`, `XSeriesEyeSurface.md`, `XSeriesHairContract.md` and `XSeriesClosingAudit.md` in the source repository's Documents directory. Run `Tests/Test-XSeriesMetadata.ps1` after regenerating property metadata.
+For source installation and packaging, see Documents/Development.md in the source repository.

@@ -222,6 +222,6 @@ RP 提供镜面环境反射；SH 提供低频方向性漫射，不能替代尖�
 
 ## 11. 展示图与开发证据
 
-配套展示包提供逐项标准球对照、视差多角度图、单张 PNG、生成贴图以及记录所有材质参数的 `report.json`。同一组对照使用相同相机、灯光和固定显示转换；需要变化的相机/光照明确写在图名与记录中。SH 展示使用已知系数场隔离漫射效果，探针捕捉刷新正确性由独立 Unity 运行时回归验证。
+配套展示包提供逐项标准球对照、视差多角度图、单张 PNG、生成贴图以及记录所有材质参数的可展开表格。同一组对照使用相同相机、灯光和固定显示转换；需要变化的相机/光照明确写在图名与记录中。SH 展示使用已知系数场隔离漫射效果，探针捕捉刷新正确性由独立 Unity 运行时回归验证。
 
-中文手册并不替代精确材质契约。开发者参见同目录的 `XSeriesSkinTextureContract.md`、`XSeriesEyeSurface.md`、`XSeriesHairContract.md` 和 `XSeriesClosingAudit.md`；重新生成参数信息后运行 `Tests/Test-XSeriesMetadata.ps1`。
+源码安装与打包方法见源码仓库的 Documents/Development.md。

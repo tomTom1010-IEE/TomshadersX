@@ -23,8 +23,6 @@ Rim、描边与发光。HairX 提供各向异性；EyeX 提供无需额外网格
 - 常规着色、Clearcoat 与 EyeX 光学不需要额外插件。HairFront 羽化与工作室光照探针物品
   使用独立的可选配套插件，详见用户手册。
 - 展示是视觉参考，不是强制角色预设，也不代表游戏内 GPU 性能或对所有网格的兼容性承诺。
-- [收尾审计](Documents/XSeriesClosingAudit.md) 记录了通过的十套静态测试与 1,241 项
-  Unity、回归及展示检查。本次发布调整文档与展示，不改变正式着色算法。
 
 SH 组使用已知系数隔离方向性漫射，不代表工作室捕捉的 GI。透明组使用棋盘背景；阴影组使用仅投影遮挡体。
 眼睛组标明观察角度，并提供同角度光学开关对照。色散是几何 RGB 近似，不是波动光学仿真。
@@ -128,7 +126,6 @@ SH 组使用已知系数隔离方向性漫射，不代表工作室捕捉的 GI�
 ## 开发与许可
 
 参阅[开发指南](Documents/Development.md)与[用户手册](Documents/TomShadersX-UserManual.zh-CN.md)。
-导出脚本使用已有 GPU 实拍生成两种语言的展示页和标题图集，不重新渲染或修改着色器。
 
 本项目采用 [AGPL-3.0](LICENSE)。原始 MIT 上游版权与许可声明保留于
 [LICENSES/MIT-Upstream.txt](LICENSES/MIT-Upstream.txt)，详见

@@ -31,9 +31,6 @@ EyeX adds shader-only shallow parallax, depth maps and optional RGB dispersion.
   providers described in the manual.
 - The showcase is a visual reference, not a set of forced character presets.
   It does not claim in-game GPU performance or universal mesh compatibility.
-- The [closing audit](Documents/XSeriesClosingAudit.md) records ten passing static
-  suites and 1,241 Unity/regression/showcase checks. This publication changes
-  documentation and presentation, not the production shading algorithms.
 
 SH examples use known coefficients to isolate directional diffuse, not captured
 Studio GI. Transparency uses a checker background; shadow tests use a shadow-only
@@ -140,9 +137,7 @@ on/off controls. Dispersion is a geometric RGB approximation, not wave optics.
 
 Read the [development guide](Documents/Development.md), the
 [English manual](Documents/TomShadersX-UserManual.en.md), or the
-[Chinese manual](Documents/TomShadersX-UserManual.zh-CN.md). The export script
-rebuilds both galleries and both sets of title boards from existing GPU captures;
-it does not rerender or modify the shaders.
+[Chinese manual](Documents/TomShadersX-UserManual.zh-CN.md).
 
 The project is published under [AGPL-3.0](LICENSE). The original MIT upstream
 copyright and permission notices are preserved in
