@@ -32,6 +32,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ColorMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -182,6 +186,10 @@ Material:
     - _SpecularToonBlend: 1
     - _StrandAngle: 90
     - _StrandDirectionBlend: 0
+    - _ToonAA: 1
+    - _ToonDetailNormalInfluence: 1
+    - _ToonMinLighting: 0.15
+    - _ToonNormalInfluence: 1
     - _ToonShadeLevel: 0.15
     - _ToonSoftness: 0.1
     - _ToonThreshold: 0.5
@@ -193,9 +201,13 @@ Material:
     m_Colors:
     - _AmbientColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color2: {r: 0.7843137, g: 0.7843137, b: 0.7843137, a: 1}
+    - _Color3: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EnvironmentColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.65, g: 0.65, b: 0.7, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ToonShadeColor: {r: 0.35, g: 0.35, b: 0.35, a: 0}

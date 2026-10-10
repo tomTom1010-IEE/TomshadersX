@@ -3,6 +3,13 @@
 
 #include "../KKPDeclarations.cginc"
 
+#if defined(TOM_SKIN)
+#define TOM_LIQUID 1
+#endif
+#if defined(TOM_LIQUID)
+#include "TomLiquidInput.cginc"
+#endif
+
 struct TomVertexData
 {
 	float4 vertex : POSITION;
@@ -104,7 +111,15 @@ float _LightProbeBlend;
 float _CustomSHVolumeBlend;
 float _IndirectDiffuseIntensity;
 
+#if defined(TOM_LIQUID)
+// The SH atlas is linear/clamped without mipmaps, like the liquid region mask.
+// Sharing this state preserves the 16-sampler limit in lightmapped variants.
+Texture3D _TomSHVolumeTex;
+#define TOM_SAMPLE_SH(uv) _TomSHVolumeTex.SampleLevel(sampler_tom_liquid_linear_clamp, uv, 0)
+#else
 sampler3D _TomSHVolumeTex;
+#define TOM_SAMPLE_SH(uv) tex3D(_TomSHVolumeTex, uv)
+#endif
 float4x4 _TomSHWorldToLocal;
 float4 _TomSHBoundsMin;
 float4 _TomSHBoundsInvSize;
@@ -159,6 +174,11 @@ float _RampMode;
 float _ToonThreshold;
 float _ToonSoftness;
 float _ToonShadeLevel;
+float _ToonNormalInfluence;
+float _ToonDetailNormalInfluence;
+float _ToonAA;
+float4 _ToonShadeColor;
+float _ToonMinLighting;
 float _SecondaryToneStrength;
 float _IndirectToonBlend;
 float _IndirectToonThreshold;

@@ -27,11 +27,6 @@ float3 TomSkinColor(TomVaryings i, float3 mainColor)
     return lerp(color, over3.rgb * _overcolor3.rgb, saturate(over3.a * _overcolor3.a));
 }
 
-float TomSkinLiquidPattern(float amount, float2 pattern)
-{
-    return max(saturate(amount) * pattern.r, saturate(amount - 1.0) * pattern.g);
-}
-
 void TomSkinApplySurface(TomVaryings i, float orientation, inout TomMaterialData m)
 {
     m.skin.detail = SAMPLE_TEX2D(_DetailMask, i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw);
@@ -44,6 +39,8 @@ void TomSkinApplySurface(TomVaryings i, float orientation, inout TomMaterialData
         float face = SAMPLE_TEX2D_SAMPLER(_NormalMask, _DetailMask, i.uv0 * _NormalMask_ST.xy + _NormalMask_ST.zw).g;
         m.skin.diffuseNormalWS = normalize(lerp(m.skin.diffuseNormalWS, m.geometricNormalWS,
             saturate(face * _SkinFaceNormalStrength)));
+        m.toonNormalWS = normalize(lerp(m.toonNormalWS, m.geometricNormalWS,
+            saturate(face * _SkinFaceNormalStrength)));
     }
     float detail = max(_DetailNormalMapScale, 0.0);
     float shade = saturate(min(1.0 - m.skin.detail.g, 1.0 - m.skin.lines.b * detail));
@@ -55,30 +52,9 @@ void TomSkinApplySurface(TomVaryings i, float orientation, inout TomMaterialData
     float regionGloss = max(saturate(m.skin.detail.a) * max(_SpecularPower, 0.0),
         (1.0 - saturate(m.skin.detail.a)) * max(_SpecularPowerNail, 0.0));
     m.skin.gloss = lerp(1.0, regionGloss, saturate(_SkinGameGloss));
-    m.skin.liquidCoverage = 0.0;
-    m.skin.liquidNormalWS = m.geometricNormalWS;
-    UNITY_BRANCH
-    if (max(max(max(_liquidftop, _liquidfbot), max(_liquidbtop, _liquidbbot)), _liquidface) > 0.0)
-    {
-        float2 liquidUV = i.uv0 * _LiquidTiling.zw + _LiquidTiling.xy;
-        float2 pattern = SAMPLE_TEX2D(_Texture2, liquidUV * _Texture2_ST.xy + _Texture2_ST.zw).rg;
-        float3 regions = SAMPLE_TEX2D_SAMPLER(_liquidmask, _DetailMask, i.uv0 * _liquidmask_ST.xy + _liquidmask_ST.zw).rgb;
-        float3 single = regions - max(regions.zzy, regions.yxx);
-        float2 combined = (min(regions.yz, regions.xy) - 0.1) / 0.9;
-        float coverage = min(single.r, TomSkinLiquidPattern(_liquidftop, pattern));
-        coverage = max(coverage, min(single.g, TomSkinLiquidPattern(_liquidfbot, pattern)));
-        coverage = max(coverage, min(single.b, TomSkinLiquidPattern(_liquidbtop, pattern)));
-        coverage = max(coverage, min(combined.x, TomSkinLiquidPattern(_liquidbbot, pattern)));
-        coverage = max(coverage, min(combined.y, TomSkinLiquidPattern(_liquidface, pattern)));
-        m.skin.liquidCoverage = saturate(coverage);
-        float3 ts = UnpackScaleNormal(SAMPLE_TEX2D_SAMPLER(_Texture3, _Texture2,
-            liquidUV * _Texture3_ST.xy + _Texture3_ST.zw), _SkinLiquidNormalScale);
-        m.skin.liquidNormalWS = normalize(ts.x * normalize(i.tangentWS.xyz)
-            + ts.y * normalize(i.bitangentWS) * orientation + ts.z * m.geometricNormalWS);
-        m.shadingNormalWS = normalize(lerp(m.shadingNormalWS, m.skin.liquidNormalWS, m.skin.liquidCoverage));
-        m.skin.diffuseNormalWS = normalize(lerp(m.skin.diffuseNormalWS, m.skin.liquidNormalWS, m.skin.liquidCoverage));
-        m.albedo = lerp(m.albedo, _SkinLiquidColor.rgb, saturate(m.skin.liquidCoverage * _SkinLiquidColorStrength));
-    }
+    TomLiquidApplySurface(i, orientation, m);
+    m.skin.liquidCoverage = m.liquid.coverage;
+    m.skin.liquidNormalWS = m.liquid.normalWS;
     float wet = saturate(m.skin.control.b * _SkinWetness);
     m.skin.coatCoverage = _SkinCoatCoverage < 0.5 ? 1.0 :
         (_SkinCoatCoverage < 1.5 ? m.skin.liquidCoverage :
@@ -87,8 +63,6 @@ void TomSkinApplySurface(TomVaryings i, float orientation, inout TomMaterialData
 
 void TomSkinFinishMaterial(TomVaryings i, inout TomMaterialData m)
 {
-    m.roughness = lerp(m.roughness, clamp(_SkinLiquidRoughness, 0.04, 1.0),
-        saturate(m.skin.liquidCoverage * _SkinLiquidMaterial));
     float highlight = lerp(1.0, saturate(m.skin.detail.r), saturate(_UseDetailRAsSpecularMap));
     UNITY_BRANCH
     if (_SkinPatternStrength > 0.0 && _notusetexspecular < 0.999)

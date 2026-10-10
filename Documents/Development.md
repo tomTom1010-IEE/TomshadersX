@@ -5,7 +5,7 @@ Built-in Forward. It is not a complete Unity project.
 
 ## Source Layout
 
-- Shaders: eight public tom/* shaders, shared includes and the optional hair
+- Shaders: nine public tom/* shaders, shared includes and the optional hair
   feather helper shader.
 - Material and Prefab: shader carrier materials/prefabs and neutral skin textures.
 - Tooltips: MaterialEditor help text.
@@ -29,7 +29,7 @@ source tree.
 
 Build the existing AssetBundle assignment chara/tom/shaders/tomx.unity3d with the
 KKS Modding Tools project's AssetBundle build/postprocess workflow. Include all
-eight carrier prefabs:
+nine carrier prefabs:
 
 - a_TomMainOpaqueX
 - a_TomMainAlphaX
@@ -39,6 +39,7 @@ eight carrier prefabs:
 - a_TomEyeWX
 - a_TomEyeX
 - a_TomSkinX
+- a_TomLiquidX
 
 The bundle also includes tom_x_tooltips and referenced materials/textures.
 Package manifest.xml at the root of a zipmod, with the processed bundle at
@@ -59,7 +60,7 @@ Studio reflection/SH probe providers are separate products, not bundled here.
 
 ## Defaults and Compatibility
 
-Package 0.3.1 defaults indirect diffuse gain to 0.25 across the eight shaders and
+Package 0.3.1 defaults indirect diffuse gain to 0.25 across the shaders and
 carrier materials. Existing saved material overrides are preserved. Clearcoat
 and eye optics are opt-in. EyeWX uses one role-independent default.
 

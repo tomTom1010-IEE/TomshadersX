@@ -1,6 +1,21 @@
 #ifndef TOM_HAIR_BRDF_INC
 #define TOM_HAIR_BRDF_INC
 
+DECLARE_TEX2D_NOSAMPLER(_ColorMask);
+float4 _ColorMask_ST;
+float4 _Color, _Color2, _Color3;
+
+float3 TomHairColor(TomVaryings i)
+{
+	float2 uv = i.uv0 * _ColorMask_ST.xy + _ColorMask_ST.zw;
+	// Share MainTex filtering/wrap to stay within D3D11's 16-sampler limit.
+	float3 mask = SAMPLE_TEX2D_SAMPLER(_ColorMask, _MainTex, uv).rgb;
+	// KKS/xukmi sequential overrides; a black or unset mask leaves the texture unchanged.
+	float3 tint = lerp(1.0.xxx, _Color.rgb, mask.r);
+	tint = lerp(tint, _Color2.rgb, mask.g);
+	return lerp(tint, _Color3.rgb, mask.b);
+}
+
 DECLARE_TEX2D_NOSAMPLER(_StrandDirectionMap);
 float4 _StrandDirectionMap_ST;
 float _StrandDirectionBlend;

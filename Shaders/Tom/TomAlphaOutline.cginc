@@ -14,6 +14,7 @@ float _OutlineScreenSpace;
 float _OutlineDepthOffset;
 float _OutlineNormalSource;
 float _DebugView;
+float _LiquidDebugView;
 float4 _OutlineColor;
 struct appdata
 {
@@ -71,6 +72,7 @@ fixed4 fragOutline(v2f i, fixed faceSign : VFACE) : SV_Target
 	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 	clip(_OutlineOn - 0.5);
 	clip(0.5 - _DebugView);
+	clip(0.5 - _LiquidDebugView);
 	if (_CullOption > 0.5 && _CullOption < 1.5)
 		clip(faceSign);
 	else

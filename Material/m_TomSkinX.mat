@@ -52,6 +52,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _LiquidCoverageMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -117,7 +121,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture3:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 8686dea74cfaa154cbd1f4716a8b94fe, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _liquidmask:
@@ -170,6 +174,20 @@ Material:
     - _IndirectToonSoftness: 0.2
     - _IndirectToonThreshold: 0.4
     - _LightProbeBlend: 1
+    - _LiquidAttenuationNormal: 0
+    - _LiquidCoverageMode: 0
+    - _LiquidCutoff: 0.02
+    - _LiquidDebugView: 0
+    - _LiquidDiffuseNormal: 0
+    - _LiquidEdgeSoftness: 0.04
+    - _LiquidEnergyBlend: 0.25
+    - _LiquidEnvironmentStrength: 1
+    - _LiquidIOR: 1.33
+    - _LiquidMaxNormalAngle: 60
+    - _LiquidNormalAA: 1
+    - _LiquidNormalEncoding: 0
+    - _LiquidSpecularStrength: 1
+    - _LiquidToonBlend: 0
     - _MainLightIntensity: 1
     - _MatCapBlendMode: 1
     - _MatCapIntensity: 1
@@ -234,6 +252,9 @@ Material:
     - _SpecularStrength: 0.5
     - _SpecularThreshold: 0.5
     - _SpecularToonBlend: 1
+    - _ToonAA: 1
+    - _ToonMinLighting: 0.15
+    - _ToonNormalInfluence: 1
     - _ToonShadeLevel: 0.15
     - _ToonSoftness: 0.1
     - _ToonThreshold: 0.5
@@ -265,6 +286,7 @@ Material:
     - _Col3: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EnvironmentColor: {r: 1, g: 1, b: 1, a: 1}
+    - _LiquidShadowColor: {r: 0.65, g: 0.65, b: 0.65, a: 0}
     - _LiquidTiling: {r: 0, g: 0, b: 1, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
@@ -273,6 +295,7 @@ Material:
     - _SkinLiquidColor: {r: 0.85, g: 0.85, b: 0.8, a: 1}
     - _SkinWarmColor: {r: 1, g: 0.45, b: 0.3, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ToonShadeColor: {r: 0.35, g: 0.35, b: 0.35, a: 0}
     - _overcolor1: {r: 1, g: 1, b: 1, a: 0}
     - _overcolor2: {r: 1, g: 1, b: 1, a: 0}
     - _overcolor3: {r: 1, g: 1, b: 1, a: 0}

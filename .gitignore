@@ -31,6 +31,8 @@
 /Documents/*
 !/Documents/Development.md
 !/Documents/Development.md.meta
+!/Documents/ReleaseNotes.*.md
+!/Documents/ReleaseNotes.*.md.meta
 !/Documents/TomShadersX-UserManual.*.md
 !/Documents/TomShadersX-UserManual.*.md.meta
 /docs/*

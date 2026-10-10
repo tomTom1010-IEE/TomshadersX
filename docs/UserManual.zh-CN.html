@@ -45,6 +45,10 @@
 <td><code>tom/SkinX</code></td>
 <td>脸部与身体共用；保留游戏皮肤、叠加层、服装遮罩和液体约定</td>
 </tr>
+<tr>
+<td><code>tom/LiquidX</code></td>
+<td>使用共享液体核心的独立薄液面或透明覆盖层</td>
+</tr>
 </tbody>
 </table>
 <p>只使用一般表面、Clearcoat 或 EyeX 光学不需要额外插件。HairX 的 Feather 模式需要 <code>TomHairFeather.dll</code> 和同目录 <code>hairx-feather.unity3d</code>；缺少支持时回退硬边，不会自动得到柔化 stencil。</p>
@@ -58,7 +62,7 @@
 <li>选择 Environment Reflection 或 MatCap；最后按需加入 Clearcoat、Rim 和 Outline。</li>
 <li>眼睛、头发、皮肤的专属功能在通用底层之上调节，不需要推翻 stencil 或透明度设置。</li>
 </ol>
-<p>同名公共控件在八个 shader 中保持相同类别、类型和范围。游戏兼容别名有意保留原拼写，包括 <code>SpeclarHeight</code>。ME 将部分枚举显示成数值滑条时，请输入说明中的<strong>整数</strong>，不要停在两个模式之间。贴图、数值、颜色仍使用 ME 原有控件；本文不假定所有版本都支持自定义下拉菜单。</p>
+<p>同名公共控件在适用的系列 shader（含 LiquidX helper）中保持相同类别、类型和范围。游戏兼容别名有意保留原拼写，包括 <code>SpeclarHeight</code>。ME 将部分枚举显示成数值滑条时，请输入说明中的<strong>整数</strong>，不要停在两个模式之间。贴图、数值、颜色仍使用 ME 原有控件；本文不假定所有版本都支持自定义下拉菜单。</p>
 <p><code>IndirectDiffuseIntensity</code> 新材质默认 <strong>0.25</strong>。它只缩放间接漫射，不缩放直接灯、反射或 Clearcoat。已存储的旧值不会自动改成 0.25。Maker 中皮肤显得发白时，应先检查间接光和曝光，不要立即重命名游戏颜色参数。</p>
 <h3 id="section-2">常用起点</h3>
 <p>以下是调试起点，不是保证适合所有角色的预设。保持灯光不动，每次只调一组。</p>
@@ -102,6 +106,13 @@
 </table>
 <h2 id="section-3">3. 光照与风格</h2>
 <p><strong>Toon Shading</strong>：<code>UseRamp</code> 混合连续漫反射与 Toon 明暗。<code>RampMode=0</code> 使用程序化阈值，1 使用 RampTex 的 R 通道；SecondaryRamp 通过 LayerMask R 和 SecondaryToneStrength 混合。RampTex 是明暗曲线，不是直接彩色渐变染色。</p>
+<p><strong>Toon 法线与柔和边界</strong>：MainOpaqueX、三个 Alpha 变体、HairX、EyeWX、EyeX 和 SkinX 共享这条路径。<code>ToonNormalInfluence</code>（0..1，默认 1）只控制主法线对直接 Toon 漫反射的影响；<code>ToonDetailNormalInfluence</code>（0..1，默认 1）独立控制细节法线。SkinX 复用现有 <code>SkinDiffuseNormalDetail</code>，并保留其原有的漫反射/SH 行为，不增加重复滑条。主法线影响为 0 不会同时关闭细节输入。NormalMapScale/DetailNormalMapScale 仍决定源法线强度。高光、环境反射和 Clearcoat 保留完整法线；EyeX 的 Toon 法线跟随折射后的虹膜采样，但这些控制不改变折射位移。</p>
+<p>Toon 漫反射改为单层网格明暗交界过渡，由 ToonSoftness 控制，不再额外乘一次贴图法线的窄交界。NormalHorizonFade 仍保护连续漫反射、高光、Clearcoat 和液体。<code>ToonAA</code>（0..2，默认 1）为程序化明暗边界与网格交界提供基于屏幕导数的最小过渡宽度；贴图 Ramp 保留自身采样过滤。它不能修复压缩方块，也不会抹掉大尺度的凹凸。皮肤可从 ToonNormalInfluence=0.25、SkinDiffuseNormalDetail=0.1、ToonSoftness=0.12 开始调节，不需要关闭全局法线来换取干净的明暗边界。</p>
+<p><strong>Toon 最低明暗响应</strong>：<code>ToonMinLighting</code>（0..1，默认 0.15；设为 0 可关闭）在网格背光限制和投影之后重映射主光 Toon 漫反射：<code>u' = m + (1-m)*u</code>。自投影和外部遮挡中的暗部都会被抬起，全亮端不变。建议先把 ToonShadeColor 的 A 设为 0，再从 0.1..0.25 调起。配套材质预设使用 0.15；显式保存的值不变，未保存此参数的旧材质会继承新默认值。这是归一化明暗响应下限，不是最终像素 RGB 下限，也不是 GI 或自发光。底色、主光颜色/强度、距离/cookie、漫反射材质权重及后续涂层/MatCap 衰减仍有效；没有主光不会凭空发亮。UseRamp=0 时禁用，部分 UseRamp 按比例混合。只在 Base 计算一次并遵循烘焙主光归属，不改变连续漫反射、附加灯、SH、高光和反射波瓣。ToonShadeLevel 仍控制背光和投影之前的程序化 Ramp 暗端。</p>
+<p><strong>Toon 暗部颜色</strong>：<code>ToonShadeColor</code> 由 <code>ToonDarkFillColor</code> 改名，原有可选彩色补光算法不变。RGB 与底色相乘，A 是补光强度，不是表面透明度；默认 RGB=(0.35,0.35,0.35)、A=0。它不是新下限的染色参数；要提亮完全自遮挡的背光面，应使用 ToonMinLighting，而不是继续增大这个颜色。</p>
+<p><strong>改名兼容性</strong>：Shader 和 Material Editor 的实际属性 ID 已改为 ToonShadeColor。Unity 构建会迁移项目发布材质中的保存值，且不会覆盖已明确保存的新属性。游戏旧人物卡/材质编辑中以 ToonDarkFillColor 保存的值无法仅靠 shader 自动迁移，需要把原 RGBA 重新填写到 ToonShadeColor。没有修改游戏文件或增加运行时迁移插件。</p>
+<p>补光跟随 ForwardBase 主光颜色、MainLightIntensity、距离/cookie 衰减及真实投影遮挡，即使 ShadowStrength 绕过普通漫反射投影，补光仍保留物理遮挡。没有主光或 UseRamp=0 时无补光；只在 Base 计算一次，不在 ForwardAdd 重复叠加，并遵循烘焙主光的归属。金属度和可选漫反射能量抑制仍有效。它是主光驱动的艺术补光，不是自发光、真实透射或 SSS。ShadowColor 和间接光默认值 0.25 不变。</p>
+<p>Clearcoat 与集成透明液体把彩色补光和下限增量作为宽分布的底材照明进行衰减，不会当成背面入射的高光光线再次归零；实际反射波瓣和背光保护不变。有色液体仍可替换底材贡献。独立 LiquidX 保留已验收的染色路径，不增加这些底材控制。新下限默认 0，除明确说明的颜色属性改名外，保留已有光照行为。</p>
 <p><strong>阴影</strong>：ShadowStrength 调漫反射阴影参与度；ShadowRemapStrength / Threshold / Softness 重映射阴影可见度。UseRampForShadows 控制阴影进入 Toon 曲线。外部遮挡与曲面自身背光不是同一件事。Clearcoat 直接高光仍受物理阴影约束，不应把它当作无阴影发光。</p>
 <p><strong>直接高光</strong>：SpecularStrength 是强度，Roughness 是连续高光粗糙度，SpecularSize 是 Toon 高光大小，两者不互相替代。SpecularIOR/FresnelStrength 控制底层介质响应；Metallic 增大时底层漫反射减少。SpecularAA 用于缓和法线与高光边缘闪烁，不能替代所有时域抗锯齿。</p>
 <p><strong>多灯</strong>：MainLightIntensity / AdditionalLightIntensity 分别调主灯和逐像素附加灯。直接漫射、高光与 Clearcoat 会响应附加灯；SH、环境反射、加法 MatCap、Rim、发光不逐灯重复添加。乘法 MatCap 仍调制各灯的漫反射。</p>
@@ -174,6 +185,7 @@
 </ul>
 <p>涂层很亮时会在视觉上盖住虹膜对比度，但这不等于视差算法被关闭。先关闭涂层或查看 EyeDebugView 的位移图来区分两者。</p>
 <h2 id="hairx">6. HairX</h2>
+<p>ColorMask 遵循 KKS/xukmi 的 RGB 顺序混合：R 将白色混向 Color，再由 G 混向 Color2，最后由 B 混向 Color3；不是权重相加。未指定或黑色蒙版保留贴图颜色；纯红使用 Color，纯白使用 Color3。ColorMask 有独立的平铺和偏移；过滤与寻址模式复用 MainTex，以满足 D3D11 采样器数量限制。BaseColor 保留为额外的整体乘色。继承游戏发色时建议 BaseColor 保持白色；旧 HairX 材质若曾手动染色，可能需要将其恢复白色，避免二次染色。切换 shader 时仍需游戏或 ME 保留原有蒙版和 Color/Color2/Color3 值。</p>
 <p>StrandAngle：U 方向为 0°，V 为 90°。StrandDirectionBlend 混合手动方向与流向图；HairAnisotropy 控制条带形高光。当前是单高光瓣，不是双层头发散射或各向异性环境反射。</p>
 <p>HairFrontMode：0 关闭，1 硬 stencil，2 内侧羽化。HairFrontOpacity=1 为不透明。stencil 外仍为正常头发 cutout；改变相机侧透明度不会挖掉头发投下的阴影。</p>
 <p>Feather Width Mode：0 像素，1 投影世界单位。像素模式保留旧材质行为；世界单位随距离/FOV/分辨率投影。宽度、Midpoint、Power 独立。过大的投影半径受提供器 256 像素预算限制，日志会标注。</p>
@@ -266,9 +278,20 @@
 <p>DetailNormalMapScale 还参与游戏内部线条/画入阴影；SkinDiffuseNormalDetail 只减弱漫反射细节，保留高光/涂层细节。SkinStrength / Wrap / Warmth 提供前侧柔化和明暗交界暖色，不是屏幕空间或体积 SSS，也不会穿透外部遮挡。</p>
 <p>SpecularPower / SpecularPowerNail 保留游戏皮肤与指甲/嘴唇的光泽增益；SkinGameGloss 控制参与度。它们不等于 Roughness，也不自动调 Clearcoat。SkinPatternStrength / notusetexspecular 控制移动的画入高光遮罩。</p>
 <h3 id="section-8">液体与湿润</h3>
-<p><code>liquidmask</code> 的 RGB 组合编码游戏五个部位；<code>liquidftop/fbot/btop/bbot/face</code> 为各部位 0–2 的量。<code>Texture2</code> 的 R/G 是第一、第二阶段液体覆盖图；<code>Texture3</code> 是液体切线法线，不是深度或颜色贴图。这里说的是最终 Skin 材质槽，不能与游戏合成器中的同名槽混为一谈。</p>
-<p>LiquidTiling 在 ME 因兼容性以颜色控件呈现，但它是原始向量：R/G=UV 偏移，B/A=UV 缩放，默认 <code>(0,0,1,1)</code>，不要按颜色做 gamma 调整。</p>
-<p>SkinLiquidColorStrength 控制液体底色；SkinLiquidMaterial 混合底层粗糙度。SkinCoatCoverage：0 普通涂层图，1 游戏液体，2 自绘湿润，3 二者并集。它只限制 Clearcoat 的覆盖，必须同时启用 ClearCoat。SkinWetness 乘 SkinControlMap B。</p>
+<p>SkinX、MainOpaqueX 和三个 Alpha 变体共用同一液体层；独立 <code>tom/LiquidX</code> 使用相同核心，可作为材质复制叠加层或独立薄液面。HairX、EyeX、EyeWX 不加入。本次液体此前未发布，因此直接使用新分层设计，不保留旧算法开关。</p>
+<p>LiquidCoverageMode：0 游戏五部位，1 自绘蒙版 R，2 整面覆盖。游戏模式使用 liquidmask 的 RGB 组合与 liquidftop/fbot/btop/bbot/face 五个 0..2 数量；Texture2 的 R 在 0..1 出现，G 在 1..2 与第一阶段取 max 并集。模式 1 使用 LiquidCoverageMap。以上是最终渲染槽，不是游戏合成器的同名输入；shader 不会补齐缺失贴图，也不会自动给任意物体更新游戏液体量。</p>
+<p>LiquidCutoff 默认 0.02，清除过低的图案/自绘蒙版数值并重映射剩余范围；LiquidEdgeSoftness 默认 0.04，提供带像素过滤的柔边。清理在部位数量混合之前进行，避免数量动画突跳。同一覆盖率控制染色、液体法线和所有湿润反射，但不裁掉网格。SkinLiquidMaterial 是整个液体层的总强度，0 完全恢复干燥材质。</p>
+<p>Texture3 是切线法线，不是高度图。LiquidNormalEncoding：0 Raw AG 读取 GPU 数值 A=X、G=Y，保留游戏运行时纹理采样标志；1 Exported AG PNG 仅对经过 sRGB 编码的 G 做反转换，Alpha 保持数值，要求数据采样（关闭 sRGB）；2 Unity Normal 用于通过法线导入器导入的普通法线。模式 1 不可再叠加自动 sRGB 解码。根据输入链路选择，不要只凭灰度外观判断。随包中性 AG 法线对应模式 0；其他模式未指定法线时，将 SkinLiquidNormalScale 设为 0。</p>
+<p>LiquidTiling 虽然在 ME 显示为颜色栏，实际为原始向量：R/G 是偏移，B/A 是缩放，默认 (0,0,1,1)。先应用它，再应用图案、法线、自绘蒙版各自的 ST；这三类纹理使用 repeat/trilinear/aniso8 采样，不做破坏导数的 UV 取余。部位蒙版使用独立 ST 与 linear-clamp 采样，不跟随液体平铺。图案/部位/自绘覆盖均按线性数据处理，不要给 LiquidTiling 做颜色 gamma 变换。</p>
+<p>SkinLiquidNormalScale 缩放解码后的坡度，再归一化并平滑限制倾角；LiquidMaxNormalAngle 默认 60 度，相对于底层主法线。LiquidNormalAA 默认 1，对无法分辨的法线细节做高光抗锯齿。先确认编码，再调强度，不要用高粗糙度掩盖错误方向。LiquidDiffuseNormal 仅影响液体染色的明暗，默认 0，不再推动皮肤或衣物的硬 Toon 阴影。</p>
+<p>液体是底材上唯一的介质湿润界面，使用物理 GGX 和近似透射。LiquidIOR 默认 1.33，正入射反射率约 0.02；1 消除界面反射。SkinLiquidRoughness、LiquidSpecularStrength 不受底层 Toon 高光、干燥蒙版、皮肤/指甲光泽控制。LiquidEnvironmentStrength 独立控制探针反射，不要求底层 ReflectionMode 开启。环境/间接光仅在 Base 中计算，直接光在 Base/Add 中遵循每盏灯、cookie 和物理阴影。高光增益属于艺术控制，不保证物理能量守恒。</p>
+<p>LiquidEnergyBlend 默认 0.25，控制底材衰减，也包括折射率匹配带来的底材高光减弱。0 保留底层光照，1 使用完整的近似界面衰减，但不改变液体自身的 GGX 高光和探针反射。LiquidAttenuationNormal 默认 0，单独控制液滴细节对透射法线的影响：0 使用底材主法线，避免细小坡度在底色上刻出暗沟；1 启用完整液体法线。反射始终保留完整液体法线。这两项不取消真实投影，也不关闭液体层。低 Energy Blend 是不严格守恒的风格化选择，本功能不是完整折射光路模型；湿润区域仍会替代公共 Clearcoat。</p>
+<p>SkinLiquidColor 的 RGB 是染色，A 乘 SkinLiquidColorStrength 是染色不透明度。A=0 的透明水膜保留底色和 Toon 明暗，但仍有界面衰减和反射。有色液体使用独立的柔和漫反射；LiquidToonBlend 可将其混向底层 Toon 明暗。液体 GGX 高光本身始终非 Toon。</p>
+<p>LiquidShadowColor 是可选的液体染色暗部调色：RGB 为限制在 0..1 的乘算色，A 为混合强度，默认 0。它作用于每盏灯的染色直接光和 Base 中的染色间接光，随染色不透明度淡出；SkinLiquidColor A=0 或 SkinLiquidColorStrength=0 时完全消失。它不染透明反光、不改变干燥皮肤、不添加自发光补光，也不替代真实阴影。透明水膜过暗应调 LiquidEnergyBlend/LiquidAttenuationNormal，不是这个颜色；整层一起淡出则使用 SkinLiquidMaterial。</p>
+<p>液体覆盖区域替代公共 Clearcoat 顶层，不再叠加第二次涂层反射；范围外保留公共涂层。SkinCoatCoverage、SkinWetness、SkinLiquidCoatNormal 仍控制公共涂层，但不会再产生第二个液体界面。集成路径不改变网格 Alpha、裁切、描边、深度或投影覆盖；Alpha 材质中完全透明的像素仍不可见。</p>
+<p>给其他材质叠加 LiquidX 时，使用 UV 对齐的材质复制槽或复制网格，选择自绘或游戏模式，并复制需要的图案、法线、部位纹理。MainTex A 与 AlphaMask R 可匹配底材裁切；不需要裁切时使用白色输入。默认深度偏移 Units=-1，用于减轻共面冲突。独立薄液面使用整面或自绘覆盖，并将两个深度偏移都设为 0。LiquidX 默认染色 A=0，采用预乘透明混合，不写深度、不投不透明阴影；可接收光照、阴影与探针反射。</p>
+<p>叠加 helper 无法改写未知底材的 BRDF，使用帧缓冲混合近似透射；集成路径才能按底材计算界面衰减。LiquidEnergyBlend 和 LiquidAttenuationNormal 同样控制 helper 对背景的压暗，阴影色则只影响它自身的染色部分。不要在已启用集成液体的表面再叠 LiquidX。本功能是薄表面着色，不是水体体积模拟：没有 GrabPass、场景折射、厚度吸收、波浪、流体模拟或无序透明。透明排序与相交面仍受 Unity 常规限制。</p>
+<p>LiquidDebugView：1 有效覆盖，2 覆盖内世界法线，3 液体直接高光，4 液体环境反射，5 染色不透明度，6 清理前原始覆盖；0 返回最终效果。首先检查干燥区域在覆盖视图中为黑，并在切换 SkinLiquidMaterial 时保持不变。</p>
 <h2 id="reflection-probe-sh-volume">9. Reflection Probe 与 SH Volume</h2>
 <p>在工作室 Tom Lighting &gt; Probes 添加物品，通过 ME 编辑其控制材质。256/512/1024 或不同 SH 网格是起点，不是锁定版本；无需删物品重导。参数由插件读取，shader 本身不执行捕捉。</p>
 <table>

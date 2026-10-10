@@ -15,6 +15,9 @@
 
 struct TomMaterialData
 {
+#if defined(TOM_LIQUID)
+	TomLiquidData liquid;
+#endif
 #if defined(TOM_SKIN)
 	TomSkinData skin;
 #endif
@@ -31,6 +34,7 @@ struct TomMaterialData
 	float3 geometricNormalWS;
 	float3 shadingNormalWS;
 	float3 mainNormalWS;
+	float3 toonNormalWS;
 #if defined(TOM_HAIR)
 	float3 strandWS;
 #endif
@@ -70,6 +74,8 @@ struct TomSurfaceLightTerms
 	float geometricNdotL;
 	float horizon;
 	float toonVisibility;
+	float toonDarkWeight;
+	float toonShadowedResponse;
 };
 
 struct TomLightingResult
@@ -165,7 +171,24 @@ float3 TomSafeDirection(float3 direction)
 	return direction * rsqrt(max(dot(direction, direction), 0.000001));
 }
 
-float3 TomNormalWS(TomVaryings i, float faceOrientation, float3 geometricNormalWS, out float3 mainNormalWS)
+float3 TomToonNormalWS(float3 baseNormal, float3 detailNormal,
+	float3 tangentWS, float3 bitangentWS, float3 geometricNormalWS)
+{
+	// Reuse the samples, but keep diffuse normal controls out of every specular lobe.
+	float3 toonBase = lerp(float3(0, 0, 1), baseNormal, saturate(_ToonNormalInfluence));
+	float3 toonCombined = BlendNormals(toonBase, detailNormal);
+	float3 toonMainWS = normalize(toonBase.x * tangentWS + toonBase.y * bitangentWS + toonBase.z * geometricNormalWS);
+	float3 toonCombinedWS = normalize(toonCombined.x * tangentWS + toonCombined.y * bitangentWS + toonCombined.z * geometricNormalWS);
+#if defined(TOM_SKIN)
+	float detailInfluence = saturate(_SkinDiffuseNormalDetail);
+#else
+	float detailInfluence = saturate(_ToonDetailNormalInfluence);
+#endif
+	return normalize(lerp(toonMainWS, toonCombinedWS, detailInfluence));
+}
+
+float3 TomNormalWS(TomVaryings i, float faceOrientation, float3 geometricNormalWS,
+	out float3 mainNormalWS, out float3 toonNormalWS)
 {
 	float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
 	float2 detailUV = i.uv0 * _NormalMapDetail_ST.xy + _NormalMapDetail_ST.zw;
@@ -175,6 +198,7 @@ float3 TomNormalWS(TomVaryings i, float faceOrientation, float3 geometricNormalW
 	float3 tangentWS = normalize(i.tangentWS.xyz);
 	float3 bitangentWS = normalize(i.bitangentWS) * faceOrientation;
 	mainNormalWS = normalize(baseNormal.x * tangentWS + baseNormal.y * bitangentWS + baseNormal.z * geometricNormalWS);
+	toonNormalWS = TomToonNormalWS(baseNormal, detailNormal, tangentWS, bitangentWS, geometricNormalWS);
 	return normalize(
 		normalTS.x * tangentWS
 		+ normalTS.y * bitangentWS
@@ -189,6 +213,10 @@ float TomSurfaceAlpha(TomVaryings i, float mainAlpha)
 
 #include "TomClearcoat.cginc"
 
+#if defined(TOM_LIQUID)
+#include "TomLiquid.cginc"
+#endif
+
 #if defined(TOM_SKIN)
 #include "TomSkinSurface.cginc"
 #endif
@@ -201,7 +229,7 @@ float TomSurfaceAlpha(TomVaryings i, float mainAlpha)
 TomMaterialData TomGetDirectMaterialData(TomVaryings i, fixed faceSign)
 {
 	TomMaterialData material;
-#if defined(TOM_SKIN)
+#if defined(TOM_LIQUID)
 	UNITY_INITIALIZE_OUTPUT(TomMaterialData, material);
 #endif
 #if defined(TOM_EYE)
@@ -224,13 +252,18 @@ TomMaterialData TomGetDirectMaterialData(TomVaryings i, fixed faceSign)
 #endif
 	float faceOrientation = TomFaceOrientation(faceSign);
 	material.albedo = mainTex.rgb * _BaseColor.rgb;
+#if defined(TOM_HAIR)
+	material.albedo *= TomHairColor(i);
+#endif
 #if defined(TOM_SKIN)
 	material.albedo = TomSkinColor(i, mainTex.rgb) * _BaseColor.rgb;
 #endif
 	material.geometricNormalWS = normalize(i.normalWS) * faceOrientation;
-	material.shadingNormalWS = TomNormalWS(i, faceOrientation, material.geometricNormalWS, material.mainNormalWS);
+	material.shadingNormalWS = TomNormalWS(i, faceOrientation, material.geometricNormalWS, material.mainNormalWS, material.toonNormalWS);
 #if defined(TOM_SKIN)
 	TomSkinApplySurface(i, faceOrientation, material);
+#elif defined(TOM_LIQUID)
+	TomLiquidApplySurface(i, faceOrientation, material);
 #endif
 #if defined(TOM_EYE)
 	material.eyeInterfaceNormal = TomResolveCoatNormal(i, material.geometricNormalWS,
@@ -314,9 +347,10 @@ TomMaterialData TomGetBaseMaterialData(TomVaryings i, fixed faceSign)
 	return material;
 }
 
-float TomSampleRamp(float value, float secondaryMask)
+float TomSampleRamp(float value, float secondaryMask, float aa)
 {
-	float ramp = lerp(_ToonShadeLevel, 1.0, TomSoftBand(value, _ToonThreshold, _ToonSoftness));
+	float width = max(_ToonSoftness, fwidth(value) * max(aa, 0.0));
+	float ramp = lerp(_ToonShadeLevel, 1.0, TomSoftBand(value, _ToonThreshold, width));
 	UNITY_BRANCH
 	if (_RampMode > 0.5)
 	{
@@ -401,7 +435,7 @@ TomRawLightData TomBuildRawLightData(
 	float intensity)
 {
 	TomRawLightData light;
-	light.direction = normalize(lightDirection);
+	light.direction = TomSafeDirection(lightDirection);
 	light.color = lightColor * intensity;
 	light.distanceAttenuation = distanceAttenuation;
 	light.cookieAttenuation = cookieAttenuation;
@@ -432,28 +466,65 @@ TomSurfaceLightTerms TomBuildSurfaceLightTerms(
 	float geometricHorizon = smoothstep(0.0, horizonFade, surface.geometricNdotL);
 	surface.horizon = shadingHorizon * geometricHorizon;
 
-	float rampInput = surface.shadingNdotL * lerp(
+	float continuous = surface.shadingNdotL * surface.horizon;
+	float toonNL = saturate(dot(material.toonNormalWS, light.direction));
+#if defined(TOM_SKIN)
+	continuous = TomSkinContinuousVisibility(material, light.direction);
+	toonNL = TomSkinDiffuseNL(material, material.toonNormalWS, light.direction);
+#endif
+	float rampInput = toonNL * lerp(
 		1.0,
 		surface.diffuseShadowAttenuation,
 		saturate(_UseRampForShadows));
 	float ramp = light.physicalShadowAttenuation;
 	UNITY_BRANCH
 	if (_UseRamp > 0.0)
-		ramp = TomSampleRamp(rampInput, material.secondaryToneMask);
-	float toonNdotL = lerp(surface.shadingNdotL, ramp, saturate(_UseRamp));
+		ramp = TomSampleRamp(rampInput, material.secondaryToneMask, _ToonAA);
+	// A single diffuse macro-horizon, using Toon softness rather than the specular guard.
+	float geometricNL = dot(material.geometricNormalWS, light.direction);
+	float toonWidth = max(max(_ToonSoftness, 0.001), fwidth(geometricNL) * max(_ToonAA, 0.0));
+	float toonHorizon = smoothstep(0.0, toonWidth, geometricNL);
+	float toonResponse = ramp * toonHorizon;
+	surface.toonDarkWeight = saturate(1.0 - toonResponse) * saturate(_UseRamp);
+	float toonNdotL = lerp(continuous, toonResponse, saturate(_UseRamp));
 	float shadowOutsideRamp = lerp(
 		surface.diffuseShadowAttenuation,
 		1.0,
 		saturate(_UseRampForShadows) * saturate(_UseRamp));
+	surface.toonShadowedResponse = saturate(toonResponse
+		* min(shadowOutsideRamp, surface.diffuseShadowAttenuation));
 	surface.toonVisibility = toonNdotL
 		* light.distanceAttenuation
 		* light.cookieAttenuation
-		* min(shadowOutsideRamp, surface.diffuseShadowAttenuation)
-		* surface.horizon;
-#if defined(TOM_SKIN)
-	surface.toonVisibility = TomSkinDiffuseVisibility(material, light, surface.diffuseShadowAttenuation);
-#endif
+		* min(shadowOutsideRamp, surface.diffuseShadowAttenuation);
 	return surface;
+}
+
+float3 TomEvaluateToonDarkFill(TomMaterialData material, TomRawLightData light,
+	TomSurfaceLightTerms surface, float3 viewDir)
+{
+	float3 fresnel = TomFresnelSchlick(saturate(dot(material.shadingNormalWS, viewDir)), material.f0, _FresnelStrength);
+	return material.albedo * TomDiffuseWeight(fresnel, material.metallic)
+#if defined(TOM_SKIN)
+		* material.skin.diffuseTint
+#endif
+		* max(_ToonShadeColor.rgb, 0.0) * saturate(_ToonShadeColor.a)
+		* surface.toonDarkWeight * light.color * light.distanceAttenuation
+		* light.cookieAttenuation * light.physicalShadowAttenuation;
+}
+
+float3 TomEvaluateToonMinimum(TomMaterialData material, TomRawLightData light,
+	TomSurfaceLightTerms surface, float3 viewDir)
+{
+	// Remap the shadowed Toon response, not light intensity or final pixel RGB.
+	float lift = saturate(_ToonMinLighting) * saturate(_UseRamp)
+		* (1.0 - surface.toonShadowedResponse);
+	float3 fresnel = TomFresnelSchlick(saturate(dot(material.shadingNormalWS, viewDir)), material.f0, _FresnelStrength);
+	return material.albedo * TomDiffuseWeight(fresnel, material.metallic)
+#if defined(TOM_SKIN)
+		* material.skin.diffuseTint
+#endif
+		* lift * light.color * light.distanceAttenuation * light.cookieAttenuation;
 }
 
 TomLightingResult TomEvaluateDirectLight(
@@ -578,13 +649,13 @@ float4 TomEvaluateCustomSHVolume(float3 positionWS, float3 normalWS)
 		UNITY_BRANCH
 		if (weight > 0.0)
 		{
-			float4 shAr = tex3D(_TomSHVolumeTex, TomSHAtlasBlockUV(volumeUV, 0.0));
-			float4 shAg = tex3D(_TomSHVolumeTex, TomSHAtlasBlockUV(volumeUV, 1.0));
-			float4 shAb = tex3D(_TomSHVolumeTex, TomSHAtlasBlockUV(volumeUV, 2.0));
-			float4 shBr = tex3D(_TomSHVolumeTex, TomSHAtlasBlockUV(volumeUV, 3.0));
-			float4 shBg = tex3D(_TomSHVolumeTex, TomSHAtlasBlockUV(volumeUV, 4.0));
-			float4 shBb = tex3D(_TomSHVolumeTex, TomSHAtlasBlockUV(volumeUV, 5.0));
-			float3 shC = tex3D(_TomSHVolumeTex, TomSHAtlasBlockUV(volumeUV, 6.0)).rgb;
+			float4 shAr = TOM_SAMPLE_SH(TomSHAtlasBlockUV(volumeUV, 0.0));
+			float4 shAg = TOM_SAMPLE_SH(TomSHAtlasBlockUV(volumeUV, 1.0));
+			float4 shAb = TOM_SAMPLE_SH(TomSHAtlasBlockUV(volumeUV, 2.0));
+			float4 shBr = TOM_SAMPLE_SH(TomSHAtlasBlockUV(volumeUV, 3.0));
+			float4 shBg = TOM_SAMPLE_SH(TomSHAtlasBlockUV(volumeUV, 4.0));
+			float4 shBb = TOM_SAMPLE_SH(TomSHAtlasBlockUV(volumeUV, 5.0));
+			float3 shC = TOM_SAMPLE_SH(TomSHAtlasBlockUV(volumeUV, 6.0)).rgb;
 
 			float4 normal4 = float4(normalWS, 1.0);
 			float4 quadratic = normalWS.xyzz * normalWS.yzzx;
@@ -774,6 +845,29 @@ float3 TomEvaluateRim(TomMaterialData material, float3 viewDir, float3 mainLight
 	return rim * _RimStrength * _RimColor.rgb * shadow * material.layerMask.g;
 }
 
+#if defined(TOM_LIQUID)
+float3 TomLiquidPigmentIndirect(TomVaryings i, TomMaterialData m, UnityGIInput input)
+{
+    UnityGI gi = UnityGlobalIllumination(input, 1.0, m.liquid.diffuseNormalWS);
+#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+    float3 irradiance = max(gi.indirect.diffuse, 0.0);
+#else
+    float3 irradiance = lerp(_AmbientColor.rgb, max(gi.indirect.diffuse, 0.0), saturate(_LightProbeBlend));
+    float4 sh = TomEvaluateCustomSHVolume(i.posWS, m.liquid.diffuseNormalWS);
+    irradiance = lerp(irradiance, sh.rgb, saturate(_CustomSHVolumeBlend) * sh.a);
+#endif
+    float luma = TomLuminance(irradiance);
+    float tone = lerp(_IndirectShadeLevel, 1.0, TomSoftBand(luma, _IndirectToonThreshold, _IndirectToonSoftness));
+    float3 toned = irradiance / max(luma, 0.0001) * tone * saturate(luma / 0.05);
+    irradiance = lerp(irradiance, toned, saturate(_IndirectToonBlend * _LiquidToonBlend));
+    float3 vertex = 0.0;
+#if defined(VERTEXLIGHT_ON) && !defined(LIGHTMAP_ON)
+    vertex = max(i.vertexLightDiffuse, 0.0) * max(_VertexLightIntensity, 0.0);
+#endif
+    return max(_SkinLiquidColor.rgb, 0.0) * (irradiance * m.occlusion * _IndirectDiffuseIntensity + vertex);
+}
+#endif
+
 float4 TomFragBase(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 {
 	UNITY_SETUP_INSTANCE_ID(i);
@@ -794,6 +888,13 @@ float4 TomFragBase(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 		_MainLightIntensity);
 	TomSurfaceLightTerms mainSurface = TomBuildSurfaceLightTerms(material, mainLight);
 	TomLightingResult direct = TomEvaluateDirectLight(material, mainLight, mainSurface, viewDir);
+	float3 toonDarkFill = 0.0;
+	UNITY_BRANCH
+	if (_ToonShadeColor.a > 0.0 && _UseRamp > 0.0)
+		toonDarkFill = TomEvaluateToonDarkFill(material, mainLight, mainSurface, viewDir);
+	UNITY_BRANCH
+	if (_ToonMinLighting > 0.0 && _UseRamp > 0.0)
+		toonDarkFill += TomEvaluateToonMinimum(material, mainLight, mainSurface, viewDir);
 
 	float engineAttenuation = mainLight.distanceAttenuation
 		* mainLight.cookieAttenuation
@@ -817,13 +918,14 @@ float4 TomFragBase(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 	float mainDirectOwnership = TomGetMainDirectOwnership();
 	direct.diffuse *= mainDirectOwnership;
 	direct.specular *= mainDirectOwnership;
+	toonDarkFill *= mainDirectOwnership;
 
 	float3 shadowTint = lerp(
 		_ShadowColor.rgb,
 		1.0,
 		mainSurface.diffuseShadowAttenuation);
 	shadowTint = lerp(1.0.xxx, shadowTint, mainDirectOwnership);
-	float3 body = (indirectDiffuse * shadowTint + vertexLightDiffuse + direct.diffuse)
+	float3 body = (indirectDiffuse * shadowTint + vertexLightDiffuse + direct.diffuse + toonDarkFill)
 		* TomMatCapMultiplier(i, material, mainSurface.artisticShadowAttenuation);
 	float3 environment = TomEnvironmentLayer(giInput, material, viewDir, mainSurface.artisticShadowAttenuation);
 	float3 matcap = TomMatCapAddLayer(i, material, mainSurface.artisticShadowAttenuation);
@@ -838,12 +940,42 @@ float4 TomFragBase(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 		float retention = TomCoatDirectRetention(coat, lightDir);
 		coatDirect = TomCoatDirect(coat, mainLight, material.geometricNormalWS, coatView) * mainDirectOwnership;
 		coatEnvironment = TomCoatEnvironment(coat, giInput, coatView, material.occlusion);
-		float3 coatedBody = ((indirectDiffuse * shadowTint + vertexLightDiffuse) * TomCoatBodyRetention(coat.indirectRetention)
+		// Artistic fill represents broad illumination, not a back-facing specular ray.
+		float3 coatedBody = ((indirectDiffuse * shadowTint + vertexLightDiffuse + toonDarkFill) * TomCoatBodyRetention(coat.indirectRetention)
 			+ direct.diffuse * TomCoatBodyRetention(retention))
 			* TomMatCapMultiplier(i, material, mainSurface.artisticShadowAttenuation);
 		color = coatedBody + direct.specular * retention + environment * coat.indirectRetention
 			+ material.emission * coat.viewRetention + coatDirect + coatEnvironment + matcap + rim;
 	}
+#if defined(TOM_LIQUID)
+	float3 liquidDirect = 0.0, liquidEnvironment = 0.0;
+	UNITY_BRANCH
+	if (TomLiquidWeight(material) > 0.0)
+	{
+		float weight = TomLiquidWeight(material), pigment = TomLiquidPigment();
+		float dr = TomLiquidDirectRetention(material, coatView, lightDir);
+		float ir = TomLiquidIndirectRetention(material, coatView);
+		liquidDirect = TomLiquidDirect(material, mainLight, coatView) * mainDirectOwnership;
+		liquidEnvironment = TomLiquidEnvironment(material, giInput, coatView);
+		float3 wetDirect = lerp(direct.diffuse * TomMatCapMultiplier(i, material, mainSurface.artisticShadowAttenuation),
+			TomLiquidPigmentDirect(material, mainLight, mainSurface.toonVisibility) * mainDirectOwnership, pigment);
+		float3 pigmentTint = TomLiquidPigmentShadowTint(lerp(1.0,
+			TomLiquidPigmentVisibility(material, mainLight, mainSurface.toonVisibility), mainDirectOwnership));
+		float3 wetIndirect = lerp((indirectDiffuse * shadowTint + vertexLightDiffuse + toonDarkFill)
+			* TomMatCapMultiplier(i, material, mainSurface.artisticShadowAttenuation),
+			TomLiquidPigmentIndirect(i, material, giInput) * pigmentTint, pigment);
+		float3 substrate = TomLiquidSubstrateSpecular(material);
+		float3 wet = wetDirect * dr + wetIndirect * ir
+			+ substrate * (direct.specular * dr + environment * ir)
+			+ liquidDirect + liquidEnvironment + (matcap + rim + material.emission)
+			* (1.0 - pigment) * TomLiquidViewRetention(material, coatView);
+		// Wet coverage replaces the existing top coat, never adds a second interface.
+		color = lerp(color, wet, weight);
+		body = lerp(body, wetDirect * dr + wetIndirect * ir, weight);
+		direct.specular = lerp(direct.specular, direct.specular * substrate * dr + liquidDirect, weight);
+		environment = lerp(environment, environment * substrate * ir + liquidEnvironment, weight);
+	}
+#endif
 	int debugView = (int)floor(_DebugView + 0.5);
 	if (debugView == 1) color = body;
 	else if (debugView == 2) color = direct.specular;
@@ -872,6 +1004,10 @@ float4 TomFragBase(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 	applyFog = applyFog && _EyeDebugView < 0.5;
 	outputColor.a = material.eyeCoverage;
 #endif
+#if defined(TOM_LIQUID)
+	if (_LiquidDebugView > 0.5) outputColor.rgb = TomLiquidDebug(material, liquidDirect, liquidEnvironment);
+	applyFog = applyFog && _LiquidDebugView < 0.5;
+#endif
 	if (applyFog) { UNITY_APPLY_FOG(i.fogCoord, outputColor); }
 #if defined(TOM_ALPHA)
 	outputColor = TomAlphaOutput(outputColor.rgb, material.coverage);
@@ -884,6 +1020,9 @@ float4 TomFragAdd(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 	UNITY_SETUP_INSTANCE_ID(i);
 	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 	if (_ClearCoatDebugView > 1.5 || (_ClearCoatDebugView < 0.5 && _DebugView > 2.5)) return 0.0;
+#if defined(TOM_LIQUID)
+	if (_LiquidDebugView > 0.5 && abs(_LiquidDebugView - 3.0) > 0.5) return 0.0;
+#endif
 #if defined(TOM_SKIN)
 	if (_SkinDebugView > 0.5) return 0.0;
 #endif
@@ -920,9 +1059,27 @@ float4 TomFragAdd(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 		coatDirect = TomCoatDirect(coat, light, material.geometricNormalWS, coatView);
 		color = body * TomCoatBodyRetention(retention) + direct.specular * retention + coatDirect;
 	}
+#if defined(TOM_LIQUID)
+	float3 liquidDirect = 0.0;
+	UNITY_BRANCH
+	if (TomLiquidWeight(material) > 0.0)
+	{
+		float weight = TomLiquidWeight(material);
+		float retention = TomLiquidDirectRetention(material, coatView, lightDir);
+		liquidDirect = TomLiquidDirect(material, light, coatView);
+		float3 wetBody = lerp(body, TomLiquidPigmentDirect(material, light, surface.toonVisibility), TomLiquidPigment()) * retention;
+		float3 wetSpecular = direct.specular * TomLiquidSubstrateSpecular(material) * retention + liquidDirect;
+		color = lerp(color, wetBody + wetSpecular, weight);
+		body = lerp(body, wetBody, weight);
+		direct.specular = lerp(direct.specular, wetSpecular, weight);
+	}
+#endif
 	if (_DebugView > 0.5 && _DebugView < 1.5) color = body;
 	else if (_DebugView >= 1.5) color = direct.specular;
 	if (_ClearCoatDebugView > 0.5) color = coatDirect;
+#if defined(TOM_LIQUID)
+	if (_LiquidDebugView > 0.5) color = TomLiquidDebug(material, liquidDirect, 0.0);
+#endif
 #if defined(TOM_EYE)
 	if (_DebugView < 0.5 && _ClearCoatDebugView < 0.5) color *= 1.0 - material.eyeOverlay.a;
 #endif
@@ -930,7 +1087,11 @@ float4 TomFragAdd(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 #if defined(TOM_EYE)
 	outputColor.a = material.eyeCoverage;
 #endif
-	if (_DebugView < 0.5 && _ClearCoatDebugView < 0.5) { UNITY_APPLY_FOG(i.fogCoord, outputColor); }
+	bool applyFog = _DebugView < 0.5 && _ClearCoatDebugView < 0.5;
+#if defined(TOM_LIQUID)
+	applyFog = applyFog && _LiquidDebugView < 0.5;
+#endif
+	if (applyFog) { UNITY_APPLY_FOG(i.fogCoord, outputColor); }
 #if defined(TOM_ALPHA)
 	outputColor = TomAlphaOutput(outputColor.rgb, material.coverage);
 #endif

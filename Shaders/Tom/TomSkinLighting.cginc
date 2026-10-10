@@ -1,20 +1,20 @@
 #ifndef TOM_SKIN_LIGHTING_INC
 #define TOM_SKIN_LIGHTING_INC
 
-float TomSkinDiffuseVisibility(TomMaterialData m, TomRawLightData light, float shadow)
+float TomSkinDiffuseNL(TomMaterialData m, float3 normalWS, float3 lightDir)
 {
-    float nl = dot(m.skin.diffuseNormalWS, light.direction);
+    float nl = dot(normalWS, lightDir);
     float amount = saturate(_SkinStrength * m.skin.control.r);
     float wrapped = saturate((nl + max(_SkinWrap, 0.0)) / (1.0 + max(_SkinWrap, 0.0)));
-    float diffuseNL = lerp(saturate(nl), wrapped, amount);
+    return lerp(saturate(nl), wrapped, amount);
+}
+
+float TomSkinContinuousVisibility(TomMaterialData m, float3 lightDir)
+{
+    float diffuseNL = TomSkinDiffuseNL(m, m.skin.diffuseNormalWS, lightDir);
     float horizon = smoothstep(0.0, max(_NormalHorizonFade, 0.001), diffuseNL)
-        * smoothstep(0.0, max(_NormalHorizonFade, 0.001), saturate(dot(m.geometricNormalWS, light.direction)));
-    float rampInput = diffuseNL * lerp(1.0, shadow, saturate(_UseRampForShadows));
-    float ramp = light.physicalShadowAttenuation;
-    if (_UseRamp > 0.0) ramp = TomSampleRamp(rampInput, m.secondaryToneMask);
-    float response = lerp(diffuseNL, ramp, saturate(_UseRamp));
-    float shadowOutside = lerp(shadow, 1.0, saturate(_UseRampForShadows) * saturate(_UseRamp));
-    return response * horizon * light.distanceAttenuation * light.cookieAttenuation * min(shadowOutside, shadow);
+        * smoothstep(0.0, max(_NormalHorizonFade, 0.001), saturate(dot(m.geometricNormalWS, lightDir)));
+    return diffuseNL * horizon;
 }
 
 float3 TomSkinWarmTint(TomMaterialData m, float3 lightDir)

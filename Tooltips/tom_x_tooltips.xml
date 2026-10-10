@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <MaterialEditorTooltips SchemaVersion="1">
   <Shader Name="tom/MainOpaqueX">
     <Tooltip>KKS Toon-first X material. Body, direct specular and environment reflection are independently controlled. Accepted Stage Two material baseline.</Tooltip>
@@ -31,8 +31,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -63,7 +63,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode.</Property>
@@ -124,7 +124,43 @@
     <Property Name="ClearCoatEnergyBlend">Additional coat attenuation of diffuse body. 0 preserves Toon body brightness; 1 uses the layered approximation. Substrate specular attenuation is always applied.</Property>
     <Property Name="ClearCoatDebugView">0 final; 1 coat direct (Base+Add); 2 coat environment (Base only); 3 surface normal; 4 coat weight; 5 indirect body retention. Overrides Lighting Debug.</Property>
     <Category Name="Clearcoat">Optional independent dielectric surface layer; defaults off.</Category>
-  </Shader>
+
+      <Property Name="liquidmask">KKS five-region RGB encoding. UV0 with its own ST, linear clamp sampler. Not tiled with Texture2/3. Used only in KKS Regions mode.</Property>
+      <Property Name="Texture2">KKS two-stage pattern: R appears over amount 0..1; G is added over 1..2 by max union. Both stages use cutoff and softness before region amounts. Linear data, repeat/trilinear/aniso8 sampling.</Property>
+      <Property Name="Texture3">Tangent normal, not height. Raw AG: X=A,Y=G numerical GPU samples. Exported AG PNG: inverse-sRGB G only, requires data sampling (sRGB off). Unity Normal: use an imported normal map. Own ST after LiquidTiling. Repeat/trilinear/aniso8.</Property>
+      <Property Name="LiquidTiling">XY is UV offset; ZW is tiling. Applied before each pattern, normal and custom coverage texture ST. KKS region mask keeps untiled UV0.</Property>
+      <Property Name="liquidftop">Game liquid amount 0..2 in the R-max(G,B) front-top region.</Property>
+      <Property Name="liquidfbot">Game liquid amount 0..2 in the G-max(R,B) front-bottom region.</Property>
+      <Property Name="liquidbtop">Game liquid amount 0..2 in the B-max(R,G) back-top region.</Property>
+      <Property Name="liquidbbot">Game liquid amount 0..2 in the (min(R,G)-0.1)/0.9 back-bottom region.</Property>
+      <Property Name="liquidface">Game liquid amount 0..2 in the (min(G,B)-0.1)/0.9 face region.</Property>
+      <Property Name="SkinLiquidColor">Pigment RGB and opacity A. A=0 is a transparent wet film, not a disabled liquid layer. Pigment alpha never fades the wet normal or specular reflection and never cuts the mesh.</Property>
+      <Property Name="SkinLiquidColorStrength">Pigment opacity multiplier. Combined with Color A inside the unified liquid coverage; zero preserves the substrate color and Toon lighting.</Property>
+      <Property Name="SkinLiquidNormalScale">Scales decoded tangent slopes, then normalizes and smoothly limits tilt. It does not scale XY before reconstructing Z. Zero gives an unperturbed liquid surface over the substrate main normal.</Property>
+      <Property Name="SkinLiquidMaterial">Master strength for the entire liquid layer: coverage, pigment, normals and interface response. Zero leaves the dry material. Under wet coverage the liquid replaces the common Clearcoat interface, never stacks a second coat.</Property>
+      <Property Name="SkinLiquidRoughness">Liquid GGX direct/probe perceptual roughness. Independent of dry Toon specular, masks, regional skin gloss and Clearcoat roughness. Normal AA can broaden unresolved detail.</Property>
+      <Property Name="LiquidDiffuseNormal">Fine normal influence on liquid pigment lighting only. Default zero. Never perturbs the substrate diffuse or its hard Toon shadow; wet reflections always use the liquid surface normal.</Property>
+      <Property Name="LiquidSpecularStrength">Artistic gain for the single liquid GGX direct/probe lobe. Zero hides reflected light, but does not disable pigment or interface transmission. Use Layer Strength to disable the entire layer.</Property>
+      <Category Name="KKS Liquid">Unified coverage, independent pigment, stable normals and a single dielectric wet interface. LiquidX overlays already rendered surfaces; no GrabPass or volumetric water.</Category>
+      <Property Name="LiquidNormalEncoding">0 Raw AG; 1 Exported AG PNG (encoded RGB, numerical alpha; import as data); 2 Unity Normal. Explicit formats, not automatic detection. Never combine mode 1 with automatic sRGB decode. Keep game runtime sampling flags for mode 0.</Property>
+      <Property Name="LiquidCoverageMode">0 KKS five regions and R/G stages; 1 custom mask R; 2 full surface. All liquid effects share the resulting coverage. Full Surface is suitable for independent water surfaces.</Property>
+      <Property Name="LiquidCoverageMap">Custom coverage in R, linear data. Used in Custom Mask mode. LiquidTiling then its own ST, repeat/trilinear/aniso8 sampling. Zero means no liquid.</Property>
+      <Property Name="LiquidCutoff">Rejects low pattern/custom-mask values, then remaps the remainder. Does not clip the mesh or use Liquid Color A. Zero-coverage pixels are unchanged.</Property>
+      <Property Name="LiquidEdgeSoftness">Smooth transition above the cutoff, augmented by pixel derivatives. Applied before KKS stage amounts so region animation remains continuous.</Property>
+      <Property Name="LiquidMaxNormalAngle">Smooth bound on decoded detail tilt in degrees, relative to the substrate main normal. Limits steep grazing ridges without changing roughness to hide decode errors.</Property>
+      <Property Name="LiquidNormalAA">Normal-variance specular anti-aliasing. Broadens unresolved high-frequency reflections. Zero disables variance broadening, not texture mip filtering.</Property>
+      <Property Name="LiquidIOR">Liquid interface refractive index, independent of common Clearcoat. 1.33 gives approximately 0.02 normal-incidence reflectance. 1 disables interface reflection. This is not screen-space refraction.</Property>
+      <Property Name="LiquidEnvironmentStrength">Independent gain for liquid reflection probes. Does not require the dry Reflection Mode or dry Reflection Mask. Base pass only; not duplicated by additional lights.</Property>
+      <Property Name="LiquidToonBlend">Mixes pigment soft lighting toward the substrate Toon visibility. Does not quantize liquid GGX or alter transparent-film substrate lighting.</Property>
+      <Property Name="LiquidDebugView">0 final; 1 effective coverage; 2 coverage-masked world normal; 3 liquid direct specular; 4 liquid environment; 5 pigment opacity; 6 raw coverage before cleanup.</Property>
+      <Property Name="LiquidEnergyBlend">Substrate attenuation strength, default 0.25. 0 preserves the underlying lighting; 1 applies full approximate interface transmission and substrate index matching. Does not change liquid direct/probe highlights. Independent of pigment alpha. Low values are an artistic energy override. LiquidX applies the same view attenuation to framebuffer blending.</Property>
+      <Property Name="LiquidAttenuationNormal">Liquid detail influence on the transmission normal, default 0. Zero uses the substrate main normal to prevent droplet slopes carving dark grooves into the underlying material. One uses full liquid detail. Reflections always retain full liquid normals. This is separate from LiquidDiffuseNormal for pigment shading.</Property>
+      <Property Name="LiquidShadowColor">Optional pigment shadow tint: RGB is a bounded multiplicative tint, A is its strength (default 0). Fades with Liquid Color A and Color Strength. Never tints a clear film, wet highlights or the dry substrate. Does not fill missing light, disable cast shadows, or control Fresnel attenuation; use LiquidEnergyBlend for that.</Property>
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonDetailNormalInfluence">Detail normal-map influence on direct Toon diffuse only. Independent of ToonNormalInfluence; default 1. Specular, environment and Clearcoat keep full normals. SkinX uses its existing SkinDiffuseNormalDetail instead.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
   <Shader Name="tom/MainAlphaX">
     <Tooltip>Primary X alpha material. Standard sorted alpha with optional DepthPrepass for nearest-surface suppression. Use MainAlphaXBackFront for two color layers. All layers fade with global coverage; neither mode is OIT.</Tooltip>
     <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
@@ -156,8 +192,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -188,7 +224,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode.</Property>
@@ -256,7 +292,43 @@
     <Property Name="ClearCoatEnergyBlend">Additional coat attenuation of diffuse body. 0 preserves Toon body brightness; 1 uses the layered approximation. Substrate specular attenuation is always applied.</Property>
     <Property Name="ClearCoatDebugView">0 final; 1 coat direct (Base+Add); 2 coat environment (Base only); 3 surface normal; 4 coat weight; 5 indirect body retention. Overrides Lighting Debug.</Property>
     <Category Name="Clearcoat">Optional independent dielectric surface layer; defaults off.</Category>
-  </Shader>
+
+      <Property Name="liquidmask">KKS five-region RGB encoding. UV0 with its own ST, linear clamp sampler. Not tiled with Texture2/3. Used only in KKS Regions mode.</Property>
+      <Property Name="Texture2">KKS two-stage pattern: R appears over amount 0..1; G is added over 1..2 by max union. Both stages use cutoff and softness before region amounts. Linear data, repeat/trilinear/aniso8 sampling.</Property>
+      <Property Name="Texture3">Tangent normal, not height. Raw AG: X=A,Y=G numerical GPU samples. Exported AG PNG: inverse-sRGB G only, requires data sampling (sRGB off). Unity Normal: use an imported normal map. Own ST after LiquidTiling. Repeat/trilinear/aniso8.</Property>
+      <Property Name="LiquidTiling">XY is UV offset; ZW is tiling. Applied before each pattern, normal and custom coverage texture ST. KKS region mask keeps untiled UV0.</Property>
+      <Property Name="liquidftop">Game liquid amount 0..2 in the R-max(G,B) front-top region.</Property>
+      <Property Name="liquidfbot">Game liquid amount 0..2 in the G-max(R,B) front-bottom region.</Property>
+      <Property Name="liquidbtop">Game liquid amount 0..2 in the B-max(R,G) back-top region.</Property>
+      <Property Name="liquidbbot">Game liquid amount 0..2 in the (min(R,G)-0.1)/0.9 back-bottom region.</Property>
+      <Property Name="liquidface">Game liquid amount 0..2 in the (min(G,B)-0.1)/0.9 face region.</Property>
+      <Property Name="SkinLiquidColor">Pigment RGB and opacity A. A=0 is a transparent wet film, not a disabled liquid layer. Pigment alpha never fades the wet normal or specular reflection and never cuts the mesh.</Property>
+      <Property Name="SkinLiquidColorStrength">Pigment opacity multiplier. Combined with Color A inside the unified liquid coverage; zero preserves the substrate color and Toon lighting.</Property>
+      <Property Name="SkinLiquidNormalScale">Scales decoded tangent slopes, then normalizes and smoothly limits tilt. It does not scale XY before reconstructing Z. Zero gives an unperturbed liquid surface over the substrate main normal.</Property>
+      <Property Name="SkinLiquidMaterial">Master strength for the entire liquid layer: coverage, pigment, normals and interface response. Zero leaves the dry material. Under wet coverage the liquid replaces the common Clearcoat interface, never stacks a second coat.</Property>
+      <Property Name="SkinLiquidRoughness">Liquid GGX direct/probe perceptual roughness. Independent of dry Toon specular, masks, regional skin gloss and Clearcoat roughness. Normal AA can broaden unresolved detail.</Property>
+      <Property Name="LiquidDiffuseNormal">Fine normal influence on liquid pigment lighting only. Default zero. Never perturbs the substrate diffuse or its hard Toon shadow; wet reflections always use the liquid surface normal.</Property>
+      <Property Name="LiquidSpecularStrength">Artistic gain for the single liquid GGX direct/probe lobe. Zero hides reflected light, but does not disable pigment or interface transmission. Use Layer Strength to disable the entire layer.</Property>
+      <Category Name="KKS Liquid">Unified coverage, independent pigment, stable normals and a single dielectric wet interface. LiquidX overlays already rendered surfaces; no GrabPass or volumetric water.</Category>
+      <Property Name="LiquidNormalEncoding">0 Raw AG; 1 Exported AG PNG (encoded RGB, numerical alpha; import as data); 2 Unity Normal. Explicit formats, not automatic detection. Never combine mode 1 with automatic sRGB decode. Keep game runtime sampling flags for mode 0.</Property>
+      <Property Name="LiquidCoverageMode">0 KKS five regions and R/G stages; 1 custom mask R; 2 full surface. All liquid effects share the resulting coverage. Full Surface is suitable for independent water surfaces.</Property>
+      <Property Name="LiquidCoverageMap">Custom coverage in R, linear data. Used in Custom Mask mode. LiquidTiling then its own ST, repeat/trilinear/aniso8 sampling. Zero means no liquid.</Property>
+      <Property Name="LiquidCutoff">Rejects low pattern/custom-mask values, then remaps the remainder. Does not clip the mesh or use Liquid Color A. Zero-coverage pixels are unchanged.</Property>
+      <Property Name="LiquidEdgeSoftness">Smooth transition above the cutoff, augmented by pixel derivatives. Applied before KKS stage amounts so region animation remains continuous.</Property>
+      <Property Name="LiquidMaxNormalAngle">Smooth bound on decoded detail tilt in degrees, relative to the substrate main normal. Limits steep grazing ridges without changing roughness to hide decode errors.</Property>
+      <Property Name="LiquidNormalAA">Normal-variance specular anti-aliasing. Broadens unresolved high-frequency reflections. Zero disables variance broadening, not texture mip filtering.</Property>
+      <Property Name="LiquidIOR">Liquid interface refractive index, independent of common Clearcoat. 1.33 gives approximately 0.02 normal-incidence reflectance. 1 disables interface reflection. This is not screen-space refraction.</Property>
+      <Property Name="LiquidEnvironmentStrength">Independent gain for liquid reflection probes. Does not require the dry Reflection Mode or dry Reflection Mask. Base pass only; not duplicated by additional lights.</Property>
+      <Property Name="LiquidToonBlend">Mixes pigment soft lighting toward the substrate Toon visibility. Does not quantize liquid GGX or alter transparent-film substrate lighting.</Property>
+      <Property Name="LiquidDebugView">0 final; 1 effective coverage; 2 coverage-masked world normal; 3 liquid direct specular; 4 liquid environment; 5 pigment opacity; 6 raw coverage before cleanup.</Property>
+      <Property Name="LiquidEnergyBlend">Substrate attenuation strength, default 0.25. 0 preserves the underlying lighting; 1 applies full approximate interface transmission and substrate index matching. Does not change liquid direct/probe highlights. Independent of pigment alpha. Low values are an artistic energy override. LiquidX applies the same view attenuation to framebuffer blending.</Property>
+      <Property Name="LiquidAttenuationNormal">Liquid detail influence on the transmission normal, default 0. Zero uses the substrate main normal to prevent droplet slopes carving dark grooves into the underlying material. One uses full liquid detail. Reflections always retain full liquid normals. This is separate from LiquidDiffuseNormal for pigment shading.</Property>
+      <Property Name="LiquidShadowColor">Optional pigment shadow tint: RGB is a bounded multiplicative tint, A is its strength (default 0). Fades with Liquid Color A and Color Strength. Never tints a clear film, wet highlights or the dry substrate. Does not fill missing light, disable cast shadows, or control Fresnel attenuation; use LiquidEnergyBlend for that.</Property>
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonDetailNormalInfluence">Detail normal-map influence on direct Toon diffuse only. Independent of ToonNormalInfluence; default 1. Specular, environment and Clearcoat keep full normals. SkinX uses its existing SkinDiffuseNormalDetail instead.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
   <Shader Name="tom/MainAlphaX2Pass">
     <Tooltip>Legacy depth-prepass compatibility entry, not the two-color-layer shader. For new materials use MainAlphaX with DepthPrepass=1 and AlphaOptionZWrite=0. Existing AlphaOptionZWrite still controls this entry's prepass. Use MainAlphaXBackFront for back/front color layers.</Tooltip>
     <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
@@ -288,8 +360,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -320,7 +392,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode.</Property>
@@ -387,7 +459,43 @@
     <Property Name="ClearCoatEnergyBlend">Additional coat attenuation of diffuse body. 0 preserves Toon body brightness; 1 uses the layered approximation. Substrate specular attenuation is always applied.</Property>
     <Property Name="ClearCoatDebugView">0 final; 1 coat direct (Base+Add); 2 coat environment (Base only); 3 surface normal; 4 coat weight; 5 indirect body retention. Overrides Lighting Debug.</Property>
     <Category Name="Clearcoat">Optional independent dielectric surface layer; defaults off.</Category>
-  </Shader>
+
+      <Property Name="liquidmask">KKS five-region RGB encoding. UV0 with its own ST, linear clamp sampler. Not tiled with Texture2/3. Used only in KKS Regions mode.</Property>
+      <Property Name="Texture2">KKS two-stage pattern: R appears over amount 0..1; G is added over 1..2 by max union. Both stages use cutoff and softness before region amounts. Linear data, repeat/trilinear/aniso8 sampling.</Property>
+      <Property Name="Texture3">Tangent normal, not height. Raw AG: X=A,Y=G numerical GPU samples. Exported AG PNG: inverse-sRGB G only, requires data sampling (sRGB off). Unity Normal: use an imported normal map. Own ST after LiquidTiling. Repeat/trilinear/aniso8.</Property>
+      <Property Name="LiquidTiling">XY is UV offset; ZW is tiling. Applied before each pattern, normal and custom coverage texture ST. KKS region mask keeps untiled UV0.</Property>
+      <Property Name="liquidftop">Game liquid amount 0..2 in the R-max(G,B) front-top region.</Property>
+      <Property Name="liquidfbot">Game liquid amount 0..2 in the G-max(R,B) front-bottom region.</Property>
+      <Property Name="liquidbtop">Game liquid amount 0..2 in the B-max(R,G) back-top region.</Property>
+      <Property Name="liquidbbot">Game liquid amount 0..2 in the (min(R,G)-0.1)/0.9 back-bottom region.</Property>
+      <Property Name="liquidface">Game liquid amount 0..2 in the (min(G,B)-0.1)/0.9 face region.</Property>
+      <Property Name="SkinLiquidColor">Pigment RGB and opacity A. A=0 is a transparent wet film, not a disabled liquid layer. Pigment alpha never fades the wet normal or specular reflection and never cuts the mesh.</Property>
+      <Property Name="SkinLiquidColorStrength">Pigment opacity multiplier. Combined with Color A inside the unified liquid coverage; zero preserves the substrate color and Toon lighting.</Property>
+      <Property Name="SkinLiquidNormalScale">Scales decoded tangent slopes, then normalizes and smoothly limits tilt. It does not scale XY before reconstructing Z. Zero gives an unperturbed liquid surface over the substrate main normal.</Property>
+      <Property Name="SkinLiquidMaterial">Master strength for the entire liquid layer: coverage, pigment, normals and interface response. Zero leaves the dry material. Under wet coverage the liquid replaces the common Clearcoat interface, never stacks a second coat.</Property>
+      <Property Name="SkinLiquidRoughness">Liquid GGX direct/probe perceptual roughness. Independent of dry Toon specular, masks, regional skin gloss and Clearcoat roughness. Normal AA can broaden unresolved detail.</Property>
+      <Property Name="LiquidDiffuseNormal">Fine normal influence on liquid pigment lighting only. Default zero. Never perturbs the substrate diffuse or its hard Toon shadow; wet reflections always use the liquid surface normal.</Property>
+      <Property Name="LiquidSpecularStrength">Artistic gain for the single liquid GGX direct/probe lobe. Zero hides reflected light, but does not disable pigment or interface transmission. Use Layer Strength to disable the entire layer.</Property>
+      <Category Name="KKS Liquid">Unified coverage, independent pigment, stable normals and a single dielectric wet interface. LiquidX overlays already rendered surfaces; no GrabPass or volumetric water.</Category>
+      <Property Name="LiquidNormalEncoding">0 Raw AG; 1 Exported AG PNG (encoded RGB, numerical alpha; import as data); 2 Unity Normal. Explicit formats, not automatic detection. Never combine mode 1 with automatic sRGB decode. Keep game runtime sampling flags for mode 0.</Property>
+      <Property Name="LiquidCoverageMode">0 KKS five regions and R/G stages; 1 custom mask R; 2 full surface. All liquid effects share the resulting coverage. Full Surface is suitable for independent water surfaces.</Property>
+      <Property Name="LiquidCoverageMap">Custom coverage in R, linear data. Used in Custom Mask mode. LiquidTiling then its own ST, repeat/trilinear/aniso8 sampling. Zero means no liquid.</Property>
+      <Property Name="LiquidCutoff">Rejects low pattern/custom-mask values, then remaps the remainder. Does not clip the mesh or use Liquid Color A. Zero-coverage pixels are unchanged.</Property>
+      <Property Name="LiquidEdgeSoftness">Smooth transition above the cutoff, augmented by pixel derivatives. Applied before KKS stage amounts so region animation remains continuous.</Property>
+      <Property Name="LiquidMaxNormalAngle">Smooth bound on decoded detail tilt in degrees, relative to the substrate main normal. Limits steep grazing ridges without changing roughness to hide decode errors.</Property>
+      <Property Name="LiquidNormalAA">Normal-variance specular anti-aliasing. Broadens unresolved high-frequency reflections. Zero disables variance broadening, not texture mip filtering.</Property>
+      <Property Name="LiquidIOR">Liquid interface refractive index, independent of common Clearcoat. 1.33 gives approximately 0.02 normal-incidence reflectance. 1 disables interface reflection. This is not screen-space refraction.</Property>
+      <Property Name="LiquidEnvironmentStrength">Independent gain for liquid reflection probes. Does not require the dry Reflection Mode or dry Reflection Mask. Base pass only; not duplicated by additional lights.</Property>
+      <Property Name="LiquidToonBlend">Mixes pigment soft lighting toward the substrate Toon visibility. Does not quantize liquid GGX or alter transparent-film substrate lighting.</Property>
+      <Property Name="LiquidDebugView">0 final; 1 effective coverage; 2 coverage-masked world normal; 3 liquid direct specular; 4 liquid environment; 5 pigment opacity; 6 raw coverage before cleanup.</Property>
+      <Property Name="LiquidEnergyBlend">Substrate attenuation strength, default 0.25. 0 preserves the underlying lighting; 1 applies full approximate interface transmission and substrate index matching. Does not change liquid direct/probe highlights. Independent of pigment alpha. Low values are an artistic energy override. LiquidX applies the same view attenuation to framebuffer blending.</Property>
+      <Property Name="LiquidAttenuationNormal">Liquid detail influence on the transmission normal, default 0. Zero uses the substrate main normal to prevent droplet slopes carving dark grooves into the underlying material. One uses full liquid detail. Reflections always retain full liquid normals. This is separate from LiquidDiffuseNormal for pigment shading.</Property>
+      <Property Name="LiquidShadowColor">Optional pigment shadow tint: RGB is a bounded multiplicative tint, A is its strength (default 0). Fades with Liquid Color A and Color Strength. Never tints a clear film, wet highlights or the dry substrate. Does not fill missing light, disable cast shadows, or control Fresnel attenuation; use LiquidEnergyBlend for that.</Property>
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonDetailNormalInfluence">Detail normal-map influence on direct Toon diffuse only. Independent of ToonNormalInfluence; default 1. Specular, environment and Clearcoat keep full normals. SkinX uses its existing SkinDiffuseNormalDetail instead.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
   <Shader Name="tom/MainAlphaXBackFront">
     <Tooltip>Primary X two-color-layer alpha shader. Back then front face groups accumulate coverage. No dither, screen-color sampling or nearest-surface prepass. Not OIT; same-facing intersections still depend on mesh order. The historical MainAlphaX2Pass name remains a different, legacy depth-prepass entry.</Tooltip>
     <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
@@ -419,8 +527,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -451,7 +559,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode.</Property>
@@ -519,8 +627,48 @@
     <Property Name="ClearCoatEnergyBlend">Additional coat attenuation of diffuse body. 0 preserves Toon body brightness; 1 uses the layered approximation. Substrate specular attenuation is always applied.</Property>
     <Property Name="ClearCoatDebugView">0 final; 1 coat direct (Base+Add); 2 coat environment (Base only); 3 surface normal; 4 coat weight; 5 indirect body retention. Overrides Lighting Debug.</Property>
     <Category Name="Clearcoat">Optional independent dielectric surface layer; defaults off.</Category>
-  </Shader>
+
+      <Property Name="liquidmask">KKS five-region RGB encoding. UV0 with its own ST, linear clamp sampler. Not tiled with Texture2/3. Used only in KKS Regions mode.</Property>
+      <Property Name="Texture2">KKS two-stage pattern: R appears over amount 0..1; G is added over 1..2 by max union. Both stages use cutoff and softness before region amounts. Linear data, repeat/trilinear/aniso8 sampling.</Property>
+      <Property Name="Texture3">Tangent normal, not height. Raw AG: X=A,Y=G numerical GPU samples. Exported AG PNG: inverse-sRGB G only, requires data sampling (sRGB off). Unity Normal: use an imported normal map. Own ST after LiquidTiling. Repeat/trilinear/aniso8.</Property>
+      <Property Name="LiquidTiling">XY is UV offset; ZW is tiling. Applied before each pattern, normal and custom coverage texture ST. KKS region mask keeps untiled UV0.</Property>
+      <Property Name="liquidftop">Game liquid amount 0..2 in the R-max(G,B) front-top region.</Property>
+      <Property Name="liquidfbot">Game liquid amount 0..2 in the G-max(R,B) front-bottom region.</Property>
+      <Property Name="liquidbtop">Game liquid amount 0..2 in the B-max(R,G) back-top region.</Property>
+      <Property Name="liquidbbot">Game liquid amount 0..2 in the (min(R,G)-0.1)/0.9 back-bottom region.</Property>
+      <Property Name="liquidface">Game liquid amount 0..2 in the (min(G,B)-0.1)/0.9 face region.</Property>
+      <Property Name="SkinLiquidColor">Pigment RGB and opacity A. A=0 is a transparent wet film, not a disabled liquid layer. Pigment alpha never fades the wet normal or specular reflection and never cuts the mesh.</Property>
+      <Property Name="SkinLiquidColorStrength">Pigment opacity multiplier. Combined with Color A inside the unified liquid coverage; zero preserves the substrate color and Toon lighting.</Property>
+      <Property Name="SkinLiquidNormalScale">Scales decoded tangent slopes, then normalizes and smoothly limits tilt. It does not scale XY before reconstructing Z. Zero gives an unperturbed liquid surface over the substrate main normal.</Property>
+      <Property Name="SkinLiquidMaterial">Master strength for the entire liquid layer: coverage, pigment, normals and interface response. Zero leaves the dry material. Under wet coverage the liquid replaces the common Clearcoat interface, never stacks a second coat.</Property>
+      <Property Name="SkinLiquidRoughness">Liquid GGX direct/probe perceptual roughness. Independent of dry Toon specular, masks, regional skin gloss and Clearcoat roughness. Normal AA can broaden unresolved detail.</Property>
+      <Property Name="LiquidDiffuseNormal">Fine normal influence on liquid pigment lighting only. Default zero. Never perturbs the substrate diffuse or its hard Toon shadow; wet reflections always use the liquid surface normal.</Property>
+      <Property Name="LiquidSpecularStrength">Artistic gain for the single liquid GGX direct/probe lobe. Zero hides reflected light, but does not disable pigment or interface transmission. Use Layer Strength to disable the entire layer.</Property>
+      <Category Name="KKS Liquid">Unified coverage, independent pigment, stable normals and a single dielectric wet interface. LiquidX overlays already rendered surfaces; no GrabPass or volumetric water.</Category>
+      <Property Name="LiquidNormalEncoding">0 Raw AG; 1 Exported AG PNG (encoded RGB, numerical alpha; import as data); 2 Unity Normal. Explicit formats, not automatic detection. Never combine mode 1 with automatic sRGB decode. Keep game runtime sampling flags for mode 0.</Property>
+      <Property Name="LiquidCoverageMode">0 KKS five regions and R/G stages; 1 custom mask R; 2 full surface. All liquid effects share the resulting coverage. Full Surface is suitable for independent water surfaces.</Property>
+      <Property Name="LiquidCoverageMap">Custom coverage in R, linear data. Used in Custom Mask mode. LiquidTiling then its own ST, repeat/trilinear/aniso8 sampling. Zero means no liquid.</Property>
+      <Property Name="LiquidCutoff">Rejects low pattern/custom-mask values, then remaps the remainder. Does not clip the mesh or use Liquid Color A. Zero-coverage pixels are unchanged.</Property>
+      <Property Name="LiquidEdgeSoftness">Smooth transition above the cutoff, augmented by pixel derivatives. Applied before KKS stage amounts so region animation remains continuous.</Property>
+      <Property Name="LiquidMaxNormalAngle">Smooth bound on decoded detail tilt in degrees, relative to the substrate main normal. Limits steep grazing ridges without changing roughness to hide decode errors.</Property>
+      <Property Name="LiquidNormalAA">Normal-variance specular anti-aliasing. Broadens unresolved high-frequency reflections. Zero disables variance broadening, not texture mip filtering.</Property>
+      <Property Name="LiquidIOR">Liquid interface refractive index, independent of common Clearcoat. 1.33 gives approximately 0.02 normal-incidence reflectance. 1 disables interface reflection. This is not screen-space refraction.</Property>
+      <Property Name="LiquidEnvironmentStrength">Independent gain for liquid reflection probes. Does not require the dry Reflection Mode or dry Reflection Mask. Base pass only; not duplicated by additional lights.</Property>
+      <Property Name="LiquidToonBlend">Mixes pigment soft lighting toward the substrate Toon visibility. Does not quantize liquid GGX or alter transparent-film substrate lighting.</Property>
+      <Property Name="LiquidDebugView">0 final; 1 effective coverage; 2 coverage-masked world normal; 3 liquid direct specular; 4 liquid environment; 5 pigment opacity; 6 raw coverage before cleanup.</Property>
+      <Property Name="LiquidEnergyBlend">Substrate attenuation strength, default 0.25. 0 preserves the underlying lighting; 1 applies full approximate interface transmission and substrate index matching. Does not change liquid direct/probe highlights. Independent of pigment alpha. Low values are an artistic energy override. LiquidX applies the same view attenuation to framebuffer blending.</Property>
+      <Property Name="LiquidAttenuationNormal">Liquid detail influence on the transmission normal, default 0. Zero uses the substrate main normal to prevent droplet slopes carving dark grooves into the underlying material. One uses full liquid detail. Reflections always retain full liquid normals. This is separate from LiquidDiffuseNormal for pigment shading.</Property>
+      <Property Name="LiquidShadowColor">Optional pigment shadow tint: RGB is a bounded multiplicative tint, A is its strength (default 0). Fades with Liquid Color A and Color Strength. Never tints a clear film, wet highlights or the dry substrate. Does not fill missing light, disable cast shadows, or control Fresnel attenuation; use LiquidEnergyBlend for that.</Property>
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonDetailNormalInfluence">Detail normal-map influence on direct Toon diffuse only. Independent of ToonNormalInfluence; default 1. Specular, environment and Clearcoat keep full normals. SkinX uses its existing SkinDiffuseNormalDetail instead.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
   <Shader Name="tom/HairX">
+    <Property Name="ColorMask">KKS hair color mask: R blends white toward Color, then G blends toward Color2, then B toward Color3. Black or unassigned preserves texture color; white selects Color3. Independent texture tiling/offset; filtering and wrap follow MainTex. BaseColor remains an additional overall multiplier.</Property>
+    <Property Name="Color">Game hair color 1 (property Color, not Color1). Controlled by ColorMask R; no automatic whole-texture tint when the mask is absent.</Property>
+    <Property Name="Color2">Game hair color 2. ColorMask G blends over the first color result.</Property>
+    <Property Name="Color3">Game hair color 3. ColorMask B blends last, over the first two colors.</Property>
     <Tooltip>Experimental unified cutout HairX with per-light anisotropic Toon highlights. HairFront reads stencil 2. Feather needs the optional camera provider; without it falls back to Hard. No automatic hair-layer sorting.</Tooltip>
     <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
     <Category Name="Base Color">Base Color controls for the X material; see individual property hints for layer ownership.</Category>
@@ -551,8 +699,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -583,7 +731,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode.</Property>
@@ -658,7 +806,12 @@
     <Property Name="ClearCoatEnergyBlend">Additional coat attenuation of diffuse body. 0 preserves Toon body brightness; 1 uses the layered approximation. Substrate specular attenuation is always applied.</Property>
     <Property Name="ClearCoatDebugView">0 final; 1 coat direct (Base+Add); 2 coat environment (Base only); 3 surface normal; 4 coat weight; 5 indirect body retention. Overrides Lighting Debug.</Property>
     <Category Name="Clearcoat">Optional independent dielectric surface layer; defaults off.</Category>
-  </Shader>
+
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonDetailNormalInfluence">Detail normal-map influence on direct Toon diffuse only. Independent of ToonNormalInfluence; default 1. Specular, environment and Clearcoat keep full normals. SkinX uses its existing SkinDiffuseNormalDetail instead.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
   <Shader Name="tom/EyeWX">
     <Tooltip>X-series eye surface. Explicit material settings; no mesh-role detection. New optics and coat default off. Hair feather needs adapter 0.3.0 for these writers.</Tooltip>
     <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
@@ -689,8 +842,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -719,7 +872,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode.</Property>
@@ -778,7 +931,12 @@
     <Property Name="Color">Game EyeW color alias. 0.5 is neutral; RGB multiplies the X body by twice this value. BaseColor remains a separate multiplier.</Property>
     <Property Name="EyeDebugView">0 final; 1 unwarped coverage; 2 stencil survival; EyeX adds 3 local chart, 4 UV shift, 5 interface normal, 6 invalid/bounded hits. Base-only, overrides coat and lighting debug.</Property>
     <Category Name="Eye Surface">Game-compatible eye layers and optional local optics; no role presets.</Category>
-  </Shader>
+
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonDetailNormalInfluence">Detail normal-map influence on direct Toon diffuse only. Independent of ToonNormalInfluence; default 1. Specular, environment and Clearcoat keep full normals. SkinX uses its existing SkinDiffuseNormalDetail instead.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
   <Shader Name="tom/EyeX">
     <Tooltip>X-series eye surface. Explicit material settings; no mesh-role detection. New optics and coat default off. Hair feather needs adapter 0.3.0 for these writers.</Tooltip>
     <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
@@ -809,8 +967,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -839,7 +997,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode.</Property>
@@ -926,7 +1084,12 @@
     <Property Name="EyeSurfaceMap">Linear data aligned with final MainTex UV including rotation/ST; no separate ST. Shares MainTex filtering/wrap. Disable sRGB on import; use smooth shallow profiles, not steep walls or noise.</Property>
     <Property Name="EyeSurfaceMapMode">0 grayscale HEIGHT: white=surface/no effect, black=deepest; alpha ignored. 1 R=DEPTH (white=deepest), A=region (white=inside). A tapers depth and the entry transition, never opacity. Both multiply Iris Depth.</Property>
     <Category Name="Eye Surface">Game-compatible eye layers and optional local optics; no role presets.</Category>
-  </Shader>
+
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonDetailNormalInfluence">Detail normal-map influence on direct Toon diffuse only. Independent of ToonNormalInfluence; default 1. Specular, environment and Clearcoat keep full normals. SkinX uses its existing SkinDiffuseNormalDetail instead.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
   <Shader Name="tom/SkinX">
     <Tooltip>KKS face/body skin on X lighting: legacy overlays and clothing masks, regional gloss, optional soft skin and shared wet Clearcoat. D3D11 skinned characters; no lightmap UV or UV4 outline-normal support.</Tooltip>
     <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
@@ -958,8 +1121,8 @@
     <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
     <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
     <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
-    <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
-    <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+    <Property Name="ToonSoftness">Width of the procedural Toon transition and its separate diffuse mesh-horizon fade. ToonAA supplies a pixel-scale minimum width. Does not soften normal textures, cast shadows, specular or Clearcoat.</Property>
+    <Property Name="ToonShadeLevel">Procedural ramp dark-end value before the mesh horizon and cast shadows. Use ToonMinLighting for a controlled diffuse dark end after those restrictions, including self-shadowed backlit areas.</Property>
     <Property Name="SecondaryToneStrength">Blend toward SecondaryRamp, masked by LayerMask R. No legacy Fresnel coupling.</Property>
     <Property Name="UseRampForShadows">Include artistic shadow visibility in the direct ramp input. Visibility is also retained outside the ramp.</Property>
     <Property Name="ShadowColor">Tint of the Base indirect body in main-light shadow. Does not tint every additional light separately.</Property>
@@ -990,7 +1153,7 @@
     <Property Name="SpecularIOR">Advanced dielectric IOR converted to F0. Default 1.5. At Physical Diffuse Suppression 0 it does not suppress body diffuse.</Property>
     <Property Name="FresnelStrength">Direct-specular Fresnel gain and optional diffuse energy suppression. Environment Fresnel and Rim are separate.</Property>
     <Property Name="DiffuseEnergyBlend">0 preserves Toon diffuse independently of Fresnel; 1 applies physical Fresnel suppression. Metallic always removes diffuse.</Property>
-    <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+    <Property Name="NormalHorizonFade">Geometric/shading horizon protection for specular, Clearcoat, liquid and continuous diffuse. Toon diffuse has its own single mesh-horizon fade controlled by ToonSoftness and ToonAA.</Property>
     <Property Name="OcclusionStrength">AO influence on indirect diffuse; also supplies AO to optional specular occlusion.</Property>
     <Property Name="SpecularOcclusionStrength">AO influence on environment reflection only. Does not darken direct specular.</Property>
     <Property Name="SpecularMask">Linear R direct-specular mask. Does not mask environment reflection, MatCap or Rim. Ignored in packed mode. SkinX UV0 atlas sampling shares MainTex filtering/wrap state with independent ST; match atlas import settings.</Property>
@@ -1051,7 +1214,7 @@
     <Property Name="ClearCoatEnergyBlend">Additional coat attenuation of diffuse body. 0 preserves Toon body brightness; 1 uses the layered approximation. Substrate specular attenuation is always applied.</Property>
     <Property Name="ClearCoatDebugView">0 final; 1 coat direct (Base+Add); 2 coat environment (Base only); 3 surface normal; 4 coat weight; 5 indirect body retention. Overrides Lighting Debug.</Property>
     <Category Name="Clearcoat">Optional independent dielectric surface layer; defaults off.</Category>
-  
+
       <Property Name="DetailMask">Linear KKS data: R painted highlight/specular gate; G painted shade; B Rim and Outline suppression; A skin versus nail/lip gloss region. Own ST and sampler. Not ORM.</Property>
       <Property Name="LineMask">Linear original channels: R internal lines, G game linewidth exponent, B painted detail shade; A unused. Shares DetailMask sampling state with independent ST.</Property>
       <Property Name="NormalMask">Legacy face art data. G optionally blends diffuse normal toward the geometric normal through SkinFaceNormalStrength. B shadow bypass is deliberately not ported. Not a normal map.</Property>
@@ -1085,7 +1248,7 @@
       <Property Name="SkinLineColor">Diffuse tint applied where internal lines attenuate the skin. Not the shell Outline color.</Property>
       <Property Name="SkinGameLineColor">Blend line tint toward the game global LineColorG RGB. Game linewidthG still shapes LineMask G independently.</Property>
       <Property Name="SkinShadeStrength">Painted diffuse shade from Detail G and Line B. Uses ShadowColor; does not replace shadow-map visibility or encode AO/thickness.</Property>
-      <Property Name="SkinDiffuseNormalDetail">One keeps full detail for diffuse; zero uses the main normal. Specular and coat detail are not weakened.</Property>
+      <Property Name="SkinDiffuseNormalDetail">Existing skin diffuse detail control, reused by direct Toon shading without a duplicate slider. Reduces diffuse/SH detail while keeping specular and Clearcoat detail. ToonNormalInfluence separately controls the main normal in direct Toon shading.</Property>
       <Property Name="SkinFaceNormalStrength">New explicit art control: NormalMask G blends diffuse normal toward mesh normal. Default zero. Does not implement the old shadow floor.</Property>
       <Property Name="SkinControlMap">Linear R soft-response coverage, G warm-transition coverage, B wetness coverage; A unused. Own ST, DetailMask sampler; default RG=1 B=0.</Property>
       <Property Name="SkinStrength">Zero preserves the neutral X diffuse response. Positive values blend wrapped front-side diffuse and transition warmth under the skin control map. Not true SSS.</Property>
@@ -1093,20 +1256,20 @@
       <Property Name="SkinWarmth">Warm tint amount near the light terminator; gated by skin strength, Control R/G and the lit diffuse contribution. No unshadowed red emission.</Property>
       <Property Name="SkinWarmWidth">Width of the warm transition in diffuse NdotL, not world-space scattering distance.</Property>
       <Property Name="SkinWarmColor">Transition hue, luminance-normalized before blending. Independent of albedo and coat color.</Property>
-      <Property Name="liquidmask">Linear RGB composite encoding of five game liquid regions. UV0 plus own ST, DetailMask sampler. Not tiled with Texture2/3.</Property>
-      <Property Name="Texture2">Liquid coverage pattern: R first stage, G second stage. For amount 0..2, union max(saturate(s)*R,saturate(s-1)*G). Own tiled sampler.</Property>
-      <Property Name="Texture3">Unity packed liquid tangent normal, not height. Uses LiquidTiling then own ST; shares Texture2 sampler. Final-skin slot, not the game compositor paint slot.</Property>
-      <Property Name="LiquidTiling">Raw vector exposed as a color by MaterialEditor compatibility: R/G=UV offset, B/A=UV scale. Default (0,0,1,1). No color interpretation or gamma conversion.</Property>
+      <Property Name="liquidmask">KKS five-region RGB encoding. UV0 with its own ST, linear clamp sampler. Not tiled with Texture2/3. Used only in KKS Regions mode.</Property>
+      <Property Name="Texture2">KKS two-stage pattern: R appears over amount 0..1; G is added over 1..2 by max union. Both stages use cutoff and softness before region amounts. Linear data, repeat/trilinear/aniso8 sampling.</Property>
+      <Property Name="Texture3">Tangent normal, not height. Raw AG: X=A,Y=G numerical GPU samples. Exported AG PNG: inverse-sRGB G only, requires data sampling (sRGB off). Unity Normal: use an imported normal map. Own ST after LiquidTiling. Repeat/trilinear/aniso8.</Property>
+      <Property Name="LiquidTiling">XY is UV offset; ZW is tiling. Applied before each pattern, normal and custom coverage texture ST. KKS region mask keeps untiled UV0.</Property>
       <Property Name="liquidftop">Game liquid amount 0..2 in the R-max(G,B) front-top region.</Property>
       <Property Name="liquidfbot">Game liquid amount 0..2 in the G-max(R,B) front-bottom region.</Property>
       <Property Name="liquidbtop">Game liquid amount 0..2 in the B-max(R,G) back-top region.</Property>
       <Property Name="liquidbbot">Game liquid amount 0..2 in the (min(R,G)-0.1)/0.9 back-bottom region.</Property>
       <Property Name="liquidface">Game liquid amount 0..2 in the (min(G,B)-0.1)/0.9 face region.</Property>
-      <Property Name="SkinLiquidColor">Pigmented liquid substrate color under resolved coverage. Does not tint Clearcoat or automatically make skin transparent.</Property>
-      <Property Name="SkinLiquidColorStrength">Liquid color coverage multiplier. Zero keeps underlying skin color while liquid normal/wet coat may still operate.</Property>
-      <Property Name="SkinLiquidNormalScale">Strength of the Texture3 packed normal before coverage blending. Independent of base/detail normal scales.</Property>
-      <Property Name="SkinLiquidMaterial">Blend substrate roughness toward SkinLiquidRoughness under liquid coverage. Does not enable Clearcoat.</Property>
-      <Property Name="SkinLiquidRoughness">Substrate roughness of covered liquid regions; independent of ClearCoatRoughness.</Property>
+      <Property Name="SkinLiquidColor">Pigment RGB and opacity A. A=0 is a transparent wet film, not a disabled liquid layer. Pigment alpha never fades the wet normal or specular reflection and never cuts the mesh.</Property>
+      <Property Name="SkinLiquidColorStrength">Pigment opacity multiplier. Combined with Color A inside the unified liquid coverage; zero preserves the substrate color and Toon lighting.</Property>
+      <Property Name="SkinLiquidNormalScale">Scales decoded tangent slopes, then normalizes and smoothly limits tilt. It does not scale XY before reconstructing Z. Zero gives an unperturbed liquid surface over the substrate main normal.</Property>
+      <Property Name="SkinLiquidMaterial">Master strength for the entire liquid layer: coverage, pigment, normals and interface response. Zero leaves the dry material. Under wet coverage the liquid replaces the common Clearcoat interface, never stacks a second coat.</Property>
+      <Property Name="SkinLiquidRoughness">Liquid GGX direct/probe perceptual roughness. Independent of dry Toon specular, masks, regional skin gloss and Clearcoat roughness. Normal AA can broaden unresolved detail.</Property>
       <Property Name="SkinCoatCoverage">0 common coat map only; 1 liquid; 2 authored wetness; 3 union. Multiplies existing coat weight/map. ClearCoat=0 always stays off.</Property>
       <Property Name="SkinWetness">Authored wetness gain times SkinControlMap B. Used only by wetness/union coat coverage; no pigment or geometry simulation.</Property>
       <Property Name="SkinLiquidCoatNormal">Optional blend from the selected common coat normal toward the liquid normal under liquid coverage. Does not change the shared normal-source enum.</Property>
@@ -1115,6 +1278,91 @@
       <Category Name="KKS Clothing Coverage">Independent clothing R/G cutout and optional MainTex alpha cutoff.</Category>
       <Category Name="KKS Gloss">Legacy skin/nail gloss and painted highlight controls; separate from X roughness and Clearcoat.</Category>
       <Category Name="Skin Response">Optional front-side diffuse softening, warmth and painted detail; not volumetric SSS.</Category>
-      <Category Name="KKS Liquid">Game liquid region amounts, tiled coverage and normal; no simulation or automatic transparency.</Category>
-      <Category Name="Skin Wet Surface">Liquid/authored wetness coverage for the shared Clearcoat; ClearCoat must be enabled.</Category></Shader>
-</MaterialEditorTooltips>
+      <Category Name="KKS Liquid">Unified coverage, independent pigment, stable normals and a single dielectric wet interface. LiquidX overlays already rendered surfaces; no GrabPass or volumetric water.</Category>
+      <Category Name="Skin Wet Surface">Liquid/authored wetness coverage for the shared Clearcoat; ClearCoat must be enabled.</Category>
+      <Property Name="LiquidDiffuseNormal">Fine normal influence on liquid pigment lighting only. Default zero. Never perturbs the substrate diffuse or its hard Toon shadow; wet reflections always use the liquid surface normal.</Property>
+      <Property Name="LiquidSpecularStrength">Artistic gain for the single liquid GGX direct/probe lobe. Zero hides reflected light, but does not disable pigment or interface transmission. Use Layer Strength to disable the entire layer.</Property>
+      <Property Name="LiquidNormalEncoding">0 Raw AG; 1 Exported AG PNG (encoded RGB, numerical alpha; import as data); 2 Unity Normal. Explicit formats, not automatic detection. Never combine mode 1 with automatic sRGB decode. Keep game runtime sampling flags for mode 0.</Property>
+      <Property Name="LiquidCoverageMode">0 KKS five regions and R/G stages; 1 custom mask R; 2 full surface. All liquid effects share the resulting coverage. Full Surface is suitable for independent water surfaces.</Property>
+      <Property Name="LiquidCoverageMap">Custom coverage in R, linear data. Used in Custom Mask mode. LiquidTiling then its own ST, repeat/trilinear/aniso8 sampling. Zero means no liquid.</Property>
+      <Property Name="LiquidCutoff">Rejects low pattern/custom-mask values, then remaps the remainder. Does not clip the mesh or use Liquid Color A. Zero-coverage pixels are unchanged.</Property>
+      <Property Name="LiquidEdgeSoftness">Smooth transition above the cutoff, augmented by pixel derivatives. Applied before KKS stage amounts so region animation remains continuous.</Property>
+      <Property Name="LiquidMaxNormalAngle">Smooth bound on decoded detail tilt in degrees, relative to the substrate main normal. Limits steep grazing ridges without changing roughness to hide decode errors.</Property>
+      <Property Name="LiquidNormalAA">Normal-variance specular anti-aliasing. Broadens unresolved high-frequency reflections. Zero disables variance broadening, not texture mip filtering.</Property>
+      <Property Name="LiquidIOR">Liquid interface refractive index, independent of common Clearcoat. 1.33 gives approximately 0.02 normal-incidence reflectance. 1 disables interface reflection. This is not screen-space refraction.</Property>
+      <Property Name="LiquidEnvironmentStrength">Independent gain for liquid reflection probes. Does not require the dry Reflection Mode or dry Reflection Mask. Base pass only; not duplicated by additional lights.</Property>
+      <Property Name="LiquidToonBlend">Mixes pigment soft lighting toward the substrate Toon visibility. Does not quantize liquid GGX or alter transparent-film substrate lighting.</Property>
+      <Property Name="LiquidDebugView">0 final; 1 effective coverage; 2 coverage-masked world normal; 3 liquid direct specular; 4 liquid environment; 5 pigment opacity; 6 raw coverage before cleanup.</Property>
+      <Property Name="LiquidEnergyBlend">Substrate attenuation strength, default 0.25. 0 preserves the underlying lighting; 1 applies full approximate interface transmission and substrate index matching. Does not change liquid direct/probe highlights. Independent of pigment alpha. Low values are an artistic energy override. LiquidX applies the same view attenuation to framebuffer blending.</Property>
+      <Property Name="LiquidAttenuationNormal">Liquid detail influence on the transmission normal, default 0. Zero uses the substrate main normal to prevent droplet slopes carving dark grooves into the underlying material. One uses full liquid detail. Reflections always retain full liquid normals. This is separate from LiquidDiffuseNormal for pigment shading.</Property>
+      <Property Name="LiquidShadowColor">Optional pigment shadow tint: RGB is a bounded multiplicative tint, A is its strength (default 0). Fades with Liquid Color A and Color Strength. Never tints a clear film, wet highlights or the dry substrate. Does not fill missing light, disable cast shadows, or control Fresnel attenuation; use LiquidEnergyBlend for that.</Property>
+      <Property Name="ToonNormalInfluence">Main normal-map influence on direct Toon diffuse only. 0 uses the mesh normal for this input; detail remains independently adjustable. Does not reduce specular, environment, Clearcoat or liquid normals. Default 1. UseRamp=0 retains continuous lighting.</Property>
+      <Property Name="ToonAA">Pixel-derivative filtering strength for procedural Toon bands and the diffuse geometric horizon. Default 1; 0 disables this extra AA, not texture filtering. Does not blur textures or remove large normal/compression blocks. Texture ramps retain their own sampler filtering.</Property>
+      <Property Name="ToonShadeColor">Renamed from ToonDarkFillColor; the optional colored-fill calculation is unchanged. RGB multiplies albedo; A is strength, default 0, not coverage. Still respects physical cast shadows. Use ToonMinLighting, not this color, to lift self-shadowed areas. Base-only, main-light-driven, off with UseRamp=0. Old game-card values under ToonDarkFillColor must be reapplied to this new property; no runtime migration plugin is included.</Property>
+      <Property Name="ToonMinLighting">Minimum normalized main-light Toon diffuse response after the diffuse horizon and cast shadows: u becomes m+(1-m)*u. Default 0.15 provides a gentle shadow lift. Set 0 to disable; explicitly saved material values are preserved. Lifts both self and external shadows, not final RGB or GI; albedo, main light intensity/color, distance/cookie and material layer attenuation still apply. Base-only, no repeated Add lift, disabled with UseRamp=0. Does not change specular/coat/reflection lobes. Set ToonShadeColor A=0 when tuning this control alone.</Property></Shader>
+
+    <Shader Name="tom/LiquidX"><Tooltip>Thin liquid surface or material-copy overlay. Shares coverage, pigment, stable normals and dielectric reflection with X integrated liquid. Premultiplied transparency; no depth writing, opaque shadow, GrabPass or volume simulation. Do not stack over integrated liquid.</Tooltip>
+      <Property Name="MainTex">RGB supplies body color; alpha multiplied by AlphaMask R supplies cutoff. Does not encode roughness.</Property>
+      <Property Name="AlphaMask">Linear R channel multiplied by MainTex alpha. This is cutout, not semi-transparent blending.</Property>
+      <Property Name="Cutoff">Discard when MainTex alpha times AlphaMask R is below this value. Shared by body, outline and shadow.</Property>
+      <Property Name="CullOption">0 double-sided; 1 render back faces; 2 render front faces. ShadowCaster follows the same material face policy.</Property>
+      <Property Name="OffsetFactor">LiquidX depth offset slope factor. Default zero. Use only to resolve coplanar overlay depth fighting; excessive offsets can show through nearby objects.</Property>
+      <Property Name="OffsetUnits">LiquidX depth offset units. Default minus one for a material-copy overlay. Set both offsets to zero for an independent water surface.</Property>
+      <Property Name="NormalMap">Unity-imported tangent-space normal map. Affects lighting and reflection direction; use normal-map import, not color data.</Property>
+      <Property Name="NormalMapScale">Strength of the main tangent-space normal perturbation.</Property>
+      <Property Name="Texture2">KKS two-stage pattern: R appears over amount 0..1; G is added over 1..2 by max union. Both stages use cutoff and softness before region amounts. Linear data, repeat/trilinear/aniso8 sampling.</Property>
+      <Property Name="Texture3">Tangent normal, not height. Raw AG: X=A,Y=G numerical GPU samples. Exported AG PNG: inverse-sRGB G only, requires data sampling (sRGB off). Unity Normal: use an imported normal map. Own ST after LiquidTiling. Repeat/trilinear/aniso8.</Property>
+      <Property Name="liquidmask">KKS five-region RGB encoding. UV0 with its own ST, linear clamp sampler. Not tiled with Texture2/3. Used only in KKS Regions mode.</Property>
+      <Property Name="LiquidTiling">XY is UV offset; ZW is tiling. Applied before each pattern, normal and custom coverage texture ST. KKS region mask keeps untiled UV0.</Property>
+      <Property Name="liquidftop">Game liquid amount 0..2 in the R-max(G,B) front-top region.</Property>
+      <Property Name="liquidfbot">Game liquid amount 0..2 in the G-max(R,B) front-bottom region.</Property>
+      <Property Name="liquidbtop">Game liquid amount 0..2 in the B-max(R,G) back-top region.</Property>
+      <Property Name="liquidbbot">Game liquid amount 0..2 in the (min(R,G)-0.1)/0.9 back-bottom region.</Property>
+      <Property Name="liquidface">Game liquid amount 0..2 in the (min(G,B)-0.1)/0.9 face region.</Property>
+      <Property Name="SkinLiquidColor">Pigment RGB and opacity A. A=0 is a transparent wet film, not a disabled liquid layer. Pigment alpha never fades the wet normal or specular reflection and never cuts the mesh.</Property>
+      <Property Name="SkinLiquidColorStrength">Pigment opacity multiplier. Combined with Color A inside the unified liquid coverage; zero preserves the substrate color and Toon lighting.</Property>
+      <Property Name="SkinLiquidMaterial">Master strength for the entire liquid layer: coverage, pigment, normals and interface response. Zero leaves the dry material. Under wet coverage the liquid replaces the common Clearcoat interface, never stacks a second coat.</Property>
+      <Property Name="SkinLiquidNormalScale">Scales decoded tangent slopes, then normalizes and smoothly limits tilt. It does not scale XY before reconstructing Z. Zero gives an unperturbed liquid surface over the substrate main normal.</Property>
+      <Property Name="SkinLiquidRoughness">Liquid GGX direct/probe perceptual roughness. Independent of dry Toon specular, masks, regional skin gloss and Clearcoat roughness. Normal AA can broaden unresolved detail.</Property>
+      <Property Name="LiquidDiffuseNormal">Fine normal influence on liquid pigment lighting only. Default zero. Never perturbs the substrate diffuse or its hard Toon shadow; wet reflections always use the liquid surface normal.</Property>
+      <Property Name="LiquidSpecularStrength">Artistic gain for the single liquid GGX direct/probe lobe. Zero hides reflected light, but does not disable pigment or interface transmission. Use Layer Strength to disable the entire layer.</Property>
+      <Property Name="LiquidNormalEncoding">0 Raw AG; 1 Exported AG PNG (encoded RGB, numerical alpha; import as data); 2 Unity Normal. Explicit formats, not automatic detection. Never combine mode 1 with automatic sRGB decode. Keep game runtime sampling flags for mode 0.</Property>
+      <Property Name="LiquidCoverageMode">0 KKS five regions and R/G stages; 1 custom mask R; 2 full surface. All liquid effects share the resulting coverage. Full Surface is suitable for independent water surfaces.</Property>
+      <Property Name="LiquidCoverageMap">Custom coverage in R, linear data. Used in Custom Mask mode. LiquidTiling then its own ST, repeat/trilinear/aniso8 sampling. Zero means no liquid.</Property>
+      <Property Name="LiquidCutoff">Rejects low pattern/custom-mask values, then remaps the remainder. Does not clip the mesh or use Liquid Color A. Zero-coverage pixels are unchanged.</Property>
+      <Property Name="LiquidEdgeSoftness">Smooth transition above the cutoff, augmented by pixel derivatives. Applied before KKS stage amounts so region animation remains continuous.</Property>
+      <Property Name="LiquidMaxNormalAngle">Smooth bound on decoded detail tilt in degrees, relative to the substrate main normal. Limits steep grazing ridges without changing roughness to hide decode errors.</Property>
+      <Property Name="LiquidNormalAA">Normal-variance specular anti-aliasing. Broadens unresolved high-frequency reflections. Zero disables variance broadening, not texture mip filtering.</Property>
+      <Property Name="LiquidIOR">Liquid interface refractive index, independent of common Clearcoat. 1.33 gives approximately 0.02 normal-incidence reflectance. 1 disables interface reflection. This is not screen-space refraction.</Property>
+      <Property Name="LiquidEnvironmentStrength">Independent gain for liquid reflection probes. Does not require the dry Reflection Mode or dry Reflection Mask. Base pass only; not duplicated by additional lights.</Property>
+      <Property Name="LiquidToonBlend">Mixes pigment soft lighting toward the substrate Toon visibility. Does not quantize liquid GGX or alter transparent-film substrate lighting.</Property>
+      <Property Name="LiquidDebugView">0 final; 1 effective coverage; 2 coverage-masked world normal; 3 liquid direct specular; 4 liquid environment; 5 pigment opacity; 6 raw coverage before cleanup.</Property>
+      <Property Name="MainLightIntensity">Main realtime direct diffuse and specular gain. Baked Subtractive main light remains owned by the lightmap.</Property>
+      <Property Name="AdditionalLightIntensity">Per-pixel ForwardAdd direct diffuse and specular gain. More lights still add energy.</Property>
+      <Property Name="VertexLightIntensity">Low-cost vertex diffuse fill gain. Vertex lights have no GGX, cookie or realtime shadow.</Property>
+      <Property Name="AmbientColor">Fallback material ambient color when LightProbeBlend is 0. Not reflection-probe brightness.</Property>
+      <Property Name="LightProbeBlend">Blend fallback AmbientColor toward native SH/GI when not lightmapped. Does not control Reflection Probes.</Property>
+      <Property Name="CustomSHVolumeBlend">Blend toward an available custom local SH volume. No effect without its external provider.</Property>
+      <Property Name="IndirectDiffuseIntensity">Indirect body illumination gain. Default 0.25 for a conservative start under bright Maker ambient lighting. Affects ambient/SH/lightmap diffuse, not direct lights, reflection specular or Clearcoat. Existing explicit material values are preserved.</Property>
+      <Property Name="IndirectToonBlend">Blend continuous indirect irradiance toward separate Toon shaping. Independent of the direct ramp.</Property>
+      <Property Name="IndirectShadeLevel">Dark-level output of indirect Toon shaping; near-zero irradiance still fades to black.</Property>
+      <Property Name="IndirectToonThreshold">Luminance threshold for indirect Toon shaping.</Property>
+      <Property Name="IndirectToonSoftness">Transition width for indirect Toon shaping.</Property>
+      <Property Name="UseRamp">Enable Toon transfer for direct diffuse. Disabling it uses continuous diffuse; does not disable physical shadows.</Property>
+      <Property Name="ToonThreshold">Direct diffuse light/shade boundary in procedural mode. Not a shadow-map bias.</Property>
+      <Property Name="ToonSoftness">Width of the procedural direct Toon transition. Smaller gives a harder boundary.</Property>
+      <Property Name="ToonShadeLevel">Procedural ramp dark-end value. Does not create unshadowed light behind an occluder.</Property>
+      <Property Name="RampTex">Texture-mode direct Toon transfer. Linear R is sampled horizontally at V=0.5. Ignored in procedural mode.</Property>
+      <Property Name="RampMode">0 procedural Toon transfer; 1 RampTex R. Secondary tone can modify either source.</Property>
+      <Property Name="ShadowStrength">Strength of main-shadow tint and direct diffuse shadow response. 0 relaxes artistic shadowing; 1 retains it.</Property>
+      <Property Name="NormalHorizonFade">Fade near the geometric light horizon to reduce normal-map back-light leaks.</Property>
+      <Category Name="Textures">Textures controls for the X material; see individual property hints for layer ownership.</Category>
+      <Category Name="Render Options">Render Options controls for the X material; see individual property hints for layer ownership.</Category>
+      <Category Name="Base Color">Base Color controls for the X material; see individual property hints for layer ownership.</Category>
+      <Category Name="KKS Liquid">Unified coverage, independent pigment, stable normals and a single dielectric wet interface. LiquidX overlays already rendered surfaces; no GrabPass or volumetric water.</Category>
+      <Category Name="Lighting">Lighting controls for the X material; see individual property hints for layer ownership.</Category>
+      <Category Name="Toon Shading">Toon Shading controls for the X material; see individual property hints for layer ownership.</Category>
+      <Category Name="Material">Material controls for the X material; see individual property hints for layer ownership.</Category>
+      <Property Name="LiquidEnergyBlend">Substrate attenuation strength, default 0.25. 0 preserves the underlying lighting; 1 applies full approximate interface transmission and substrate index matching. Does not change liquid direct/probe highlights. Independent of pigment alpha. Low values are an artistic energy override. LiquidX applies the same view attenuation to framebuffer blending.</Property>
+      <Property Name="LiquidAttenuationNormal">Liquid detail influence on the transmission normal, default 0. Zero uses the substrate main normal to prevent droplet slopes carving dark grooves into the underlying material. One uses full liquid detail. Reflections always retain full liquid normals. This is separate from LiquidDiffuseNormal for pigment shading.</Property>
+      <Property Name="LiquidShadowColor">Optional pigment shadow tint: RGB is a bounded multiplicative tint, A is its strength (default 0). Fades with Liquid Color A and Color Strength. Never tints a clear film, wet highlights or the dry substrate. Does not fill missing light, disable cast shadows, or control Fresnel attenuation; use LiquidEnergyBlend for that.</Property></Shader></MaterialEditorTooltips>

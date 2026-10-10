@@ -143,6 +143,11 @@ Shader "tom/EyeX"
         [MaterialToggle] _UseEyeSurfaceMask ("Use Eye Surface Mask", Float) = 0
         [NoScaleOffset] _EyeSurfaceMap ("Eye Surface Map", 2D) = "white" {}
         [Enum(GrayscaleHeight,0,DepthRMaskA,1)] _EyeSurfaceMapMode ("Eye Surface Map Encoding", Float) = 0
+		_ToonNormalInfluence ("Toon Main Normal Influence", Range(0,1)) = 1
+		_ToonDetailNormalInfluence ("Toon Detail Normal Influence", Range(0,1)) = 1
+		_ToonAA ("Toon Edge Anti Aliasing", Range(0,2)) = 1
+		_ToonShadeColor ("Toon Shade Color (RGB tint / A strength)", Color) = (0.35,0.35,0.35,0)
+		_ToonMinLighting ("Toon Minimum Lighting", Range(0,1)) = 0.15
     }
     SubShader
     {

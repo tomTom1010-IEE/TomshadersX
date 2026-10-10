@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest schema-ver="1">
   <guid>tom.Shaders.X</guid>
   <name>Tom Shaders X</name>
@@ -116,7 +116,42 @@
       <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
       <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
       <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
-    </Shader>
+
+      <Property Name="liquidmask" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture2" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture3" Category="KKS Liquid" Type="Texture" />
+      <Property Name="LiquidTiling" Category="KKS Liquid" Type="Color" />
+      <Property Name="liquidftop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidfbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbtop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidface" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidColor" Category="KKS Liquid" Type="Color" />
+      <Property Name="SkinLiquidColorStrength" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidNormalScale" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidMaterial" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidRoughness" Category="KKS Liquid" Type="Float" Range="0.04,1" />
+      <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMode" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMap" Type="Texture" Category="KKS Liquid" />
+      <Property Name="LiquidCutoff" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidEdgeSoftness" Type="Float" Category="KKS Liquid" Range="0,0.5" />
+      <Property Name="LiquidMaxNormalAngle" Type="Float" Category="KKS Liquid" Range="5,85" />
+      <Property Name="LiquidNormalAA" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidIOR" Type="Float" Category="KKS Liquid" Range="1,2" />
+      <Property Name="LiquidEnvironmentStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidToonBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidDebugView" Type="Float" Category="KKS Liquid" Range="0,6" />
+      <Property Name="LiquidEnergyBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidAttenuationNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidShadowColor" Type="Color" Category="KKS Liquid" />
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonDetailNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
     <!-- Primary alpha: optional depth prepass, independent color-pass ZWrite. -->
     <Shader Name="tom/MainAlphaX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomMainAlphaX">
       <Property Name="MainTex" Category="Textures" Type="Texture" />
@@ -234,7 +269,42 @@
       <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
       <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
       <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
-    </Shader>
+
+      <Property Name="liquidmask" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture2" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture3" Category="KKS Liquid" Type="Texture" />
+      <Property Name="LiquidTiling" Category="KKS Liquid" Type="Color" />
+      <Property Name="liquidftop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidfbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbtop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidface" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidColor" Category="KKS Liquid" Type="Color" />
+      <Property Name="SkinLiquidColorStrength" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidNormalScale" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidMaterial" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidRoughness" Category="KKS Liquid" Type="Float" Range="0.04,1" />
+      <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMode" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMap" Type="Texture" Category="KKS Liquid" />
+      <Property Name="LiquidCutoff" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidEdgeSoftness" Type="Float" Category="KKS Liquid" Range="0,0.5" />
+      <Property Name="LiquidMaxNormalAngle" Type="Float" Category="KKS Liquid" Range="5,85" />
+      <Property Name="LiquidNormalAA" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidIOR" Type="Float" Category="KKS Liquid" Range="1,2" />
+      <Property Name="LiquidEnvironmentStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidToonBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidDebugView" Type="Float" Category="KKS Liquid" Range="0,6" />
+      <Property Name="LiquidEnergyBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidAttenuationNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidShadowColor" Type="Color" Category="KKS Liquid" />
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonDetailNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
     <!-- Compatibility only: preserve the old depth-prepass identity and properties. -->
     <Shader Name="tom/MainAlphaX2Pass" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomMainAlphaX2Pass">
       <Property Name="MainTex" Category="Textures" Type="Texture" />
@@ -351,7 +421,42 @@
       <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
       <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
       <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
-    </Shader>
+
+      <Property Name="liquidmask" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture2" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture3" Category="KKS Liquid" Type="Texture" />
+      <Property Name="LiquidTiling" Category="KKS Liquid" Type="Color" />
+      <Property Name="liquidftop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidfbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbtop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidface" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidColor" Category="KKS Liquid" Type="Color" />
+      <Property Name="SkinLiquidColorStrength" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidNormalScale" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidMaterial" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidRoughness" Category="KKS Liquid" Type="Float" Range="0.04,1" />
+      <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMode" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMap" Type="Texture" Category="KKS Liquid" />
+      <Property Name="LiquidCutoff" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidEdgeSoftness" Type="Float" Category="KKS Liquid" Range="0,0.5" />
+      <Property Name="LiquidMaxNormalAngle" Type="Float" Category="KKS Liquid" Range="5,85" />
+      <Property Name="LiquidNormalAA" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidIOR" Type="Float" Category="KKS Liquid" Range="1,2" />
+      <Property Name="LiquidEnvironmentStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidToonBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidDebugView" Type="Float" Category="KKS Liquid" Range="0,6" />
+      <Property Name="LiquidEnergyBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidAttenuationNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidShadowColor" Type="Color" Category="KKS Liquid" />
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonDetailNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
     <!-- Primary two-color-layer alpha; keep its public BackFront name stable. -->
     <Shader Name="tom/MainAlphaXBackFront" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomMainAlphaXBackFront">
       <Property Name="MainTex" Category="Textures" Type="Texture" />
@@ -469,8 +574,47 @@
       <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
       <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
       <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
-    </Shader>
+
+      <Property Name="liquidmask" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture2" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture3" Category="KKS Liquid" Type="Texture" />
+      <Property Name="LiquidTiling" Category="KKS Liquid" Type="Color" />
+      <Property Name="liquidftop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidfbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbtop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidface" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidColor" Category="KKS Liquid" Type="Color" />
+      <Property Name="SkinLiquidColorStrength" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidNormalScale" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidMaterial" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidRoughness" Category="KKS Liquid" Type="Float" Range="0.04,1" />
+      <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMode" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMap" Type="Texture" Category="KKS Liquid" />
+      <Property Name="LiquidCutoff" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidEdgeSoftness" Type="Float" Category="KKS Liquid" Range="0,0.5" />
+      <Property Name="LiquidMaxNormalAngle" Type="Float" Category="KKS Liquid" Range="5,85" />
+      <Property Name="LiquidNormalAA" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidIOR" Type="Float" Category="KKS Liquid" Range="1,2" />
+      <Property Name="LiquidEnvironmentStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidToonBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidDebugView" Type="Float" Category="KKS Liquid" Range="0,6" />
+      <Property Name="LiquidEnergyBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidAttenuationNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidShadowColor" Type="Color" Category="KKS Liquid" />
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonDetailNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
     <Shader Name="tom/HairX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomHairX">
+      <Property Name="ColorMask" Category="Textures" Type="Texture" />
+      <Property Name="Color" Category="Base Color" Type="Color" />
+      <Property Name="Color2" Category="Base Color" Type="Color" />
+      <Property Name="Color3" Category="Base Color" Type="Color" />
       <Property Name="MainTex" Category="Textures" Type="Texture" />
       <Property Name="NormalMap" Category="Textures" Type="Texture" />
       <Property Name="NormalMapDetail" Category="Textures" Type="Texture" />
@@ -591,7 +735,12 @@
       <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
       <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
       <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
-    </Shader>
+
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonDetailNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
     <Shader Name="tom/EyeWX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomEyeWX">
       <Property Name="MainTex" Category="Textures" Type="Texture" />
       <Property Name="NormalMap" Category="Textures" Type="Texture" />
@@ -696,7 +845,12 @@
       <Property Name="StencilCutoff" Category="Render Options" Type="Float" Range="0,1" />
       <Property Name="Color" Category="Eye Surface" Type="Color" />
       <Property Name="EyeDebugView" Category="Eye Surface" Type="Float" Range="0,2" />
-    </Shader>
+
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonDetailNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
     <Shader Name="tom/EyeX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomEyeX">
       <Property Name="MainTex" Category="Textures" Type="Texture" />
       <Property Name="NormalMap" Category="Textures" Type="Texture" />
@@ -829,7 +983,12 @@
       <Property Name="UseEyeSurfaceMask" Category="Eye Surface" Type="Float" Range="0,1" />
       <Property Name="EyeSurfaceMap" Category="Eye Surface" Type="Texture" />
       <Property Name="EyeSurfaceMapMode" Category="Eye Surface" Type="Float" Range="0,1" />
-    </Shader>
+
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonDetailNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
     <Shader Name="tom/SkinX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomSkinX">
       <Property Name="MainTex" Category="Textures" Type="Texture" />
       <Property Name="NormalMap" Category="Textures" Type="Texture" />
@@ -939,7 +1098,7 @@
       <Property Name="ClearCoatEnvironmentStrength" Category="Clearcoat" Type="Float" Range="0,2" />
       <Property Name="ClearCoatEnergyBlend" Category="Clearcoat" Type="Float" Range="0,1" />
       <Property Name="ClearCoatDebugView" Category="Clearcoat" Type="Float" Range="0,5" />
-    
+
       <Property Name="DetailMask" Category="Skin Response" Type="Texture" />
       <Property Name="LineMask" Category="Skin Response" Type="Texture" />
       <Property Name="NormalMask" Category="Skin Response" Type="Texture" />
@@ -998,7 +1157,85 @@
       <Property Name="SkinCoatCoverage" Category="Skin Wet Surface" Type="Float" Range="0,3" />
       <Property Name="SkinWetness" Category="Skin Wet Surface" Type="Float" Range="0,1" />
       <Property Name="SkinLiquidCoatNormal" Category="KKS Liquid" Type="Float" Range="0,1" />
-      <Property Name="SkinDebugView" Category="Debug" Type="Float" Range="0,13" /></Shader>
-  </MaterialEditor>
+      <Property Name="SkinDebugView" Category="Debug" Type="Float" Range="0,13" />
+      <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMode" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMap" Type="Texture" Category="KKS Liquid" />
+      <Property Name="LiquidCutoff" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidEdgeSoftness" Type="Float" Category="KKS Liquid" Range="0,0.5" />
+      <Property Name="LiquidMaxNormalAngle" Type="Float" Category="KKS Liquid" Range="5,85" />
+      <Property Name="LiquidNormalAA" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidIOR" Type="Float" Category="KKS Liquid" Range="1,2" />
+      <Property Name="LiquidEnvironmentStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidToonBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidDebugView" Type="Float" Category="KKS Liquid" Range="0,6" />
+      <Property Name="LiquidEnergyBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidAttenuationNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidShadowColor" Type="Color" Category="KKS Liquid" />
+      <Property Name="ToonNormalInfluence" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ToonAA" Category="Toon Shading" Type="Float" Range="0, 2" />
+      <Property Name="ToonShadeColor" Category="Toon Shading" Type="Color" />
+      <Property Name="ToonMinLighting" Category="Toon Shading" Type="Float" Range="0, 1" /></Shader>
+
+    <Shader Name="tom/LiquidX" AssetBundle="chara/tom/shaders/tomx.unity3d" Asset="a_TomLiquidX">
+      <Property Name="MainTex" Category="Textures" Type="Texture" />
+      <Property Name="AlphaMask" Category="Textures" Type="Texture" />
+      <Property Name="Cutoff" Category="Render Options" Type="Float" Range="0,1" />
+      <Property Name="CullOption" Category="Render Options" Type="Float" Range="0, 2" />
+      <Property Name="OffsetFactor" Type="Float" Category="Render Options" Range="-4,4" />
+      <Property Name="OffsetUnits" Type="Float" Category="Render Options" Range="-4,4" />
+      <Property Name="NormalMap" Category="Textures" Type="Texture" />
+      <Property Name="NormalMapScale" Category="Base Color" Type="Float" Range="0,2" />
+      <Property Name="Texture2" Category="KKS Liquid" Type="Texture" />
+      <Property Name="Texture3" Category="KKS Liquid" Type="Texture" />
+      <Property Name="liquidmask" Category="KKS Liquid" Type="Texture" />
+      <Property Name="LiquidTiling" Category="KKS Liquid" Type="Color" />
+      <Property Name="liquidftop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidfbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbtop" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidbbot" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="liquidface" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidColor" Category="KKS Liquid" Type="Color" />
+      <Property Name="SkinLiquidColorStrength" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidMaterial" Category="KKS Liquid" Type="Float" Range="0,1" />
+      <Property Name="SkinLiquidNormalScale" Category="KKS Liquid" Type="Float" Range="0,2" />
+      <Property Name="SkinLiquidRoughness" Category="KKS Liquid" Type="Float" Range="0.04,1" />
+      <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMode" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidCoverageMap" Type="Texture" Category="KKS Liquid" />
+      <Property Name="LiquidCutoff" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidEdgeSoftness" Type="Float" Category="KKS Liquid" Range="0,0.5" />
+      <Property Name="LiquidMaxNormalAngle" Type="Float" Category="KKS Liquid" Range="5,85" />
+      <Property Name="LiquidNormalAA" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidIOR" Type="Float" Category="KKS Liquid" Range="1,2" />
+      <Property Name="LiquidEnvironmentStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
+      <Property Name="LiquidToonBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidDebugView" Type="Float" Category="KKS Liquid" Range="0,6" />
+      <Property Name="MainLightIntensity" Category="Lighting" Type="Float" Range="0,4" />
+      <Property Name="AdditionalLightIntensity" Category="Lighting" Type="Float" Range="0,4" />
+      <Property Name="VertexLightIntensity" Category="Lighting" Type="Float" Range="0,1" />
+      <Property Name="AmbientColor" Category="Lighting" Type="Color" />
+      <Property Name="LightProbeBlend" Category="Lighting" Type="Float" Range="0,1" />
+      <Property Name="CustomSHVolumeBlend" Category="Lighting" Type="Float" Range="0,1" />
+      <Property Name="IndirectDiffuseIntensity" Category="Lighting" Type="Float" Range="0,4" />
+      <Property Name="IndirectToonBlend" Category="Lighting" Type="Float" Range="0,1" />
+      <Property Name="IndirectShadeLevel" Category="Lighting" Type="Float" Range="0,1" />
+      <Property Name="IndirectToonThreshold" Category="Lighting" Type="Float" Range="0,2" />
+      <Property Name="IndirectToonSoftness" Category="Lighting" Type="Float" Range="0.001,1" />
+      <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0,1" />
+      <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0,1" />
+      <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0,1" />
+      <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0,1" />
+      <Property Name="RampTex" Category="Toon Shading" Type="Texture" />
+      <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0,1" />
+      <Property Name="NormalHorizonFade" Category="Material" Type="Float" Range="0.001,0.25" />
+      <Property Name="LiquidEnergyBlend" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidAttenuationNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
+      <Property Name="LiquidShadowColor" Type="Color" Category="KKS Liquid" /></Shader></MaterialEditor>
   <game>Koikatsu Sunshine</game>
 </manifest>

@@ -93,7 +93,8 @@ float2 TomEyeGradientCoordinates(float2 value, float2 dx, float2 dy, float inver
 }
 
 void TomEyeRefractedRGB(TomVaryings i, float3 geometric, float3 interfaceNormal, float orientation,
-    inout float3 rgb, inout float3 mainNormal, inout float3 combinedNormal, out float3 debug)
+    inout float3 rgb, inout float3 mainNormal, inout float3 combinedNormal,
+    inout float3 toonNormal, out float3 debug)
 {
     float2 uv = TomEyeMainUV(i.uv0);
     float2 radius = max(float2(_IrisRadiusX, _IrisRadiusY), 0.001);
@@ -192,6 +193,7 @@ void TomEyeRefractedRGB(TomVaryings i, float3 geometric, float3 interfaceNormal,
     float3 tangent = normalize(i.tangentWS.xyz), bitangent = normalize(i.bitangentWS) * orientation;
     mainNormal = normalize(lerp(mainNormal, normalize(bn.x * tangent + bn.y * bitangent + bn.z * geometric), validity));
     combinedNormal = normalize(lerp(combinedNormal, normalize(cn.x * tangent + cn.y * bitangent + cn.z * geometric), validity));
+    toonNormal = normalize(lerp(toonNormal, TomToonNormalWS(bn, dn, tangent, bitangent, geometric), validity));
     if (_EyeDebugView > 3.5 && _EyeDebugView < 4.5) debug = float3(0.5 + (hit - uv) / radius, 0.0);
     if (_EyeDebugView > 5.5 && _EyeDebugView < 6.5) debug = float3(1.0 - chart.valid, 1.0 - validity, 0.0);
 }
@@ -203,7 +205,7 @@ void TomEyeApplyOptics(TomVaryings i, TomEyeLayers eye, float orientation, inout
     material.eyeDebug = 0.0;
 #if defined(TOM_EYE_IRIS)
     TomEyeRefractedRGB(i, material.geometricNormalWS, material.eyeInterfaceNormal, orientation,
-        rgb, material.mainNormalWS, material.shadingNormalWS, material.eyeDebug);
+        rgb, material.mainNormalWS, material.shadingNormalWS, material.toonNormalWS, material.eyeDebug);
     rgb = lerp(rgb, eye.expression.rgb, saturate(eye.expression.a));
 #else
     // Game EyeW tint has a neutral value of 0.5; X lighting owns light intensity.

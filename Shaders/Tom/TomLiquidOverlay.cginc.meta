@@ -1,9 +1,8 @@
 fileFormatVersion: 2
-guid: e31c22f32af57624ea298583e7385fc0
+guid: d51027f24d904fd47a9b4611cb480c19
 ShaderImporter:
   externalObjects: {}
-  defaultTextures:
-  - _Texture3: {fileID: 2800000, guid: 8686dea74cfaa154cbd1f4716a8b94fe, type: 2}
+  defaultTextures: []
   nonModifiableTextures: []
   userData: 
   assetBundleName: 

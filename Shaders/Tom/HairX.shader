@@ -131,6 +131,16 @@ Shader "tom/HairX"
 		_ClearCoatEnvironmentStrength ("Clearcoat Environment Strength", Range(0,2)) = 1
 		_ClearCoatEnergyBlend ("Clearcoat Body Energy Blend", Range(0,1)) = 1
 		[Enum(Off,0,Direct,1,Environment,2,Normal,3,Weight,4,BodyRetention,5)] _ClearCoatDebugView ("Clearcoat Debug View", Float) = 0
+
+		_ColorMask ("Color Mask", 2D) = "black" {}
+		[Gamma] _Color ("Color", Vector) = (1,1,1,1)
+		[Gamma] _Color2 ("Color2", Vector) = (0.7843137,0.7843137,0.7843137,1)
+		[Gamma] _Color3 ("Color3", Vector) = (0.5,0.5,0.5,1)
+		_ToonNormalInfluence ("Toon Main Normal Influence", Range(0,1)) = 1
+		_ToonDetailNormalInfluence ("Toon Detail Normal Influence", Range(0,1)) = 1
+		_ToonAA ("Toon Edge Anti Aliasing", Range(0,2)) = 1
+		_ToonShadeColor ("Toon Shade Color (RGB tint / A strength)", Color) = (0.35,0.35,0.35,0)
+		_ToonMinLighting ("Toon Minimum Lighting", Range(0,1)) = 0.15
 	}
 
 	SubShader

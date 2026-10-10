@@ -163,22 +163,42 @@ Shader "tom/SkinX"
         [Gamma] _SkinWarmColor ("Skin Transition Tint", Color) = (1,0.45,0.3,1)
         _liquidmask ("KKS Liquid Regions", 2D) = "black" {}
         _Texture2 ("KKS Liquid Pattern (RG)", 2D) = "black" {}
-        _Texture3 ("KKS Liquid Normal", 2D) = "bump" {}
+        _Texture3 ("KKS Liquid Normal", 2D) = "gray" {}
         _LiquidTiling ("KKS Liquid Offset XY / Scale ZW", Vector) = (0,0,1,1)
         _liquidftop ("Liquid Front Top", Range(0,2)) = 0
         _liquidfbot ("Liquid Front Bottom", Range(0,2)) = 0
         _liquidbtop ("Liquid Back Top", Range(0,2)) = 0
         _liquidbbot ("Liquid Back Bottom", Range(0,2)) = 0
         _liquidface ("Liquid Face", Range(0,2)) = 0
-        [Gamma] _SkinLiquidColor ("Liquid Surface Color", Color) = (0.85,0.85,0.8,1)
-        _SkinLiquidColorStrength ("Liquid Color Coverage", Range(0,1)) = 1
-        _SkinLiquidNormalScale ("Liquid Normal Strength", Range(0,2)) = 1
-        _SkinLiquidMaterial ("Liquid Roughness Influence", Range(0,1)) = 1
+        [Gamma] _SkinLiquidColor ("Liquid Pigment Color", Color) = (0.85,0.85,0.8,1)
+        _SkinLiquidColorStrength ("Liquid Pigment Strength", Range(0,1)) = 1
+        _SkinLiquidNormalScale ("Liquid Normal Slope", Range(0,2)) = 1
+        _SkinLiquidMaterial ("Liquid Layer Strength", Range(0,1)) = 1
         _SkinLiquidRoughness ("Liquid Substrate Roughness", Range(0.04,1)) = 0.25
         [Enum(CommonMap,0,Liquid,1,Wetness,2,Union,3)] _SkinCoatCoverage ("Skin Coat Coverage Source", Float) = 0
         _SkinWetness ("Authored Wetness Strength", Range(0,1)) = 0
         _SkinLiquidCoatNormal ("Liquid Normal In Coat", Range(0,1)) = 0
         [Enum(TomSkinDebugView)] _SkinDebugView ("Skin Debug View", Float) = 0
+        _LiquidDiffuseNormal ("Liquid Pigment Normal Influence", Range(0,1)) = 0
+        _LiquidSpecularStrength ("Liquid Specular Strength", Range(0,2)) = 1
+        [Enum(Raw AG,0,Exported AG PNG,1,Unity Normal,2)] _LiquidNormalEncoding ("Liquid Normal Encoding", Float) = 0
+        [Enum(KKS Regions,0,Custom Mask,1,Full Surface,2)] _LiquidCoverageMode ("Liquid Coverage Source", Float) = 0
+        _LiquidCoverageMap ("Liquid Custom Coverage (R)", 2D) = "white" {}
+        _LiquidCutoff ("Liquid Coverage Cutoff", Range(0,1)) = 0.02
+        _LiquidEdgeSoftness ("Liquid Edge Softness", Range(0,0.5)) = 0.04
+        _LiquidMaxNormalAngle ("Liquid Maximum Normal Angle", Range(5,85)) = 60
+        _LiquidNormalAA ("Liquid Normal Filtering", Range(0,2)) = 1
+        _LiquidIOR ("Liquid IOR", Range(1,2)) = 1.33
+        _LiquidEnvironmentStrength ("Liquid Environment Strength", Range(0,2)) = 1
+        _LiquidToonBlend ("Liquid Pigment Toon Blend", Range(0,1)) = 0
+        _LiquidEnergyBlend ("Liquid Substrate Attenuation", Range(0,1)) = 0.25
+        _LiquidAttenuationNormal ("Liquid Detail in Attenuation", Range(0,1)) = 0
+        _LiquidShadowColor ("Liquid Pigment Shadow (RGB tint / A strength)", Color) = (0.65,0.65,0.65,0)
+        [Enum(Off,0,Coverage,1,Normal,2,Direct Specular,3,Environment,4,Pigment,5,Raw Coverage,6)] _LiquidDebugView ("Liquid Debug View", Float) = 0
+		_ToonNormalInfluence ("Toon Main Normal Influence", Range(0,1)) = 1
+		_ToonAA ("Toon Edge Anti Aliasing", Range(0,2)) = 1
+		_ToonShadeColor ("Toon Shade Color (RGB tint / A strength)", Color) = (0.35,0.35,0.35,0)
+		_ToonMinLighting ("Toon Minimum Lighting", Range(0,1)) = 0.15
 	}
 
 	SubShader
@@ -210,6 +230,7 @@ Shader "tom/SkinX"
 			float _OutlineDepthOffset;
 			float _OutlineNormalSource;
 			float _DebugView;
+			float _LiquidDebugView;
 			float4 _OutlineColor;
 			struct appdata
 			{
@@ -266,6 +287,7 @@ Shader "tom/SkinX"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 				clip(_OutlineOn - 0.5);
 				clip(0.5 - _DebugView);
+				clip(0.5 - _LiquidDebugView);
                 clip(0.5 - _SkinDebugView);
                 clip(0.5 - _ClearCoatDebugView);
 				if (_CullOption > 0.5 && _CullOption < 1.5)

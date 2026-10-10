@@ -115,6 +115,11 @@ Shader "tom/EyeWX"
         _StencilCutoff ("Stencil Cutoff", Range(0,1)) = 0.5
         [Gamma] _Color ("Game Tint (0.5 Neutral)", Color) = (0.5,0.5,0.5,1)
         [Enum(Off,0,Alpha,1,Stencil,2)] _EyeDebugView ("Eye Debug View", Float) = 0
+		_ToonNormalInfluence ("Toon Main Normal Influence", Range(0,1)) = 1
+		_ToonDetailNormalInfluence ("Toon Detail Normal Influence", Range(0,1)) = 1
+		_ToonAA ("Toon Edge Anti Aliasing", Range(0,2)) = 1
+		_ToonShadeColor ("Toon Shade Color (RGB tint / A strength)", Color) = (0.35,0.35,0.35,0)
+		_ToonMinLighting ("Toon Minimum Lighting", Range(0,1)) = 0.15
     }
     SubShader
     {

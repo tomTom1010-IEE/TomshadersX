@@ -194,6 +194,10 @@ Material:
     - _SpecularThreshold: 0.5
     - _SpecularToonBlend: 1
     - _StencilCutoff: 0.5
+    - _ToonAA: 1
+    - _ToonDetailNormalInfluence: 1
+    - _ToonMinLighting: 0.15
+    - _ToonNormalInfluence: 1
     - _ToonShadeLevel: 0.15
     - _ToonSoftness: 0.1
     - _ToonThreshold: 0.5
@@ -214,5 +218,6 @@ Material:
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.65, g: 0.65, b: 0.7, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ToonShadeColor: {r: 0.35, g: 0.35, b: 0.35, a: 0}
     - _overcolor1: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor2: {r: 1, g: 1, b: 1, a: 1}

@@ -13,13 +13,20 @@ standard UV sphere and fixed exposure. No per-image brightening or generated
 illustrations. Open the interactive showcase for full-resolution images and complete
 material settings.
 
-Eight shaders cover opaque/cutout surfaces, three transparency strategies, hair,
-eye-area surfaces, iris optics, and shared face/body skin. Common features include
+Nine shaders cover opaque/cutout surfaces, three transparency strategies, hair,
+eye-area surfaces, iris optics, shared face/body skin, and an independent liquid overlay. Common features include
 Toon diffuse and highlights, GGX, shadow styling, SH diffuse, environment
 reflection, MatCap, Clearcoat, Rim, Outline and emission. Hair adds anisotropy;
 EyeX adds shader-only shallow parallax, depth maps and optional RGB dispersion.
 
 ## Use and Scope
+
+- **[Download the complete KKS package](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.3.1-20261011)**
+  (2026-10-11 revision). Includes both zipmods, optional plugins and required bundles.
+  [Release notes and upgrade instructions](Documents/ReleaseNotes.en.md).
+- This revision adds HairX three-color masks, the modern liquid layer and LiquidX,
+  Toon normal controls, and **ToonMinLighting = 0.15** by default. Saved overrides
+  remain unchanged; materials without a saved minimum inherit the new default.
 
 - Current package: **0.3.1**, with new indirect diffuse gain defaulting to **0.25**.
   Saved material overrides are preserved.
