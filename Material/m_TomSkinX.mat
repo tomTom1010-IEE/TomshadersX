@@ -44,6 +44,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FaceSDFMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FaceSDFTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LayerMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -167,6 +175,16 @@ Material:
     - _EnvironmentSoftness: 0.2
     - _EnvironmentThreshold: 0.6
     - _EnvironmentToonBlend: 1
+    - _FaceSDFAngleMode: 0
+    - _FaceSDFChannel: 0
+    - _FaceSDFDebugView: 0
+    - _FaceSDFDirectionSource: 1
+    - _FaceSDFInvert: 0
+    - _FaceSDFMirrorU: 0.5
+    - _FaceSDFOffset: 0
+    - _FaceSDFSideMode: 1
+    - _FaceSDFSoftness: 0.03
+    - _FaceSDFStrength: 1
     - _FresnelStrength: 1
     - _IndirectDiffuseIntensity: 0.25
     - _IndirectShadeLevel: 0.3
@@ -190,8 +208,10 @@ Material:
     - _LiquidToonBlend: 0
     - _MainLightIntensity: 1
     - _MatCapBlendMode: 1
+    - _MatCapDetailNormalInfluence: 1
     - _MatCapIntensity: 1
     - _MatCapMip: 0
+    - _MatCapNormalInfluence: 1
     - _MatCapNormalSource: 2
     - _Metallic: 0
     - _NormalHorizonFade: 0.05
@@ -233,6 +253,7 @@ Material:
     - _SkinLiquidRoughness: 0.25
     - _SkinMainAlphaClip: 0
     - _SkinPatternStrength: 1
+    - _SkinShadeColorSource: 1
     - _SkinShadeStrength: 1
     - _SkinStrength: 0
     - _SkinWarmWidth: 0.4
@@ -242,7 +263,9 @@ Material:
     - _SpeclarHeight: 0.98
     - _SpecularAA: 0.5
     - _SpecularBands: 1
+    - _SpecularDetailNormalInfluence: 1
     - _SpecularIOR: 1.5
+    - _SpecularNormalInfluence: 1
     - _SpecularOcclusionStrength: 1
     - _SpecularPower: 1
     - _SpecularPowerNail: 1
@@ -259,10 +282,11 @@ Material:
     - _ToonSoftness: 0.1
     - _ToonThreshold: 0.5
     - _UseDetailRAsSpecularMap: 0
+    - _UseFaceSDF: 0
     - _UseMaterialRoughnessForEnvironment: 1
     - _UsePackedMaterialMap: 0
     - _UseRamp: 1
-    - _UseRampForShadows: 1
+    - _UseRampForShadows: 0
     - _VertexLightIntensity: 0.5
     - _alpha_a: 0
     - _alpha_b: 0
@@ -286,13 +310,17 @@ Material:
     - _Col3: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EnvironmentColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FaceSDFForward: {r: 0, g: 0, b: 1, a: 0}
+    - _FaceSDFUp: {r: 0, g: 1, b: 0, a: 0}
     - _LiquidShadowColor: {r: 0.65, g: 0.65, b: 0.65, a: 0}
     - _LiquidTiling: {r: 0, g: 0, b: 1, a: 1}
+    - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.65, g: 0.65, b: 0.7, a: 1}
     - _SkinLineColor: {r: 0.2, g: 0.16, b: 0.16, a: 1}
     - _SkinLiquidColor: {r: 0.85, g: 0.85, b: 0.8, a: 1}
+    - _SkinShadeColor: {r: 0.65, g: 0.65, b: 0.7, a: 1}
     - _SkinWarmColor: {r: 1, g: 0.45, b: 0.3, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _ToonShadeColor: {r: 0.35, g: 0.35, b: 0.35, a: 0}

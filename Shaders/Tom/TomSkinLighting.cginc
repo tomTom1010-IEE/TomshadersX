@@ -1,6 +1,8 @@
 #ifndef TOM_SKIN_LIGHTING_INC
 #define TOM_SKIN_LIGHTING_INC
 
+#include "TomSkinSDF.cginc"
+
 float TomSkinDiffuseNL(TomMaterialData m, float3 normalWS, float3 lightDir)
 {
     float nl = dot(normalWS, lightDir);

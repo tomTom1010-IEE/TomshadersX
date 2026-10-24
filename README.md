@@ -13,23 +13,24 @@ standard UV sphere and fixed exposure. No per-image brightening or generated
 illustrations. Open the interactive showcase for full-resolution images and complete
 material settings.
 
-Nine shaders cover opaque/cutout surfaces, three transparency strategies, hair,
-eye-area surfaces, iris optics, shared face/body skin, and an independent liquid overlay. Common features include
+Twelve shaders cover opaque/cutout surfaces, three transparency strategies, hair,
+eye-area surfaces, iris optics, shared face/body skin, an independent liquid overlay,
+and three independent D3D11 tessellation/displacement variants. Common features include
 Toon diffuse and highlights, GGX, shadow styling, SH diffuse, environment
 reflection, MatCap, Clearcoat, Rim, Outline and emission. Hair adds anisotropy;
 EyeX adds shader-only shallow parallax, depth maps and optional RGB dispersion.
 
 ## Use and Scope
 
-- **[Download the complete KKS package](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.3.1-20261011)**
-  (2026-10-11 revision). Includes both zipmods, optional plugins and required bundles.
+- **[Download the complete KKS package](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.4.0-20261024)**
+  Includes both zipmods, optional plugins and required bundles.
   [Release notes and upgrade instructions](Documents/ReleaseNotes.en.md).
-- This revision adds HairX three-color masks, the modern liquid layer and LiquidX,
-  Toon normal controls, and **ToonMinLighting = 0.15** by default. Saved overrides
-  remain unchanged; materials without a saved minimum inherit the new default.
+- This revision adds independent Tess variants, Skin face SDF, dual-lobe HairX
+  controls and surface-height bias, independent specular/MatCap normal controls,
+  continuous tinted MatCap and independent painted skin shade. Head Band stays archived.
 
-- Current package: **0.3.1**, with new indirect diffuse gain defaulting to **0.25**.
-  Saved material overrides are preserved.
+- Current package: **0.4.0**. ToonMinLighting stays **0.15** and indirect diffuse
+  gain stays **0.25**. Saved material overrides are preserved.
 - Use Sideloader and MaterialEditor with the built zipmod in the game's mods
   directory. This repository contains the source package, not a complete Unity
   project; see the build guide to produce a zipmod.

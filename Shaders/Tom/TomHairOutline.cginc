@@ -13,6 +13,7 @@ float _OutlineScreenSpace;
 float _OutlineDepthOffset;
 float _OutlineNormalSource;
 float _DebugView;
+float _HairHighlightDebugView;
 float4 _OutlineColor;
 #include "TomHairCoverage.cginc"
 struct appdata
@@ -74,6 +75,8 @@ fixed4 fragOutline(v2f i, fixed faceSign : VFACE) : SV_Target
 	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 	clip(_OutlineOn - 0.5);
 	clip(0.5 - _DebugView);
+	int hairDebug = (int)floor(_HairHighlightDebugView + 0.5);
+	clip(hairDebug > 0 && hairDebug <= 6 ? -1.0 : 1.0);
 	if (_CullOption > 0.5 && _CullOption < 1.5)
 		clip(faceSign);
 	else

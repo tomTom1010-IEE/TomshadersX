@@ -1,69 +1,80 @@
-# Tom Shaders X: 2026-10-11 Release
+# Tom Shaders X 0.4.0
 
 [简体中文](ReleaseNotes.zh-CN.md)
 
-Release tag: `v0.3.1-20261011`. This dated revision retains shader package version
-0.3.1 and the accepted runtime binaries. It replaces, rather than accompanies,
-the earlier 0.3.1 shader zipmod.
+KKS / Unity 2019.4 Built-in Forward / D3D11. Tag: `v0.4.0-20261024`.
+Replace the previous main shader zipmod; do not install both revisions.
 
-## Changes
+## Changes Since 0.3.1
 
-- HairX supports the KKS `_ColorMask` and `_Color`, `_Color2`, `_Color3` contract,
-  while retaining independent BaseColor. An unset mask does not apply `_Color`
-  to already colored hair textures.
-- SkinX and the opaque/alpha families share a modern liquid layer with explicit
-  normal encoding, coverage cutoff/softness, independent GGX wet reflections,
-  roughness and IOR, and controlled normal strength/antialiasing. Eye/Hair do not
-  gain liquid controls. The ninth shader, LiquidX, provides a thin-surface overlay.
-- Liquid pigment alpha controls pigment opacity independently of wet reflections.
-  Substrate attenuation and pigment shadow tint are separate controls, reducing
-  unwanted dark edges without disabling scene shadows. LiquidEnergyBlend defaults
-  to 0.25, LiquidAttenuationNormal to 0, and LiquidShadowColor alpha to 0.
-- Toon normal influence and antialiasing controls help soften irregular diffuse
-  transitions without changing reflection normals.
-- ToonMinLighting remaps the shadowed main-light Toon diffuse response. Its new
-  default is **0.15** in eight shaders and their bundled carriers; set 0 to disable.
-  It lifts self/cast-shadowed diffuse once in the Base pass, not once per extra
-  light. It is not emission or an absolute pixel-brightness floor.
-- ToonDarkFillColor is renamed **ToonShadeColor**. Its optional colored-fill
-  behavior is unchanged; alpha defaults to 0. Indirect diffuse still defaults to 0.25.
-- English/Chinese manuals and MaterialEditor help are updated.
+- Twelve shaders, including independent MainOpaqueXTess, SkinXTess and MainAlphaXTess.
+  Tess inherits ordinary material IDs and shared lighting; color, additional lights,
+  outline, cast shadows and the Alpha depth prepass share deformation. Requires
+  D3D11/SM5; factor 1 still has Hull/Domain cost.
+- Optional Skin face SDF with independent threshold/region maps and explicit
+  encoding. DetailMask is not reinterpreted as SDF. The optional head provider
+  tracks animated heads without resetting shared materials.
+- HairX dual highlight lobes, angular shifts, explicit flow conventions, local
+  control maps, selected highlight normals and texture-free Surface Height bias.
+  Height biases a reflection frame; it is not a world-space translation.
+- Separate main/detail normal influence for dry Specular and MatCap. HairX uses
+  its own controls once; its non-default horizon follows the selected normal while
+  retaining the geometric guard. Other lighting layers remain independent.
+- Continuous MatCapBlendMode from Multiply (0) to Add (1), preserving both endpoints.
+  MatCapColor defaults white/A=1; alpha weights MatCap only. Add remains Base-only.
+- Independent SkinShadeColor for DetailMask G / LineMask B painted diffuse shade,
+  still weighted by SkinShadeStrength. Source 0 retains the legacy ShadowColor
+  link; source 1 selects the independent color. Carrier templates select source 1.
+  SkinLineColor and optional ToonShadeColor stay separate; SkinShadeColor A is unused.
+- Reorganized Hair ME groups and bilingual help describe units, shared/primary/
+  secondary scope, map channels and intentional shader-family differences.
+- Head Band remains archived: nine hidden inert compatibility slots, no active
+  head-coordinate mode and no HeadBand DLL in the release.
+
+ToonMinLighting remains **0.15**; indirect diffuse gain remains **0.25**.
+No default scene-shadow settings change. This release does not claim to eliminate
+Built-in shadow-map grazing-angle artifacts.
 
 ## Compatibility
 
-Explicitly saved ToonMinLighting values are preserved. Older materials without
-this property inherit 0.15 and may look brighter. Cards that saved the interim
-ToonDarkFillColor property need its RGBA reapplied to ToonShadeColor; no automatic
-game-card migration is included. ShadeColor is not a tint for the minimum-light control.
+Back up cards, scenes and plugin configuration before updating. Saved values and
+assigned maps remain authoritative. New Hair effects default neutral/off. Local
+highlight-map mode requires its documented channels and neutral map, not HairGloss.
+SDF needs compatible authored data and calibrated orientation, not just a toggle.
+Tess can expose UV/hard-normal seams and change bounds; use the optional bounds
+helper where needed. Compatibility with other mesh/bounds writers needs testing.
 
-The liquid path replaces the earlier implementation; existing liquid materials
-may require retuning. Exported liquid normal PNGs and raw game textures require
-the appropriate explicit normal encoding described in the manual.
+Skin maps use explicit binding, not automatic repair. If DetailMask or
+SkinControlMap is missing, import the supplied `Material/SkinDetailNeutral.png`
+(1,0,0,1) or `Material/SkinControlNeutral.png` (1,1,0,1) in ME. Empty runtime slots
+still use ShaderLab black/white and are not neutral. Keep existing game/authored
+maps; no extra fallback plugin or texture-size/content heuristic is added.
 
-## Complete Package
+Manually remove an installed old `TomHairHeadBand.dll`, including copies in custom
+plugin directories. Replace duplicate HairFeather/SkinSDF/Tessellation providers;
+do not install multiple DLLs with the same plugin GUID.
 
-- Tom Shaders X 0.3.1 revised shader zipmod, including all nine shaders and its bundle.
-- Tom Lighting Probes 0.2.1 zipmod, including Studio RP/SH items and their bundle.
-- TomHairFeather.dll and its paired hairx-feather.unity3d helper bundle.
-- KKS_TomProbe.dll and TomProbe.Runtime.dll.
-- Bilingual manuals/release notes, licenses and SHA256SUMS.txt.
+## Complete Package And Installation
 
-The companion plugins are unchanged. The probe package retains previous SH
-lighting while a new capture is prepared.
+- Main 0.4.0 zipmod: twelve carriers, shaders, neutral dependencies and ME tooltips.
+- Accepted Tom Lighting Probes 0.2.1 zipmod, `KKS_TomProbe.dll` and
+  `TomProbe.Runtime.dll`, unchanged from the previous complete companion package.
+- `TomHairFeather.dll` and paired `hairx-feather.unity3d` in the same folder.
+- Optional `TomSkinSDF.dll` and `TomTessellation.dll`, with no extra helper bundle.
+- Bilingual installation notes, manuals/release notes, AGPL/MIT notices and SHA-256
+  checksums. No tests, reports, caches or local game texture/model fixtures.
 
-## Installation
+Close KKS/CharaStudio, remove superseded zipmods and duplicate provider files, then
+merge `mods` and `BepInEx` into the game root. Leave zipmods compressed. BepInEx 5,
+Sideloader and MaterialEditor are external prerequisites; game/Unity assemblies
+and third-party loaders are not redistributed. KKS only, not KK.
 
-1. Close KKS/CharaStudio and back up your installation/configuration.
-2. Remove older Tom Shaders X and Tom Lighting Probes zipmods. Remove duplicate
-   copies of the three DLLs and the paired hair helper bundle, including copies
-   in custom plugin folders. Do not keep two revisions with the same mod GUID.
-3. Merge the archive's mods and BepInEx folders into the KKS game root.
-4. Leave zipmods compressed. Keep hairx-feather.unity3d beside TomHairFeather.dll.
+## Validation Scope
 
-Requires compatible BepInEx 5, Sideloader and MaterialEditor, installed separately.
-Third-party loaders and game/Unity assemblies are not included. KKS only, not KK.
-The user completed in-game acceptance of these changes; packaged Unity checks
-also passed. This is not new whole-character performance certification.
+Release gates cover all twelve families, focused Unity regressions, strict bundle
+build/reload and explicit packaged rendering. Editor results do not certify
+whole-character game performance or every imported asset. The original showcase
+keeps its fixed-exposure GPU captures; it is not a new rendering of every addition.
 
-[Download](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.3.1-20261011)
+[Download](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.4.0-20261024)
 | [User manual](TomShadersX-UserManual.en.md)

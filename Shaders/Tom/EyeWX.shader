@@ -53,7 +53,7 @@ Shader "tom/EyeWX"
 		_RimShadowStrength ("Rim Shadow Strength", Range(0,1)) = 0
 
 		[Enum(Off,0,MatCap,1,Environment,2,MatCapAndEnvironment,3)] _ReflectionMode ("Reflection Mode", Float) = 0
-		[Enum(Multiply,0,Add,1)] _MatCapBlendMode ("MatCap Blend", Float) = 1
+		_MatCapBlendMode ("MatCap Blend", Range(0,1)) = 1
 		_MatCapIntensity ("MatCap Intensity", Range(0,2)) = 1
 		_MatCapMip ("MatCap Mip", Range(0,8)) = 0
 		_EnvironmentIntensity ("Environment Intensity", Range(0,4)) = 1
@@ -120,8 +120,14 @@ Shader "tom/EyeWX"
 		_ToonAA ("Toon Edge Anti Aliasing", Range(0,2)) = 1
 		_ToonShadeColor ("Toon Shade Color (RGB tint / A strength)", Color) = (0.35,0.35,0.35,0)
 		_ToonMinLighting ("Toon Minimum Lighting", Range(0,1)) = 0.15
-    }
-    SubShader
+		_SpecularNormalInfluence ("Specular Main Normal Influence", Range(0,1)) = 1
+		_SpecularDetailNormalInfluence ("Specular Detail Normal Influence", Range(0,1)) = 1
+		_MatCapNormalInfluence ("MatCap Main Normal Influence", Range(0,1)) = 1
+		_MatCapDetailNormalInfluence ("MatCap Detail Normal Influence", Range(0,1)) = 1
+		[Gamma] _MatCapColor ("MatCap Color (RGB Tint / A Weight)", Color) = (1,1,1,1)
+	}
+
+	SubShader
     {
         LOD 600
         Tags { "Queue" = "AlphaTest+22" "RenderType" = "TransparentCutout" }

@@ -1,7 +1,7 @@
 # Tom Shaders X User Manual
 
-For Tom Shaders X **0.3.1**, Koikatsu Sunshine, Unity 2019.4 Built-in Forward.
-Optional companions: Hair Feather 0.3.0 and Tom Lighting Probes 0.2.1.
+For Tom Shaders X **0.4.0**, Koikatsu Sunshine, Unity 2019.4 Built-in Forward.
+Optional companions: Hair Feather 0.3.0, Tom Lighting Probes 0.2.1, SkinX Face SDF head provider 0.1.1 and Tessellation Bounds 0.1.1. Independent Tess variants are included; this is not a new in-game/performance certification.
 Property names below follow MaterialEditor (ME), without the leading underscore.
 
 The closing audit covers code, ME metadata and Unity rendering. It does not include a new in-game acceptance run or whole-character performance certification. Showcase spheres are reproducible examples, not presets automatically applied to characters.
@@ -21,6 +21,9 @@ Place the main zipmod in the game's `mods` directory. Sideloader and MaterialEdi
 | `tom/EyeX` | Iris and pupil shading, local refraction, shallow parallax, depth maps and optional RGB dispersion |
 | `tom/SkinX` | One face/body shader preserving game skin layers, overlays, clothing masks and liquid conventions |
 | `tom/LiquidX` | Independent thin-liquid surface or transparent overlay using the shared liquid core |
+| `tom/MainOpaqueXTess` | Independent D3D11 tessellation / displacement version of MainOpaqueX |
+| `tom/MainAlphaXTess` | Independent D3D11 version of MainAlphaX; shared deformation in depth prepass, color, additional lights, outline and shadows |
+| `tom/SkinXTess` | Independent D3D11 tessellation / displacement version of SkinX, preserving face/body layers and UVs |
 
 Ordinary surface shading, Clearcoat and EyeX optics need no additional plugin. HairX Feather mode requires `TomHairFeather.dll` and `hairx-feather.unity3d` in the same plugin directory. Unsupported configurations fall back to a hard edge; feathering is not available automatically without its provider.
 
@@ -35,7 +38,7 @@ For Studio probe items, install the separate Tom Lighting Probes zipmod and plac
 5. Choose Environment Reflection or MatCap, then add Clearcoat, Rim and Outline as needed.
 6. Tune eye, hair and skin features on top of the common baseline; there is no need to replace the stencil or transparency design.
 
-Shared controls use consistent categories, types and ranges across applicable shaders, including the LiquidX helper. Game-compatible aliases deliberately retain their original spelling, including `SpeclarHeight`. If your ME version presents an enumeration as a numeric slider, enter the documented **integer**, not an intermediate value. The shaders use ME's existing texture, number and color controls; this manual does not assume custom dropdown support in every version.
+Applicable substrate shaders share the common lighting baseline and editing categories. Equal names do not guarantee identical types, ranges or defaults in every family: LiquidX styles pigment on a thin liquid overlay, while Skin and Eye keep deliberate game-compatible and optical differences. Each Tess entry inherits its ordinary parent's controls and lighting, then adds geometry controls. Game-compatible aliases deliberately retain their original spelling, including `SpeclarHeight`. If your ME version presents an enumeration as a numeric slider, enter the documented **integer**, not an intermediate value. MatCapBlendMode is explicitly continuous, not an enumeration. The shaders use ME's existing texture, number and color controls; this manual does not assume custom dropdown support in every version.
 
 `IndirectDiffuseIntensity` defaults to **0.25** for new materials. It scales indirect diffuse only, not direct lights, reflections or Clearcoat. Explicitly saved older values are not automatically changed. If skin looks washed out in Maker, check indirect illumination and exposure before renaming game color properties.
 
@@ -69,11 +72,15 @@ Toon diffuse now uses one mesh-horizon transition driven by ToonSoftness, withou
 
 Fill follows the ForwardBase main light's color, MainLightIntensity, distance/cookie attenuation and physical cast shadows, even when ShadowStrength bypasses shadows for ordinary diffuse. No main light means no fill; UseRamp=0 also disables it. It runs once, never repeated in ForwardAdd, and respects baked direct-light ownership. Metallic and optional diffuse-energy suppression still reduce diffuse fill. This is artistic main-light-driven fill, not emission, physical transmission or SSS. ShadowColor and the indirect default of 0.25 remain unchanged.
 
-Clearcoat and clear integrated liquid attenuate colored fill and minimum-response lift as broad substrate illumination, not as a back-facing specular ray. Their actual reflection lobes and horizon protection are unchanged. Pigmented liquid can replace the substrate contribution as before. The separate LiquidX overlay retains its accepted pigment path and does not expose these substrate controls. The minimum defaults to zero; existing lighting is preserved apart from the explicitly documented color-property rename.
+Clearcoat and clear integrated liquid attenuate colored fill and minimum-response lift as broad substrate illumination, not as a back-facing specular ray. Their actual reflection lobes and horizon protection are unchanged. Pigmented liquid can replace the substrate contribution as before. The separate LiquidX overlay retains its accepted pigment path and does not expose these substrate controls. The minimum defaults to 0.15; set it to zero to disable the lift. Explicitly saved values are preserved.
 
 **Shadows:** ShadowStrength controls diffuse shadow participation. ShadowRemapStrength / Threshold / Softness reshape shadow visibility. UseRampForShadows controls how shadows enter the Toon curve. External occlusion is distinct from the unlit side of a curved surface. Direct Clearcoat highlights remain shadowed; they are not unshadowed emission.
 
+**SkinX grazing-light shadows:** SkinX now defaults to `UseRampForShadows=0`, including its bundled carrier. The surface still uses Toon lighting, but cast-shadow visibility multiplies the result without also crossing the Toon threshold. Set 1 to restore the previous routing. Explicitly saved scene/card values are not migrated; other shader families keep their defaults. `ToonMinLighting` remains 0.15. For cleaner grazing-angle self-shadows, select **Soft Shadows on the light** and keep ShadowRemapStrength=0 as a starting point. ToonSoftness and ShadowSoftness do not enable the engine's shadow filtering. The shader does not modify scene lights or force a shadow quality setting. Raw shadow-map striping can still exist, especially with Hard Shadows; decoupling the ramp is not a replacement shadow filter. Tune Light Bias and Normal Bias independently only as needed, checking nose/contact shadows and thin external casters. Excessive bias or ShadowOffset can detach or erase valid shadows; their defaults are unchanged.
+
 **Direct specular:** SpecularStrength is intensity, Roughness controls continuous-highlight roughness, and SpecularSize controls Toon-highlight size. These are not interchangeable. SpecularIOR / FresnelStrength govern the substrate's dielectric response; increasing Metallic reduces substrate diffuse. SpecularAA helps reduce normal/highlight-edge aliasing but does not replace all temporal antialiasing.
+
+**Independent highlight normals:** `SpecularNormalInfluence` and `SpecularDetailNormalInfluence` (0..1, both default 1) separately control the main/detail inputs for dry direct GGX and Toon highlights, in Base and ForwardAdd. Zero removes only that input; setting both to zero uses the mesh normal. HairX keeps its existing `HairSpecularNormalInfluence` / `HairSpecularDetailNormalInfluence` pair instead, applied once to both lobes, with no duplicate shared pair. AA follows the selected highlight normal; geometric light-facing protection and cast shadows remain active. These controls do not change diffuse/SH, probe reflections, MatCap, Clearcoat or liquid. Global normal scales still set source strength. EyeX uses the refracted iris samples, with the pre-refraction surface footprint retained for AA. Default 1/1 preserves old materials; no texture samples are added.
 
 **Multiple lights:** MainLightIntensity / AdditionalLightIntensity scale the main and per-pixel additional lights. Direct diffuse, specular and Clearcoat respond to additional lights. SH, environment reflection, additive MatCap, Rim and emission are not added again for each light. Multiplicative MatCap still modulates each light's diffuse.
 
@@ -81,7 +88,13 @@ Clearcoat and clear integrated liquid attenuate colored fill and minimum-respons
 
 **Environment reflection:** ReflectionMode: 0 off, 1 MatCap, 2 environment, 3 both. Environment mode needs an available probe or sky reflection. EnvironmentIntensity, Roughness and ToonBlend control its intensity, blur and stylization. With the default UseMaterialRoughnessForEnvironment=1, material roughness takes precedence over EnvironmentRoughness. Box Projection is useful for bounded interiors; it is not ray tracing.
 
-**MatCap:** A view-space 2D appearance texture, not a live scene reflection. MatCapBlendMode: 0 multiply, 1 add. MatCapNormalSource: 0 geometric normal, 1 main normal, 2 main plus detail.
+**MatCap:** A view-space 2D appearance texture, not a live scene reflection. `MatCapBlendMode` is a continuous 0..1 mix: 0 retains the original Multiply, 1 retains the original Add, and intermediate values interpolate their complete compositions rather than stacking both at full strength. The property name and default 1 are unchanged; saved 0/1 endpoints preserve their appearance. Previously saved fractional enum values now produce a real mix instead of the old 0.5 hard switch. MatCapNormalSource: 0 geometric normal, 1 main normal, 2 main plus detail.
+
+`MatCapColor` defaults to white RGBA (1,1,1,1). RGB multiplies the sampled MatCap color. A is an independent 0..1 whole-layer weight: 0 restores the no-MatCap result, 1 retains full weight. It fades the original intensity-shaped result, so Multiply keeps its existing saturated intensity while Add keeps its original unsaturated intensity. A never changes mesh opacity, clipping or shadow casting; the MatCap texture's alpha remains unused. Black RGB is not an off switch: it can darken Multiply. Use A=0 or MatCapIntensity=0 to disable the effect. Explicit saved colors are preserved.
+
+Multiply still modulates diffuse consistently in Base and each ForwardAdd; additive MatCap is added in Base only. Specular, environment reflection, coat/liquid reflection lobes, Rim and emission are not directly tinted by MatCapColor. Existing coat and liquid composition remains in place. Each active Pass reuses one MatCap sample for both portions. Pure Add skips MatCap sampling in ForwardAdd; intermediate modes require the multiplication path there and are not a zero-cost substitute for pure Add. These controls apply to all eleven MatCap-capable ordinary/Tess entries, not the LiquidX helper.
+
+`MatCapNormalInfluence` and `MatCapDetailNormalInfluence` (0..1, both default 1) independently control MatCap's main/detail inputs across all eight substrate shaders, including HairX. The source selector remains authoritative: Geometry ignores both sliders; MainNormal uses only the main slider; CombinedNormal uses both. Zero main influence does not remove detail in CombinedNormal mode. Both zero give the mesh normal. The controls affect additive MatCap and each light's diffuse-multiplicative MatCap, not other layers. EyeX MatCap follows refracted normal samples. Defaults retain the original selected source and existing material values.
 
 **Rim / Outline / Emission:** Rim is a view-dependent edge term; Outline is an expanded-shell contour. They are independent. Screen-space OutlineWidth is measured in pixels. Emission does not automatically illuminate nearby objects. SkinX uses UV4 for game overlays, so it cannot also store smoothed outline normals there.
 
@@ -119,9 +132,49 @@ A bright coat can visually obscure iris contrast without disabling parallax. Tem
 
 ## 6. HairX
 
+### ME Categories
+
+The four adjacent hair-highlight categories follow flow, primary/common controls, secondary controls, then optional local controls. This is a metadata-only reorganization: property IDs, ranges, defaults, saved values and lighting calculations are unchanged. ME can still sort rows by property name/type according to its settings.
+
+| Category | Controls and scope |
+| --- | --- |
+| Hair Direction | StrandAngle, StrandDirectionMode, StrandDirectionMap and StrandDirectionBlend. Shared strand flow only. |
+| Hair Highlight | Shared HairAnisotropy, HairSpecularNormalInfluence, HairSpecularDetailNormalInfluence and HairHeightAxisAngle; primary HairPrimaryHeight, HairHighlightShift, HairPrimaryLongitudinalWidth and HairPrimaryAzimuthalWidth. |
+| Hair Secondary Highlight | HairSecondaryWeight and all secondary height, angular shift, physical/Toon shape and tint controls, including HairSecondaryHeight. |
+| Hair Local Controls | UseHairHighlightMap, HairHighlightMap, HairPrimaryShiftMapScale and HairSecondaryShiftMapScale. Optional, not required for Surface Height. |
+| Environment Reflection | HairEnvironmentAnisotropy now lives beside the existing environment controls; the separate Hair Environment category is removed. |
+| Direct Specular | Gain, color, mask, shadow visibility, Bands and AA are shared by both lobes. SpecularToonBlend/Size/Threshold/Softness shape only the primary. |
+| Material | Shared physical roughness, map, bias, IOR and Fresnel. The secondary adds its own RoughnessOffset; Toon Size is separate. |
+
+There is no separate Hair Surface Height category: primary height and the common height axis are in Hair Highlight, while secondary height is in Hair Secondary Highlight. HairFront and Debug stay independent. Head Band remains archived and hidden.
+
+SecondaryWeight=0 makes other secondary controls visually inactive. UseHairHighlightMap=0 ignores its map and local gains. A zero ShiftMapScale removes that channel's angular offset, not the map's coverage. Toon Size/Threshold/Softness need a positive Toon blend; SecondaryRoughnessOffset affects only a continuous secondary contribution. These dependencies are documented in tooltips, not implemented by changing saved values or dynamically hiding additional controls.
+
+### Color, Flow and Highlights
+
 ColorMask follows the KKS/xukmi RGB rule: blend white toward Color using R, then toward Color2 using G, then toward Color3 using B. These are sequential overrides, not additive weights. An unassigned or black mask preserves the texture color; red selects Color, white selects Color3. ColorMask has independent tiling/offset; filtering and wrap follow MainTex to respect the D3D11 sampler limit. BaseColor remains an additional whole-material multiplier. For native game coloring, leave BaseColor white; older manually tinted HairX materials may need BaseColor reset to white to avoid double tinting. Shader switching still depends on the game/ME retaining the original mask and Color/Color2/Color3 values.
 
-StrandAngle: U direction is 0 degrees; V is 90 degrees. StrandDirectionBlend blends the manual direction with a flow map. HairAnisotropy controls elongated highlights. The current model has one specular lobe, not dual-layer hair scattering or anisotropic environment reflection.
+StrandAngle: U direction is 0 degrees; V is 90 degrees. StrandDirectionBlend blends the manual direction with linear RG flow data (`RG*2-1`, not a Unity normal map). StrandDirectionMode=0 keeps the old unoriented-axis sign alignment. Mode 1 treats arrows as root-to-tip and interpolates angles, including opposite arrows. Author this direction consistently; UV layout cannot identify hair roots automatically. Zero flow falls back to StrandAngle. Missing mesh tangents only get a finite fallback, not a guaranteed correct strand direction.
+
+HairHighlightShift and HairSecondaryShift rotate each direct specular frame along the strand, in degrees. Positive tilts the specular normal toward the positive strand arrow; screen-space band motion depends on geometry, light and view. This is not world height. Both continuous GGX and Toon highlights shift; diffuse, shadow projection and the coat normal keep their own frames. Primary/secondary LongitudinalWidth and AzimuthalWidth multiply the along/across-strand widths (1 is neutral). HairAnisotropy remains the common basic aspect control.
+
+HairSecondaryWeight=0 preserves the single-lobe appearance. A positive share w forms `(1-w)*primary + w*secondary` under the existing global SpecularStrength, SpecularColor, mask, IOR and real-light visibility. Secondary Size/Threshold/Softness/ToonBlend shape its Toon endpoint; SecondaryRoughnessOffset modifies its physical endpoint after the existing roughness map. SpecularBands and SpecularAA are shared. SecondaryColor RGB is a relative tint (alpha unused); SecondaryBaseColorTint blends toward effective MainTex * BaseColor * KKS three-color tint. This is an artistic two-lobe reflection approximation, not complete fiber scattering. Both lobes are beneath the independent Clearcoat layer.
+
+UseHairHighlightMap enables independent UV0 local controls: linear R/G are signed primary/secondary shifts centered at 0.5, scaled by Primary/SecondaryShiftMapScale in degrees; B/A are primary/secondary coverage. The supplied carrier material explicitly binds the neutral texture `(0.5,0.5,1,1)`. When enabling the feature on another material, assign a control map: an unbound runtime slot uses white (full coverage and positive shift), not automatic neutral data. The off default and zero local gains preserve old materials. Import custom data with sRGB off. It has independent ST but shares MainTex filtering/wrap state; author filtering and atlas edges accordingly. Masks only attenuate their lobes, with no renormalization or geometry clipping. SpecularMask remains the total direct-highlight mask. Global plus local shifts are bounded to +/-40 degrees.
+
+HairSpecularNormalInfluence and HairSpecularDetailNormalInfluence independently flatten the existing main/detail inputs for direct highlights only. Defaults 1/1 reproduce the previous path. In Base and ForwardAdd, both lobes use the selected normal for highlight shape, derivative AA and normal-horizon attenuation: an excluded normal no longer suppresses the highlight indirectly. Mesh light-facing protection and real cast shadows remain active. Toon diffuse, probe normal, MatCap and Clearcoat retain their normals. HairEnvironmentAnisotropy=0 preserves old probe reflections; positive values blend a bent reflection direction using HairAnisotropy and the strand axis. Environment roughness stays independent, with no extra probe samples or ForwardAdd environment work. Unity's isotropic cubemap prefilter makes this an approximation, not a two-lobe anisotropic IBL convolution.
+
+HairHighlightDebugView: 1 weighted primary direct lobe; 2 weighted secondary; 3 world-space direction; 4 primary/secondary effective shifts in RG (0.5 = zero, endpoints +/-40 degrees); 5 coverage in RG; 6 selected highlight normal. Lobe views include additional lights before coat transmission; data views suppress Add. All suppress fog/outline while preserving coverage. New defaults are neutral/off, with no automatic replacement of saved values. Example starting point: primary shift -10, secondary shift +12, share 0.35, secondary size 0.62, softness 0.3, Toon blend 0.7, roughness offset 0.18 and hair-color tint 0.35. These are optional example settings, not new defaults.
+
+### Texture-Free Surface Height
+
+HairPrimaryHeight and the shared HairHeightAxisAngle are in Hair Highlight; HairSecondaryHeight is in Hair Secondary Highlight. Primary/SecondaryHeight (both default 0, range -1..1) bias the existing procedural anisotropic reflection frame, not a Gloss image. No positioning-mode switch, HairGloss texture, UV2, head binding or extra plugin is required. These are dimensionless artistic slope biases, not distances or degrees: rotate the complete N/T reflection frame by `-atan(Height)` about `cross(selectedNormal, surfaceHeightAxis)`. GGX and Toon use the same biased frame, including their internal visibility terms; real geometric light/view guards, light data, Fresnel, shadows, masks, tint and the (1-w)/w budget remain. Selected-frame derivatives drive normal AA. No third lobe or unlit layer is added. The previous angular Shift parameters keep their degree-based, strand-relative meaning and are applied before the independent surface-height frame bias.
+
+HairHeightAxisAngle defines a separate mesh-tangent-plane position axis: 90 degrees is mesh V, -90 reverses V, and 0 is U. It does not use StrandAngle or the strand flow map. Thus changing strand orientation no longer changes which mesh axis the height control uses. Both zero heights bypass it. The selected existing main/detail highlight normal projects the axis, without additional texture reads. Tangents follow normal mesh deformation. Mesh V is not guaranteed world/head/screen-up, and rotated/mirrored or inconsistent card UV layouts can still require axis calibration; this is not an absolute head-height guarantee. The xukmi comparison motivated the simple control workflow, not numeric compatibility with its SpeclarHeight/UV2/Gloss sampling algorithm. No legacy alias is introduced.
+
+Start with PrimaryHeight=0.2, SecondaryHeight=0, HeightAxisAngle=90, Primary Shift=0 and SecondaryWeight=0. Inspect HairHighlightDebugView=1 (primary lobe), then try -0.2/0/+0.2. If movement is reversed, set HeightAxisAngle=-90. If the asset's U is the intended height direction, use 0 instead. Keep the desired strand flow unchanged; existing Size/Roughness/LongitudinalWidth/AzimuthalWidth still control shape. Return HairHighlightDebugView to 0 for the final render. For a secondary, try Weight=0.25 and SecondaryHeight=-0.15, then tune its existing size/softness. Real light and shadow changes can alter the visible brightness maximum.
+
+The former Head Band experiment is archived. Its nine saved properties are hidden compatibility slots and no longer affect rendering, including saved PositionMode=1. Only Surface Height is active. Debug now offers 0..6; retired values 7/8/9 fall back to the final view rather than displaying head-frame data. TomHairHeadBand.dll is no longer built or included: remove that obsolete optional DLL from an older test installation to stop its background scanning. Keep the unrelated HairFeather, SDF and other companion plugins.
 
 HairFrontMode: 0 off, 1 hard stencil, 2 inward feather. HairFrontOpacity=1 is opaque. Outside stencil, hair remains ordinary cutout. Changing camera-side transparency does not punch holes in the cast shadow.
 
@@ -182,13 +235,50 @@ The game already composites main skin color into MainTex. BaseColor is an additi
 | AlphaMask | Clothing R/G masks activated by alpha_a/b; fixed threshold 0.5 |
 | SkinControlMap | R softening, G warm transition, B painted wet region; not a replacement for original DetailMask |
 
+### Missing Skin Maps: Explicit Binding
+
+Keep correctly assigned game or authored maps. If either slot is genuinely empty,
+explicitly import the corresponding supplied data PNG in ME:
+
+- `DetailMask`: `Material/SkinDetailNeutral.png`, RGBA **(1,0,0,1)**. It keeps the
+  highlight gate open, adds no painted shade/Rim suppression and selects skin gloss.
+- `SkinControlMap`: `Material/SkinControlNeutral.png`, RGBA **(1,1,0,1)**. Softening
+  and warmth remain slider-controlled, with no authored wet region; A is unused.
+
+These files are included in the complete ZIP and source package. An empty runtime
+slot is **not** a neutral map: ShaderLab falls back to black DetailMask (R/A=0)
+and white SkinControlMap (B=1). That can suppress gloss or make authored-wetness coat
+coverage full. Editor importer defaults and carrier bindings do not guarantee ME
+shader switching will fill empty slots. There is no automatic replacement plugin
+or heuristic based on texture dimensions/content. This applies equally to SkinXTess.
+
 DetailNormalMapScale also participates in game internal lines and painted shadows. SkinDiffuseNormalDetail reduces diffuse detail only, preserving specular/coat detail. SkinStrength / Wrap / Warmth provide front-side softening and a warm light-dark transition. They are not screen-space or volumetric SSS and do not transmit through external occluders.
 
 SpecularPower / SpecularPowerNail preserve the game's skin and nail/lip gloss gains. SkinGameGloss controls their participation. They are not Roughness and do not automatically tune Clearcoat. SkinPatternStrength / notusetexspecular control the moving painted-highlight mask.
 
+### Independent Painted Shade Color
+
+SkinX and SkinXTess separate painted diffuse shade from cast-shadow tint. In ME, Skin Response contains SkinShadeStrength, SkinShadeColorSource and SkinShadeColor together. Select SkinShadeColorSource=1 (Independent) to tint the combined DetailMask G / LineMask B painted shade with SkinShadeColor RGB; SkinShadeStrength still controls its strength. Color alpha is unused: it is neither opacity nor a second strength. Both source channels retain their existing union, not two stacked shade layers. The tint affects skin diffuse lighting in Base/Add and indirect/fill paths, not specular, coat or liquid reflection lobes.
+
+ShadowColor retains the shared baseline role: Base-pass indirect diffuse tint in main-light cast shadow. SkinLineColor independently controls internal lines; ToonShadeColor remains optional colored main-light fill, not a global shadow tint. ToonMinLighting stays 0.15.
+
+Compatibility: the shader default SkinShadeColorSource=0 (FollowShadowColor) preserves old saved materials and runtime-created materials without the new controls. In this mode SkinShadeColor is ignored and painted shade still follows ShadowColor. The two release carriers use Independent with their previous ShadowColor RGB copied, preserving their starting appearance. For an existing card, first copy its ShadowColor into SkinShadeColor, then select source 1; no automatic game-card migration or parameter overwrite is performed.
+
+### Optional Face SDF
+
+SkinX and SkinXTess support an independent face SDF threshold map. Enable `UseFaceSDF` and `UseRamp`, assign `FaceSDFTex`, and use `FaceSDFMask` R to limit it to the face. `FaceSDFStrength=0` or a black region restores normal-driven Toon shading. The default switch is off; existing body/face materials retain their settings. DetailMask keeps its original role and is not an SDF map.
+
+Import both maps as linear data (sRGB off), not normal maps. They use UV0, independent scale/offset, and shared bilinear/clamp sampling. Higher threshold-map values stay lit longer as the light moves behind the head. `FaceSDFChannel` selects R/G/B/A; `FaceSDFInvert` reverses polarity. Side modes: 0 Single uses the selected channel on both sides; 1 MirrorU mirrors U for head-left light about `FaceSDFMirrorU` (default 0.5, in texture space after ST); 2 RGPair uses R for head-right and G for head-left without mirroring. RGPair ignores the channel selector. `FaceSDFMask` is never mirrored.
+
+`FaceSDFAngleMode=0` uses cosine encoding: (1-frontCosine)/2. Mode 1 uses absolute azimuth/180 degrees. Both have thresholds 0 at front, 0.5 at side and 1 at back. Select the convention used by the asset; a single format cannot automatically interpret every imported SDF. `FaceSDFOffset` shifts the light threshold (positive expands shade). `FaceSDFSoftness` controls the edge width, with `ToonAA` providing pixel filtering. Existing primary/secondary ramp endpoints supply the two brightness levels; intermediate texture-ramp bands are not replayed. The SDF region replaces the normal-driven Toon boundary and its diffuse horizon, while actual cast-shadow visibility is still applied. `ToonMinLighting` remains 0.15.
+
+`FaceSDFDirectionSource=0` uses renderer axes; mode 1 uses the optional `TomSkinSDF.dll` head provider and falls back to renderer axes when tracking is unavailable. Install that DLL under BepInEx/plugins to follow animated KKS head bones or a humanoid Head bone. It needs no helper AssetBundle and does not alter material settings. `FaceSDFForward` / `FaceSDFUp` XYZ define the local head axes (default +Z/+Y; W unused); in ME these are vector values displayed as color fields, not tints. Imported -Z faces may require Forward=(0,0,-1,0). In tracked mode the axes are head-bone local, not renderer local. Unsupported custom rigs require an explicit `TomSkinSDFHead.head` binding in Unity. Lights directly above/below the head smoothly fall back to normal shading because their azimuth is undefined.
+
+SDF changes direct Toon diffuse in Base/Add only. Specular, SH, Clearcoat, liquid normals, geometry clipping and shadow casting keep their original paths. It cannot identify self-shadow separately from hair/hand/clothing projection. `FaceSDFDebugView` shows effective region (1), selected data times region (2), or the main-light lit region before cast shadows (3). Reset it to 0 for the final material. Data views suppress additional-light/outline/fog contributions.
+
 ### Liquid and Wetness
 
-SkinX, MainOpaqueX and all three Alpha variants share the same liquid layer. The separate `tom/LiquidX` shader uses this core for material-copy overlays and independent thin water surfaces. HairX, EyeX and EyeWX remain unchanged. This is the redesigned, previously unreleased liquid system, not a switch between old and new algorithms.
+SkinX, MainOpaqueX, all three Alpha variants and their available Tess derivatives share the same liquid layer. The separate `tom/LiquidX` shader uses this core for material-copy overlays and independent thin water surfaces. HairX, EyeX and EyeWX do not gain liquid controls. This retains the modern liquid system released in 0.3.1, with no switch back to the earlier experimental algorithm.
 
 LiquidCoverageMode selects 0 KKS Regions, 1 Custom Mask R, or 2 Full Surface. KKS uses `liquidmask` RGB combinations and five 0..2 amounts: liquidftop/fbot/btop/bbot/face. Texture2 R appears during 0..1; G is added during 1..2 using a max union. LiquidCoverageMap supplies coverage in mode 1. These are final rendering slots, not the game's identically named compositor inputs. The shader does not supply missing game textures or automatically update amounts on arbitrary meshes.
 
@@ -257,10 +347,40 @@ Only parameters are saved with the scene, not captured lighting; reloads require
 | No SH response | Plugin/item, completed capture, bounds, CustomSHVolumeBlend, Debug View |
 | Mask colors instead of shading | Reset Eye/Skin/Clearcoat/Lighting Debug modes |
 
-Deferred without reducing current effects: EyeX targeted multi-light optimization (not a closing blocker); POM only when true self-occlusion is required; separately designed HairX dual lobes and other additions; the EyeWX sclera versus brow/eyeline split. Probe capture budgets and whole-/multi-character game GPU cost require separate measurements, not inference from spheres.
+Deferred without reducing current effects: EyeX targeted multi-light optimization (not a closing blocker); POM only when true self-occlusion is required; further hair transmission/scattering; the EyeWX sclera versus brow/eyeline split. Probe capture budgets and whole-/multi-character game GPU cost require separate measurements, not inference from spheres.
 
 ## 11. Showcase Reference
 
 The companion gallery provides standard-sphere comparisons, eye-angle views, individual PNGs, generated texture inputs and expandable tables recording all material parameters. Comparisons use consistent camera/lighting and a fixed display transform except where a documented angle or lighting change is the subject of the comparison. The SH showcase isolates diffuse response with known coefficients; an independent Unity runtime regression checks actual probe capture/refresh behavior.
 
 For source installation and packaging, see Documents/Development.md in the source repository.
+
+## 12. Independent Tessellation and Displacement
+
+Choose `tom/MainOpaqueXTess`, `tom/SkinXTess` or `tom/MainAlphaXTess` explicitly. All inherited property names, clipping, light response, liquid, coat and shadow behavior remain those of their ordinary counterpart; SkinXTess also retains Face SDF, UV0-UV3 and vertex-color overlay gates. MaterialEditor still has to preserve saved values when switching shaders. These variants require **D3D11 / shader model 5** and have no silent lower-feature fallback. The ordinary shaders contain no Hull/Domain stages and remain the zero-tessellation-cost choice. Factor 1 still invokes these stages in a Tess shader.
+
+| Control | Definition and default |
+| --- | --- |
+| TessellationMode | 0 fixed factor, 1 projected screen-edge length; default 1 |
+| TessellationFactor | Subdivision cap 1..16; default 4, also clamped for script-set values |
+| TessellationEdgeLength | Screen-edge target 4..64 pixels, default 16; smaller is denser, subject to the cap |
+| TessellationSmooth | Phong surface smoothing 0..1, default 0; independent of subdivision and height |
+| UseGeometryMask / GeometryMask | Off by default; linear RG: R smoothing, G displacement, B/A unused; white permits both, black protects the original surface |
+| DisplacementMap | Linear R height, not a normal map; sampled on UV0 with independent tiling/offset |
+| DisplacementStrength | Signed world-space scale -0.05..0.05, default 0 |
+| DisplacementMidlevel | Zero-height reference 0..1, default 0.5 |
+| DisplacementMip | Explicit height/mask mip 0..8, default 0; increase for distant/noisy detail |
+| DisplacementNormalStrength | Height-gradient correction 0..1, default 1; 0 retains interpolated mesh normals |
+| TessellationBoundsPadding | Optional helper's extra world-space padding 0..0.1, default 0; does not move geometry |
+
+Height displacement is `(saturate(R) - Midlevel) * Strength * mask.G`, along the interpolated world normal. A white map at Strength=0.02 and Midlevel=0.5 moves outward by 0.01 Unity world units. The bundled carrier explicitly binds an exact linear 0.5 neutral texture. When constructing materials in code, assign a height map explicitly before enabling displacement; engine built-in gray defaults are not an exact-neutral contract. Both data maps need sRGB disabled; ME runtime imports must provide data sampling as well. GeometryMask has independent UV0 tiling/offset. Its R channel does not control density, and its G channel never fades the dry material's coverage.
+
+Start with smoothing and height at zero; verify the original appearance, then increase density, smoothing and height separately. Color, ForwardAdd, Outline, ShadowCaster and MainAlphaXTess's optional DepthPrepass use the same deformation. There is no patch-frustum/backface culling that would discard off-camera shadow casters. Screen-edge density is view-dependent; fixed mode is useful when reproducible topology matters. More subdivision cannot recover missing authored shape. Height normals are a shallow gradient approximation, not exact curved-surface transport or self-intersection handling.
+
+MainAlphaXTess preserves straight/premultiplied AlphaBlendMode, global Alpha, optional color cutoff/ZWrite, DepthPrepass (default off), DepthShadowCutoff and CastShadows. Depth and cast-shadow coverage still follow the inherited Alpha rules; enabling tessellation does not make a translucent surface cast physically transmissive shadows. The depth prepass writes the deformed surface, not the original mesh. Tessellation does not fix transparent sorting or intersecting meshes. No BackFront, legacy 2Pass, Hair, Eye or Liquid Tess variants are added by this extension. Use Tessellation Bounds 0.1.1 or newer for automatic MainAlphaXTess bounds support; do not install a second copy of the older DLL.
+
+Pass features disabled through fragment clipping can still execute geometry stages, including DepthPrepass=0. Such switches are not a guarantee of zero tessellation work for that Pass; use the ordinary shader to remove tessellation stages entirely.
+
+For bounds support, install optional `TomTessellation.dll` in `BepInEx/plugins/TomShadersX`. No extra helper AssetBundle is required. In Unity, add `TomShadersX.TomTessellationBounds` to the renderer. The shader renders without this component, but Unity otherwise culls using its old CPU bounds, potentially clipping displaced/smoothed geometry or its shadow. The helper expands SkinnedMeshRenderer.localBounds; for MeshRenderer it creates a private mesh clone with adjusted bounds, never changing the original shared mesh. It restores its own changes on disable, preserving external mesh replacements/bounds edits. Arbitrary simultaneous mesh-writer mods still need compatibility checks. The game provider discovers active Tess renderers about once per second; attached helpers update bounds each LateUpdate. This optional CPU scanning/cloning cost is separate from tessellation GPU cost.
+
+No automatic welding is performed across UV seams, split normals, body/face joins or separate materials. Heights and normals must agree along shared edges. Use black geometry-mask borders around protected seams; sharp mismatches can still crack. The conservative smoothing bounds may be broad. GPU deformation changes neither colliders nor CPU vertices. Extra triangles, height/gradient samples and every additional-light geometry pass require scene/device profiling; this release does not certify whole-character performance. The optional SDF head provider must be 0.1.1 or newer to recognize SkinXTess.

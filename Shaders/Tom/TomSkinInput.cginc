@@ -17,17 +17,31 @@ float _alpha_a, _alpha_b, _SkinMainAlphaClip;
 float _SpecularPower, _SpecularPowerNail, _SpeclarHeight, _notusetexspecular;
 float _UseDetailRAsSpecularMap, _SkinPatternStrength, _SkinGameGloss;
 float _linetexon, _linewidthG, _SkinLineStrength, _SkinShadeStrength, _SkinGameLineColor;
-float4 _LineColorG, _SkinLineColor;
+float4 _LineColorG, _SkinLineColor, _SkinShadeColor;
+float _SkinShadeColorSource;
 float _SkinDiffuseNormalDetail, _SkinFaceNormalStrength;
 float _SkinStrength, _SkinWrap, _SkinWarmth, _SkinWarmWidth;
 float4 _SkinWarmColor;
 float _SkinWetness, _SkinCoatCoverage, _SkinLiquidCoatNormal, _SkinDebugView;
+
+DECLARE_TEX2D_NOSAMPLER(_FaceSDFTex);
+DECLARE_TEX2D_NOSAMPLER(_FaceSDFMask);
+float4 _FaceSDFTex_ST, _FaceSDFMask_ST;
+float _UseFaceSDF, _FaceSDFStrength, _FaceSDFChannel, _FaceSDFSideMode;
+float _FaceSDFMirrorU, _FaceSDFInvert, _FaceSDFAngleMode, _FaceSDFOffset, _FaceSDFSoftness;
+float _FaceSDFDirectionSource, _FaceSDFDebugView;
+float4 _FaceSDFForward, _FaceSDFUp;
+// Per-renderer provider data; not saved material controls or shared global head axes.
+float4x4 _TomFaceSDFHeadToWorld;
+float _TomFaceSDFHeadValid;
 
 struct TomSkinData
 {
     float4 detail, lines, control;
     float3 diffuseNormalWS, liquidNormalWS, diffuseTint;
     float liquidCoverage, gloss, coatCoverage;
+    float2 sdfUV;
+    float sdfWeight;
     float3 debug;
 };
 #endif

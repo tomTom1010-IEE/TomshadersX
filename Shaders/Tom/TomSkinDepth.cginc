@@ -6,6 +6,7 @@ DECLARE_TEX2D(_AlphaMask);
 DECLARE_TEX2D(_DetailMask);
 float4 _MainTex_ST, _AlphaMask_ST, _DetailMask_ST;
 float _Cutoff, _alpha_a, _alpha_b, _SkinMainAlphaClip, _SkinDebugView, _ClearCoatDebugView;
+float _FaceSDFDebugView;
 #include "TomSkinCoverage.cginc"
 float TomSkinMainAlpha(float2 uv)
 {

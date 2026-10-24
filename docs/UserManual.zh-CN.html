@@ -1,6 +1,6 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tom Shaders X 用户手册</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#101312;color:#e8ebea;font:16px/1.7 "Segoe UI","Microsoft YaHei UI",sans-serif;letter-spacing:0}header,main,footer{max-width:1500px;margin:auto;padding:28px}header{border-bottom:1px solid #39413d}h1{font-size:30px;margin:8px 0}h2{font-size:23px;margin:28px 0 12px}h3{font-size:19px}p{max-width:100ch}a{color:#81c9b5;text-underline-offset:3px}section{padding:12px 0 22px;border-bottom:1px solid #39413d}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}figure{margin:0;min-width:0}img{display:block;width:100%;height:auto;background:#000}figcaption{padding:10px 0;line-height:1.4;overflow-wrap:anywhere}span{color:#aab6ae;font-size:14px}summary{cursor:pointer;color:#81c9b5}details{font-size:13px;overflow-wrap:anywhere}table{border-collapse:collapse;max-width:100%;display:block;overflow-x:auto;font-size:14px}td,th{padding:8px 12px;border:1px solid #39413d;text-align:left;vertical-align:top}code{color:#e6c78d;overflow-wrap:anywhere}nav{display:flex;gap:16px;flex-wrap:wrap}article{max-width:1060px;margin:auto}article h2{padding-top:16px;border-top:1px solid #39413d}li{margin:5px 0}footer{color:#aab6ae}@media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){header,main,footer{padding:16px}.grid{grid-template-columns:1fr}h1{font-size:25px}table{font-size:13px}}@media print{body{background:white;color:#111}a,code{color:#254d40}header,main,footer{max-width:none}.grid{grid-template-columns:repeat(2,1fr)}details{display:none}section{break-inside:avoid}}</style></head><body><header><nav><a href="Gallery.zh-CN.html">标准球展示图集</a><a href="TomShadersX-UserManual.zh-CN.md">Markdown 原文</a><a href="UserManual.html">English</a><a href="https://github.com/tomTom1010-IEE/TomshadersX">GitHub</a></nav></header><main><article><h1 id="tom-shaders-x">Tom Shaders X 用户手册</h1>
-<p>适用：Tom Shaders X <strong>0.3.1</strong>，Koikatsu Sunshine，Unity 2019.4 Built-in Forward。
-配套：Hair Feather 0.3.0；Tom Lighting Probes 0.2.1。本文以 ME 中不带前导下划线的参数名为准。</p>
+<p>适用：Tom Shaders X <strong>0.4.0</strong>，Koikatsu Sunshine，Unity 2019.4 Built-in Forward。
+配套：Hair Feather 0.3.0；Tom Lighting Probes 0.2.1；SkinX Face SDF 头骨方向插件 0.1.1；Tessellation Bounds 0.1.1。发布包包含独立 Tess 版本，但不代表新增游戏内验收或性能认证。本文以 ME 中不带前导下划线的参数名为准。</p>
 <p>本次收尾只验证代码、ME 元数据和 Unity 渲染，不包含新一轮游戏内验收或全角色性能认证。
 展示球是可复现的功能示例，不是自动应用到角色上的默认预设。</p>
 <h2 id="section">1. 安装与选择</h2>
@@ -49,6 +49,18 @@
 <td><code>tom/LiquidX</code></td>
 <td>使用共享液体核心的独立薄液面或透明覆盖层</td>
 </tr>
+<tr>
+<td><code>tom/MainOpaqueXTess</code></td>
+<td>MainOpaqueX 的独立 D3D11 细分与真实位移版本</td>
+</tr>
+<tr>
+<td><code>tom/MainAlphaXTess</code></td>
+<td>MainAlphaX 的独立 D3D11 版本，深度预写、颜色、附加灯、轮廓和投影共用变形</td>
+</tr>
+<tr>
+<td><code>tom/SkinXTess</code></td>
+<td>SkinX 的独立 D3D11 细分与真实位移版本，保留脸部／身体层与 UV</td>
+</tr>
 </tbody>
 </table>
 <p>只使用一般表面、Clearcoat 或 EyeX 光学不需要额外插件。HairX 的 Feather 模式需要 <code>TomHairFeather.dll</code> 和同目录 <code>hairx-feather.unity3d</code>；缺少支持时回退硬边，不会自动得到柔化 stencil。</p>
@@ -62,7 +74,7 @@
 <li>选择 Environment Reflection 或 MatCap；最后按需加入 Clearcoat、Rim 和 Outline。</li>
 <li>眼睛、头发、皮肤的专属功能在通用底层之上调节，不需要推翻 stencil 或透明度设置。</li>
 </ol>
-<p>同名公共控件在适用的系列 shader（含 LiquidX helper）中保持相同类别、类型和范围。游戏兼容别名有意保留原拼写，包括 <code>SpeclarHeight</code>。ME 将部分枚举显示成数值滑条时，请输入说明中的<strong>整数</strong>，不要停在两个模式之间。贴图、数值、颜色仍使用 ME 原有控件；本文不假定所有版本都支持自定义下拉菜单。</p>
+<p>适用的底材 shader 共享公共光照基线和调节分类，但同名不代表所有系列的类型、范围与默认值完全相同：LiquidX 负责薄液体覆盖层的颜料，Skin 与 Eye 也保留各自的游戏兼容和光学差异。各 Tess 版本继承普通父版本的控件与光照，再增加几何控制。游戏兼容别名有意保留原拼写，包括 <code>SpeclarHeight</code>。ME 将部分枚举显示成数值滑条时，请输入说明中的<strong>整数</strong>，不要停在两个模式之间；MatCapBlendMode 则明确支持连续混合，不属于枚举。贴图、数值、颜色仍使用 ME 原有控件；本文不假定所有版本都支持自定义下拉菜单。</p>
 <p><code>IndirectDiffuseIntensity</code> 新材质默认 <strong>0.25</strong>。它只缩放间接漫射，不缩放直接灯、反射或 Clearcoat。已存储的旧值不会自动改成 0.25。Maker 中皮肤显得发白时，应先检查间接光和曝光，不要立即重命名游戏颜色参数。</p>
 <h3 id="section-2">常用起点</h3>
 <p>以下是调试起点，不是保证适合所有角色的预设。保持灯光不动，每次只调一组。</p>
@@ -112,13 +124,18 @@
 <p><strong>Toon 暗部颜色</strong>：<code>ToonShadeColor</code> 由 <code>ToonDarkFillColor</code> 改名，原有可选彩色补光算法不变。RGB 与底色相乘，A 是补光强度，不是表面透明度；默认 RGB=(0.35,0.35,0.35)、A=0。它不是新下限的染色参数；要提亮完全自遮挡的背光面，应使用 ToonMinLighting，而不是继续增大这个颜色。</p>
 <p><strong>改名兼容性</strong>：Shader 和 Material Editor 的实际属性 ID 已改为 ToonShadeColor。Unity 构建会迁移项目发布材质中的保存值，且不会覆盖已明确保存的新属性。游戏旧人物卡/材质编辑中以 ToonDarkFillColor 保存的值无法仅靠 shader 自动迁移，需要把原 RGBA 重新填写到 ToonShadeColor。没有修改游戏文件或增加运行时迁移插件。</p>
 <p>补光跟随 ForwardBase 主光颜色、MainLightIntensity、距离/cookie 衰减及真实投影遮挡，即使 ShadowStrength 绕过普通漫反射投影，补光仍保留物理遮挡。没有主光或 UseRamp=0 时无补光；只在 Base 计算一次，不在 ForwardAdd 重复叠加，并遵循烘焙主光的归属。金属度和可选漫反射能量抑制仍有效。它是主光驱动的艺术补光，不是自发光、真实透射或 SSS。ShadowColor 和间接光默认值 0.25 不变。</p>
-<p>Clearcoat 与集成透明液体把彩色补光和下限增量作为宽分布的底材照明进行衰减，不会当成背面入射的高光光线再次归零；实际反射波瓣和背光保护不变。有色液体仍可替换底材贡献。独立 LiquidX 保留已验收的染色路径，不增加这些底材控制。新下限默认 0，除明确说明的颜色属性改名外，保留已有光照行为。</p>
+<p>Clearcoat 与集成透明液体把彩色补光和下限增量作为宽分布的底材照明进行衰减，不会当成背面入射的高光光线再次归零；实际反射波瓣和背光保护不变。有色液体仍可替换底材贡献。独立 LiquidX 保留已验收的染色路径，不增加这些底材控制。下限默认 0.15，设为 0 可关闭提亮，不覆盖明确保存的参数。</p>
 <p><strong>阴影</strong>：ShadowStrength 调漫反射阴影参与度；ShadowRemapStrength / Threshold / Softness 重映射阴影可见度。UseRampForShadows 控制阴影进入 Toon 曲线。外部遮挡与曲面自身背光不是同一件事。Clearcoat 直接高光仍受物理阴影约束，不应把它当作无阴影发光。</p>
+<p><strong>SkinX 斜光投影</strong>：SkinX 及其配套材质现在默认 <code>UseRampForShadows=0</code>。表面明暗仍使用 Toon，但投影可见度在其后相乘，不再同时跨越 Toon 阈值。设为 1 可恢复原路由；不迁移场景或人物卡中明确保存的值，其他 shader 系列的默认值不变。<code>ToonMinLighting</code> 保持 0.15。斜光自投影建议从光源的 <strong>Soft Shadows（软阴影）</strong> 和 ShadowRemapStrength=0 开始；ToonSoftness、ShadowSoftness 都不能代替引擎阴影采样过滤。Shader 不会强改场景光源或阴影质量。原始阴影贴图的条纹仍可能存在，尤其在 Hard Shadows 下；分离 Ramp 不等于替换阴影过滤算法。仅在需要时分别调整光源 Bias 与 Normal Bias，并检查鼻子、接触处和薄片外部投影。过大的 Bias 或 ShadowOffset 会造成阴影脱离或丢失，本次不提高这些默认值。</p>
 <p><strong>直接高光</strong>：SpecularStrength 是强度，Roughness 是连续高光粗糙度，SpecularSize 是 Toon 高光大小，两者不互相替代。SpecularIOR/FresnelStrength 控制底层介质响应；Metallic 增大时底层漫反射减少。SpecularAA 用于缓和法线与高光边缘闪烁，不能替代所有时域抗锯齿。</p>
+<p><strong>独立高光法线</strong>：<code>SpecularNormalInfluence</code> / <code>SpecularDetailNormalInfluence</code> 分别控制干燥底材直接 GGX 与 Toon 高光的主法线、细节法线影响，范围 0..1，默认均为 1，Base 与 ForwardAdd 一致生效。0 只去掉对应输入，两项都为 0 时使用网格法线。HairX 继续使用已有 <code>HairSpecularNormalInfluence</code> / <code>HairSpecularDetailNormalInfluence</code>，对双瓣只应用一次，不叠加第二组共享控制。AA 跟随选定高光法线，几何朝光保护和正常投影仍保留。不会改变漫反射/SH、环境反射、MatCap、Clearcoat 或液体层；全局法线强度仍决定输入强度。EyeX 使用折射后的虹膜法线样本，AA 保留折射前表面足迹。默认 1/1 保持旧材质效果，不增加贴图采样。</p>
 <p><strong>多灯</strong>：MainLightIntensity / AdditionalLightIntensity 分别调主灯和逐像素附加灯。直接漫射、高光与 Clearcoat 会响应附加灯；SH、环境反射、加法 MatCap、Rim、发光不逐灯重复添加。乘法 MatCap 仍调制各灯的漫反射。</p>
 <p><strong>间接漫射</strong>：LightProbeBlend 从 AmbientColor 过渡到 Unity 的 SH/Light Probe 路径；CustomSHVolumeBlend 控制已就绪的自定义 SH Volume。IndirectToonBlend 可风格化间接明暗，但不能凭空补出方向信息。没有就绪的 Volume 时保留内置间接光路径。</p>
 <p><strong>环境反射</strong>：ReflectionMode：0 关闭，1 MatCap，2 环境，3 两者。环境模式需要可用的探针或天空反射；EnvironmentIntensity、Roughness、ToonBlend 分别控制强度、模糊和风格化。默认 UseMaterialRoughnessForEnvironment=1 时，环境采用材质粗糙度，独立 EnvironmentRoughness 不接管。Box Projection 适合有限室内空间，但不是光线追踪。</p>
-<p><strong>MatCap</strong>：视角空间的二维外观贴图，不是场景实时反射。MatCapBlendMode：0 乘法，1 加法。MatCapNormalSource：0 网格法线，1 主法线，2 主法线加细节。</p>
+<p><strong>MatCap</strong>：视角空间的二维外观贴图，不是场景实时反射。<code>MatCapBlendMode</code> 现在是连续 0..1 混合：0 保留原 Multiply，1 保留原 Add，中间值插值两种完整合成结果，不会把两层全强度叠加。属性名及默认值 1 不变，旧材质保存的 0／1 端点保持原外观；原先保存的枚举小数现在产生真实混合，不再按 0.5 硬切。MatCapNormalSource：0 网格法线，1 主法线，2 主法线加细节。</p>
+<p><code>MatCapColor</code> 默认白色 RGBA (1,1,1,1)。RGB 乘到 MatCap 采样颜色上；A 是独立的 0..1 整层权重，0 回到无 MatCap，1 保留完整权重。A 淡化的是原强度整形后的结果，因此 Multiply 保留旧强度的饱和规则，Add 保留原来的非饱和强度。A 不改变模型透明度、裁剪或投影，MatCap 贴图自身的 A 仍不使用。RGB 黑色不等于关闭，在 Multiply 下可能压暗底材；关闭请用 A=0 或 MatCapIntensity=0。已明确保存的颜色值不会被重置。</p>
+<p>Multiply 部分仍一致调制 Base 和每个 ForwardAdd 的漫射，Add 部分只在 Base 添加一次。MatCapColor 不直接给高光、环境反射、Clearcoat／液体反射瓣、Rim 或发光染色；保留现有涂层和液体合成关系。每个活跃 Pass 的两部分复用一次 MatCap 采样；纯 Add 在 ForwardAdd 中跳过 MatCap 采样，中间态则需要该 Pass 的乘法路径，不能视为纯 Add 的零成本替代。这些控制覆盖全部 11 个支持 MatCap 的普通／Tess 入口，不给 LiquidX helper 增加 MatCap。</p>
+<p><code>MatCapNormalInfluence</code> / <code>MatCapDetailNormalInfluence</code> 独立控制 MatCap 的主法线与细节法线，范围 0..1，默认均为 1，覆盖包括 HairX 在内的八个底材 shader。保留来源选项：Geometry 忽略两个滑条；MainNormal 只使用主法线滑条，忽略细节；CombinedNormal 使用两项。组合模式下主法线为 0 不会去掉细节，两项都为 0 则使用网格法线。加法 MatCap 和各灯漫反射上的乘法 MatCap 使用同一控制，不影响其他层。EyeX 跟随折射后的法线样本。默认保持原来源和旧材质效果，不覆盖已保存参数。</p>
 <p><strong>Rim / Outline / Emission</strong>：Rim 是视角边缘项；Outline 是外扩壳轮廓，两者独立。屏幕空间 OutlineWidth 按像素调宽。发光不会自动给周围物体投光。SkinX 的 UV4 用于游戏叠加层，不能再用作外轮廓平滑法线。</p>
 <h2 id="section-4">4. 贴图通道速查</h2>
 <p>颜色贴图按颜色导入，数据贴图关闭 sRGB。法线贴图按 Unity 法线贴图方式导入；不要把普通 RGB 法线图、RG 流向图或灰度深度图互换。在 ME 运行时导入时，先确认该版本的导入行为；本次未在游戏里验证它是否保留所有颜色空间设置。</p>
@@ -185,8 +202,61 @@
 </ul>
 <p>涂层很亮时会在视觉上盖住虹膜对比度，但这不等于视差算法被关闭。先关闭涂层或查看 EyeDebugView 的位移图来区分两者。</p>
 <h2 id="hairx">6. HairX</h2>
+<h3 id="me">ME 分类</h3>
+<p>四个相邻的头发高光分类按「流向 → 主瓣与共用控制 → 副瓣 → 可选局部控制」布置。本次只整理元数据：属性 ID、范围、默认值、保存值和光照计算均不改变。分类内部的行顺序仍可受 ME 按名称／类型排序的设置影响。</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>参数与作用范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hair Direction</td>
+<td>StrandAngle、StrandDirectionMode、StrandDirectionMap、StrandDirectionBlend，只负责两瓣共用的发丝流向。</td>
+</tr>
+<tr>
+<td>Hair Highlight</td>
+<td>共用的 HairAnisotropy、HairSpecularNormalInfluence、HairSpecularDetailNormalInfluence、HairHeightAxisAngle；主瓣的 HairPrimaryHeight、HairHighlightShift、HairPrimaryLongitudinalWidth、HairPrimaryAzimuthalWidth。</td>
+</tr>
+<tr>
+<td>Hair Secondary Highlight</td>
+<td>HairSecondaryWeight 及副瓣高度、角度偏移、物理／Toon 形状和染色，包括 HairSecondaryHeight。</td>
+</tr>
+<tr>
+<td>Hair Local Controls</td>
+<td>UseHairHighlightMap、HairHighlightMap、HairPrimaryShiftMapScale、HairSecondaryShiftMapScale；可选，不是 Surface Height 的前置要求。</td>
+</tr>
+<tr>
+<td>Environment Reflection</td>
+<td>HairEnvironmentAnisotropy 并入现有环境反射控制，不再单独设置 Hair Environment 分类。</td>
+</tr>
+<tr>
+<td>Direct Specular</td>
+<td>强度、颜色、蒙版、投影可见性、Bands、AA 为两瓣共用；SpecularToonBlend／Size／Threshold／Softness 只控制主瓣。</td>
+</tr>
+<tr>
+<td>Material</td>
+<td>共用的物理粗糙度、贴图、偏置、IOR 与 Fresnel；副瓣再加独立 RoughnessOffset，Toon Size 另行控制。</td>
+</tr>
+</tbody>
+</table>
+<p>不再设置独立的 Hair Surface Height 分类：主瓣高度和共用高度轴在 Hair Highlight，副瓣高度在 Hair Secondary Highlight。HairFront 与 Debug 保持独立；Head Band 继续封存和隐藏。</p>
+<p>SecondaryWeight=0 时，其余副瓣参数没有可见贡献；UseHairHighlightMap=0 时忽略控制图及局部偏移强度。ShiftMapScale=0 只取消该通道的角度偏移，不取消图中的覆盖蒙版。Toon Size／Threshold／Softness 需要对应 Toon 混合大于零；SecondaryRoughnessOffset 仅影响副瓣中的连续高光部分。这些依赖通过提示说明，不通过重置保存值或新增动态隐藏功能实现。</p>
+<h3 id="section-5">颜色、流向与高光</h3>
 <p>ColorMask 遵循 KKS/xukmi 的 RGB 顺序混合：R 将白色混向 Color，再由 G 混向 Color2，最后由 B 混向 Color3；不是权重相加。未指定或黑色蒙版保留贴图颜色；纯红使用 Color，纯白使用 Color3。ColorMask 有独立的平铺和偏移；过滤与寻址模式复用 MainTex，以满足 D3D11 采样器数量限制。BaseColor 保留为额外的整体乘色。继承游戏发色时建议 BaseColor 保持白色；旧 HairX 材质若曾手动染色，可能需要将其恢复白色，避免二次染色。切换 shader 时仍需游戏或 ME 保留原有蒙版和 Color/Color2/Color3 值。</p>
-<p>StrandAngle：U 方向为 0°，V 为 90°。StrandDirectionBlend 混合手动方向与流向图；HairAnisotropy 控制条带形高光。当前是单高光瓣，不是双层头发散射或各向异性环境反射。</p>
+<p>StrandAngle：U 方向为 0°，V 为 90°。StrandDirectionBlend 混合手动方向与线性 RG 流向图（<code>RG*2-1</code>，不是 Unity 法线图）。StrandDirectionMode=0 保留旧版无向轴及符号对齐；模式 1 将箭头视为发根到发梢，按角度插值，反向箭头也有稳定中点。请统一绘制方向，UV 布局不能自动识别发根；零向量回退 StrandAngle。缺少网格切线时只保证有限的回退结果，不保证正确发丝方向。</p>
+<p>HairHighlightShift 与 HairSecondaryShift 分别以角度旋转两瓣直接高光框架。正值使高光法线朝正向发丝箭头倾斜，屏幕上亮带的移动方向由几何、光线与视角共同决定，不是世界高度。连续 GGX 与 Toon 高光共享偏移；漫反射、投影和涂层法线仍使用各自框架。Primary/Secondary LongitudinalWidth 与 AzimuthalWidth 分别调整沿发丝与跨发丝的宽度倍率，1 为中性；HairAnisotropy 保留为共同基础长宽比。</p>
+<p>HairSecondaryWeight=0 保留单瓣外观。副瓣份额 w 按 <code>(1-w)*主瓣 + w*副瓣</code> 分配现有 SpecularStrength 总强度，并共享 SpecularColor、总蒙版、IOR 和真实光照可见性。副瓣 Size/Threshold/Softness/ToonBlend 塑造 Toon 端点；SecondaryRoughnessOffset 在现有粗糙度贴图之后调整连续 GGX 端点。SpecularBands 与 SpecularAA 共用。SecondaryColor 的 RGB 是相对乘色，A 不使用；SecondaryBaseColorTint 可混入 MainTex * BaseColor * 游戏三色染发后的有效发色。这是风格化双瓣反射近似，不是完整发丝散射；两瓣共同位于独立 Clearcoat 涂层之下。</p>
+<p>UseHairHighlightMap 启用独立 UV0 局部控制图：线性 R/G 分别是以 0.5 为零点的主/副瓣有符号偏移，由 Primary/SecondaryShiftMapScale 以角度缩放；B/A 分别为主/副瓣覆盖。随包发布材质已显式绑定中性图 <code>(0.5,0.5,1,1)</code>。在其他材质上开启时请指定控制图：运行时未绑定的槽位按白色处理，即全覆盖、满正偏移，不会自动生成中性数据；默认关闭与零局部增益仍保证旧材质兼容。自绘图关闭 sRGB；ST 独立，但过滤与寻址复用 MainTex，请匹配图集边缘与过滤需求。蒙版只衰减对应高光，不归一化补亮、不裁切网格；SpecularMask 仍是总高光遮罩。全局与局部偏移相加后限制在 ±40°。</p>
+<p>HairSpecularNormalInfluence 和 HairSpecularDetailNormalInfluence 分别调整已有主/细节法线对直接高光的影响，默认 1/1 复现旧路径。Base 与 ForwardAdd 中，双瓣的形状、导数 AA 和法线地平线衰减统一使用选定高光法线；被排除的法线不会再通过衰减间接压掉高光。网格朝光保护和真实投影仍保留。Toon 漫反射、探针法线、MatCap 与 Clearcoat 保留各自法线。HairEnvironmentAnisotropy=0 保留原探针反射，正值按 HairAnisotropy 和发丝轴混合弯曲反射方向。环境粗糙度独立，不增加探针采样次数，不在 ForwardAdd 重复计算环境。Unity Cubemap 的预过滤仍是各向同性，因此这是方向近似，不是双瓣各向异性 IBL 卷积。</p>
+<p>HairHighlightDebugView：1 加权主瓣直接高光；2 加权副瓣；3 世界空间发丝方向；4 RG 显示两瓣有效偏移（0.5 为零，两端 ±40°）；5 RG 显示两瓣覆盖；6 所选高光法线。高光视图包括附加灯、位于涂层透射之前；数据视图抑制 Add；全部抑制雾和描边并保留覆盖。新增参数默认中性或关闭，不自动覆盖旧材质保存值。可选起点：主瓣偏移 -10、副瓣 +12、份额 0.35、副瓣大小 0.62、柔度 0.3、Toon 混合 0.7、粗糙度偏移 0.18、发色染色 0.35；这些只是示例参数，不是新默认值。</p>
+<h3 id="section-6">无贴图高光高度</h3>
+<p>HairPrimaryHeight 和共用的 HairHeightAxisAngle 位于 Hair Highlight，HairSecondaryHeight 位于 Hair Secondary Highlight。两瓣 Height 默认均为 0，范围 -1～1，直接偏置现有程序化各向异性反射框架，不采样 Gloss 图。无需定位模式开关、HairGloss 贴图、UV2、头骨绑定或新增插件。数值是无量纲的美术斜率偏置，不是距离或度数：完整 N／T 反射框架绕 <code>cross(所选法线, 表面高度轴)</code> 旋转 <code>-atan(Height)</code>。连续 GGX 与 Toon 共用偏置后的框架及内部可见性项；真实几何光线／视线保护、灯光数据、Fresnel、投影、蒙版、染色和 (1-w)／w 份额不变，所选框架导数参与法线 AA，不增加第三瓣或无光自发亮层。原角度 Shift 保留沿发丝、以度数计的含义，先执行，再施加独立的表面高度框架偏置。</p>
+<p>HairHeightAxisAngle 是独立于发丝流向的网格切平面定位轴：90° 为网格 V，-90° 反转 V，0° 为 U，不使用 StrandAngle 或流向图。因此改变发丝方向不再改变高度控制使用哪个网格轴。两瓣 Height 均为 0 时绕过；现有主／细节高光法线用于投影此轴，不增加采样。切线随正常网格变形更新。网格 V 不保证是世界／头部／画面向上，旋转／镜像或方向不一致的发片 UV 仍需校准，不能宣称绝对头部高度稳定。借鉴 xukmi 的是简单控制体验，不是其 SpeclarHeight／UV2／Gloss 采样算法或数值兼容，不添加同名继承别名。</p>
+<p>起始参数：PrimaryHeight=0.2、SecondaryHeight=0、HeightAxisAngle=90、主瓣 Shift=0、副瓣 Weight=0。先用 HairHighlightDebugView=1 隔离主高光，对比 -0.2／0／+0.2；方向相反时把 HeightAxisAngle 改为 -90，资产 U 才是预期高度方向时用 0。保留正确的发丝流向，不再用 StrandAngle 纠正高度方向；原 Size／Roughness／LongitudinalWidth／AzimuthalWidth 继续调形状。最后高光调试设回 0。副瓣可从 Weight=0.25、SecondaryHeight=-0.15 开始，再调原有大小和柔度。灯光和投影仍可能改变可见最亮点。</p>
+<p>原 Head Band 实验已封存。原有九项属性仅作为隐藏的旧材质兼容占位，不再参与渲染；保存的 PositionMode=1 也不会阻止 Surface Height 生效。调试范围收回 0～6，旧值 7／8／9 回到最终画面，不再显示头骨数据。TomHairHeadBand.dll 不再构建或打包；旧测试安装中可移除这个已停用的可选 DLL，避免旧插件继续后台扫描。不要删除无关的 HairFeather、SDF 或其他配套插件。</p>
 <p>HairFrontMode：0 关闭，1 硬 stencil，2 内侧羽化。HairFrontOpacity=1 为不透明。stencil 外仍为正常头发 cutout；改变相机侧透明度不会挖掉头发投下的阴影。</p>
 <p>Feather Width Mode：0 像素，1 投影世界单位。像素模式保留旧材质行为；世界单位随距离/FOV/分辨率投影。宽度、Midpoint、Power 独立。过大的投影半径受提供器 256 像素预算限制，日志会标注。</p>
 <p>眼部 writer 必须先于头发绘制。常用队列是 EyeWX 2472、EyeX 2474、HairX 2475；不要为了让某一层透出而随意打乱队列。羽化只认识受支持的 writer，并不是任意 shader 的真实 stencil 拷贝。眼白缺少支持时，眼白与瞳孔接缝可能被错误当成边界；改为受支持的 EyeWX/EyeWPlus 并检查队列。Mode 1 可作为定位辅助，但不是证明羽化整体正确。</p>
@@ -194,10 +264,10 @@
 <h2 id="eyewx-eyex">7. EyeWX 与 EyeX</h2>
 <p>EyeWX 使用游戏 <code>_Color</code> 别名，0.5 为中性，再叠加 BaseColor。EyeX 保留原生虹膜旋转、表情层和高光层；这些游戏别名不应被用户手工清空。表面高光贴图和 Clearcoat 可以并存，但叠得过强会显得重复。</p>
 <p>AlphaMask / Alpha / Cutoff 控制未偏移源覆盖；StencilCutoff 额外控制 stencil 写入。EyeWX 对通过阈值的区域按 cutout 绘制，EyeX 对存活覆盖继续 alpha 混合。<strong>光学范围、透明范围、stencil 范围是三件事。</strong></p>
-<h3 id="section-5">程序化视差</h3>
+<h3 id="section-7">程序化视差</h3>
 <p>EyeOpticsMode=1 开启。IrisCenterX/Y 与 IrisRadiusX/Y 定义最终 MainTex UV 中的椭圆。IrisDepthShape：0 原始平底，1 浅锥，2 浅碗。IrisDepth 是两种模式共用的全局凹陷增益，以局部虹膜半径为尺度，不是米或像素。EyeOpticsStrength=0 回到原采样。</p>
 <p>EyeRefractionIOR 与 ClearCoatIOR 独立；增加折射 IOR 会减小横向视差，这属于当前光线路径的设计。IOR=1 去掉折射弯曲，不消除凹陷自身的视差。旧材质要复现分离前的结果，可将原 ClearCoatIOR 数值手动复制到 EyeRefractionIOR 一次；系统不强制迁移已保存材质。</p>
-<h3 id="section-6">自绘深度与范围</h3>
+<h3 id="section-8">自绘深度与范围</h3>
 <p>UseEyeSurfaceMask=1 后，贴图替代程序化椭圆边界和 EdgeFade；与主虹膜贴图及其旋转/ST 对齐。</p>
 <table>
 <thead>
@@ -223,7 +293,7 @@
 <p>两个模式都乘 IrisDepth；半径在贴图模式仍作为深度/位移尺度标定，但不再裁剪自绘区域。A 只影响深度和进入过渡，不改变表面透明度。</p>
 <p>适合：平底浅凹、浅锥、浅碗、平滑单值灰度场。不要将绘画高光直接转换为深度，更不要把眼睛颜色亮暗当作几何高度。避免陡直坑壁、高频噪声和多层回折表面。</p>
 <p>EyeOpticsMaxOffset 限制极端位移；EyeUVMin/Max 是安全图集边界。偏移采样超出安全区域或几何条件失效时会回到原 UV，所以不能只靠无限拉大强度获得深洞。</p>
-<h3 id="section-7">色散与角度</h3>
+<h3 id="section-9">色散与角度</h3>
 <p>EyeDispersion=0 单路，正值采用三条 RGB 光线的几何近似。它不是波动光学，不会把整个涂层变成彩虹。通常只在高对比边缘和斜视时较清楚。</p>
 <p>测试角度时要真正改变相机相对眼表面的方向；仅移动构图或使用始终朝向相机的眼球，差异可能很弱。先用明显纹理与浅锥/浅碗测试，再逐步调整 Depth、IOR、最大偏移和安全范围。</p>
 <p>当前不是 POM，不保证近侧坑壁挡住远侧内容。以后确实需要这种自遮挡时，再考虑 <strong>POM / 首次可见交点搜索</strong>；角度差异不够强本身不是必须升级的理由。不需要额外角膜网格。</p>
@@ -275,10 +345,33 @@
 </tr>
 </tbody>
 </table>
+<h3 id="skin">Skin 缺图规则：显式绑定</h3>
+<p>保留已正确绑定的游戏／自绘贴图。只有对应槽确实为空时，才在 ME 中导入配套中性数据 PNG：</p>
+<ul>
+<li><code>DetailMask</code>：<code>Material/SkinDetailNeutral.png</code>，RGBA <strong>(1,0,0,1)</strong>；放行高光，
+不增加绘制阴影或抑制 Rim，光泽区域选择皮肤。</li>
+<li><code>SkinControlMap</code>：<code>Material/SkinControlNeutral.png</code>，RGBA <strong>(1,1,0,1)</strong>；柔化与暖色
+继续由滑条控制，自绘湿润区域为零，A 不使用。</li>
+</ul>
+<p>完整 ZIP 和源码包均附这两张图。运行时空槽<strong>不等于</strong>中性输入：ShaderLab 的
+DetailMask 兜底是黑色（R／A=0），SkinControlMap 兜底是白色（B=1），因此可能压掉
+光泽，或令自绘湿润涂层模式全覆盖。Editor 导入器默认图、模板绑定不保证 ME 切换
+Shader 时补齐空槽。本版不增加自动替换插件，也不按贴图尺寸／内容猜测缺图。
+SkinXTess 使用同样的规则。</p>
 <p>DetailNormalMapScale 还参与游戏内部线条/画入阴影；SkinDiffuseNormalDetail 只减弱漫反射细节，保留高光/涂层细节。SkinStrength / Wrap / Warmth 提供前侧柔化和明暗交界暖色，不是屏幕空间或体积 SSS，也不会穿透外部遮挡。</p>
 <p>SpecularPower / SpecularPowerNail 保留游戏皮肤与指甲/嘴唇的光泽增益；SkinGameGloss 控制参与度。它们不等于 Roughness，也不自动调 Clearcoat。SkinPatternStrength / notusetexspecular 控制移动的画入高光遮罩。</p>
-<h3 id="section-8">液体与湿润</h3>
-<p>SkinX、MainOpaqueX 和三个 Alpha 变体共用同一液体层；独立 <code>tom/LiquidX</code> 使用相同核心，可作为材质复制叠加层或独立薄液面。HairX、EyeX、EyeWX 不加入。本次液体此前未发布，因此直接使用新分层设计，不保留旧算法开关。</p>
+<h3 id="section-10">独立绘制阴影颜色</h3>
+<p>SkinX 与 SkinXTess 将绘制阴影和投影区域染色分开。ME 的 Skin Response 分类中，SkinShadeStrength、SkinShadeColorSource、SkinShadeColor 相邻排列。SkinShadeColorSource=1（Independent）时，使用 SkinShadeColor 的 RGB 调整 DetailMask G / LineMask B 共同形成的绘制阴影，强度仍由 SkinShadeStrength 控制。颜色 A 不参与计算，不是透明度或第二个强度。两路蒙版维持原有合并规则，不叠加两层阴影。染色作用于 Base/Add 及间接光、补光中的皮肤漫反射，不直接染高光、涂层或液体反射瓣。</p>
+<p>ShadowColor 保留共享基线职责：主光投影区域的 Base 间接漫反射染色。SkinLineColor 独立控制内部描线；ToonShadeColor 仍是可选的主光驱动彩色补光，不是所有阴影的总调色。ToonMinLighting 保持 0.15。</p>
+<p>兼容方式：着色器的 SkinShadeColorSource 默认 0（FollowShadowColor），保留没有新字段的旧材质及运行时新建材质的效果；此时忽略 SkinShadeColor，绘制阴影继续跟随 ShadowColor。两份发布载体预设采用 Independent，并复制原 ShadowColor 的 RGB，保持起始外观。旧人物卡切换时，先把原 ShadowColor 复制到 SkinShadeColor，再将来源设为 1；不会自动迁移游戏人物卡或覆盖已保存参数。</p>
+<h3 id="sdf">可选面部 SDF</h3>
+<p>SkinX 与 SkinXTess 支持独立的面部 SDF 阈值图。开启 <code>UseFaceSDF</code> 和 <code>UseRamp</code>，将贴图放入 <code>FaceSDFTex</code>，用 <code>FaceSDFMask</code> 的 R 限定脸部区域。<code>FaceSDFStrength=0</code> 或区域蒙版为黑时恢复法线驱动的 Toon。开关默认关闭，身体和已有脸部材质保留原设置。DetailMask 仍按原定义使用，不能直接当 SDF 图。</p>
+<p>两张贴图均按线性数据导入（关闭 sRGB），不设为法线图。使用 UV0，各有独立缩放/偏移，共用双线性、Clamp 采样。阈值图数值越高，灯光转到头后方时越晚进入暗部。<code>FaceSDFChannel</code> 选择 R/G/B/A；<code>FaceSDFInvert</code> 反相。左右模式：0 Single 两侧都读取指定通道；1 MirrorU 在头部左侧来光时，将 SDF ST 后的 U 绕 <code>FaceSDFMirrorU</code> 镜像（默认 0.5）；2 RGPair 右侧读 R、左侧读 G，不镜像且忽略通道选择。区域蒙版始终不镜像。</p>
+<p><code>FaceSDFAngleMode=0</code> 为余弦编码，阈值=(1-正面余弦)/2；1 为角度编码，阈值=相对头部的水平夹角绝对值/180 度。二者正面阈值为 0、侧面 0.5、背面 1，应按资产制作约定选择，不能自动识别任意导入 SDF。<code>FaceSDFOffset</code> 为阈值偏移，正值扩大暗部；<code>FaceSDFSoftness</code> 控制边缘宽度，<code>ToonAA</code> 补充像素抗锯齿。原有主/次 Ramp 的端点决定两侧亮度，不重放贴图 Ramp 中间的多级色阶。SDF 区域替换法线 Toon 分界及其漫反射地平线限制，随后仍应用真实投影。<code>ToonMinLighting</code> 保持 0.15。</p>
+<p><code>FaceSDFDirectionSource=0</code> 使用 Renderer 物体轴；1 使用可选 <code>TomSkinSDF.dll</code> 的头骨方向，没有有效跟踪数据时退回物体轴。将 DLL 放入 BepInEx/plugins 后，可跟随 KKS 头骨或 Humanoid Head 骨骼；不需要额外 AssetBundle，也不改写材质设置。<code>FaceSDFForward</code> / <code>FaceSDFUp</code> 的 XYZ 为局部前方/上方，默认 +Z/+Y，W 不用；ME 将向量显示为颜色栏位，但它们不是染色。朝 -Z 的导入脸可使用 Forward=(0,0,-1,0)。跟踪模式的局部轴属于头骨，不属于 Renderer；未识别的自定义骨架需在 Unity 中显式绑定 <code>TomSkinSDFHead.head</code>。正上/正下方来光没有确定左右方位，会平滑退回法线明暗。</p>
+<p>SDF 仅改变 Base/Add 的直接 Toon 漫反射，高光、SH、Clearcoat、液体法线、网格裁剪和投影生成沿用现有路径。它不能区分自投影与头发、手或衣物投影。<code>FaceSDFDebugView</code>：1 有效区域，2 选定数据乘区域，3 主光在真实投影之前的亮区；最终显示设为 0。数据视图关闭附加灯、描边和雾的输出。</p>
+<h3 id="section-11">液体与湿润</h3>
+<p>SkinX、MainOpaqueX、三个 Alpha 变体及其已有 Tess 衍生版共用同一液体层；独立 <code>tom/LiquidX</code> 使用相同核心，可作为材质复制叠加层或独立薄液面。HairX、EyeX、EyeWX 不加入。沿用 0.3.1 已发布的现代液体系统，不提供切回更早实验算法的开关。</p>
 <p>LiquidCoverageMode：0 游戏五部位，1 自绘蒙版 R，2 整面覆盖。游戏模式使用 liquidmask 的 RGB 组合与 liquidftop/fbot/btop/bbot/face 五个 0..2 数量；Texture2 的 R 在 0..1 出现，G 在 1..2 与第一阶段取 max 并集。模式 1 使用 LiquidCoverageMap。以上是最终渲染槽，不是游戏合成器的同名输入；shader 不会补齐缺失贴图，也不会自动给任意物体更新游戏液体量。</p>
 <p>LiquidCutoff 默认 0.02，清除过低的图案/自绘蒙版数值并重映射剩余范围；LiquidEdgeSoftness 默认 0.04，提供带像素过滤的柔边。清理在部位数量混合之前进行，避免数量动画突跳。同一覆盖率控制染色、液体法线和所有湿润反射，但不裁掉网格。SkinLiquidMaterial 是整个液体层的总强度，0 完全恢复干燥材质。</p>
 <p>Texture3 是切线法线，不是高度图。LiquidNormalEncoding：0 Raw AG 读取 GPU 数值 A=X、G=Y，保留游戏运行时纹理采样标志；1 Exported AG PNG 仅对经过 sRGB 编码的 G 做反转换，Alpha 保持数值，要求数据采样（关闭 sRGB）；2 Unity Normal 用于通过法线导入器导入的普通法线。模式 1 不可再叠加自动 sRGB 解码。根据输入链路选择，不要只凭灰度外观判断。随包中性 AG 法线对应模式 0；其他模式未指定法线时，将 SkinLiquidNormalScale 设为 0。</p>
@@ -360,7 +453,7 @@
 <p>捕捉方向保持世界轴，不随物品旋转。父对象旋转若改变物品世界位置，仍会造成真正的位置变化。近裁剪只能裁近处几何；要避免角色自捕捉，优先检查捕捉层。被放到特殊层的角色不保证由环境预设自动排除。</p>
 <p>共用队列每次只做一个捕捉任务；同组刷新先 SH 后 RP。SH 刷新完成并重新绑定前保留旧 atlas 与匹配的范围；首次没有历史结果时走内置间接光。RP 更改分辨率/HDR 时会重建内部 helper，期间可能回退其他探针/天空。</p>
 <p>捕捉结果不随场景持久化，只保存参数；重新加载需要重捕捉。SH 每个采样点渲染六面并同步读回，分帧不是免费异步 GI；复杂场景仍可能卡顿。RP 需要 Unity 的 Realtime Reflection Probes 质量选项，插件不会擅自修改全局质量。</p>
-<h2 id="section-9">10. 排查与已知边界</h2>
+<h2 id="section-12">10. 排查与已知边界</h2>
 <table>
 <thead>
 <tr>
@@ -403,8 +496,70 @@
 </tr>
 </tbody>
 </table>
-<p>保留现有效果的后续项：EyeX 多灯路径定向优化（非当前阻塞）；真实自遮挡触发时才评估 POM；HairX 双高光瓣等另行设计；EyeWX 眼白与眉毛/眼线拆分暂缓。探针捕捉预算、全角色与多角色的游戏 GPU 性能需另行实测，不从标准球推断。</p>
-<h2 id="section-10">11. 展示图与开发证据</h2>
+<p>保留现有效果的后续项：EyeX 多灯路径定向优化（非当前阻塞）；真实自遮挡触发时才评估 POM；进一步的头发透射与散射；EyeWX 眼白与眉毛/眼线拆分暂缓。探针捕捉预算、全角色与多角色的游戏 GPU 性能需另行实测，不从标准球推断。</p>
+<h2 id="section-13">11. 展示图与开发证据</h2>
 <p>配套展示包提供逐项标准球对照、视差多角度图、单张 PNG、生成贴图以及记录所有材质参数的可展开表格。同一组对照使用相同相机、灯光和固定显示转换；需要变化的相机/光照明确写在图名与记录中。SH 展示使用已知系数场隔离漫射效果，探针捕捉刷新正确性由独立 Unity 运行时回归验证。</p>
 <p>源码安装与打包方法见源码仓库的 Documents/Development.md。</p>
+<h2 id="section-14">12. 独立细分与真实位移</h2>
+<p>主动选择 <code>tom/MainOpaqueXTess</code>、<code>tom/SkinXTess</code> 或 <code>tom/MainAlphaXTess</code>。继承属性的命名、裁剪、光照、液体、Clearcoat 与投影行为均与普通版一致；SkinXTess 同时保留 Face SDF、UV0-UV3 和顶点色叠加层门控。切换 shader 时仍依赖 ME 保留已保存的数值。仅支持 <strong>D3D11 / shader model 5</strong>，不静默回退到缺少功能的版本。普通版不包含 Hull/Domain 阶段，才是完全不付细分成本的选择；Tess 版倍率为 1 仍调用细分阶段。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>定义与默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TessellationMode</td>
+<td>0 固定倍率，1 屏幕边长自适应；默认 1</td>
+</tr>
+<tr>
+<td>TessellationFactor</td>
+<td>细分上限 1..16，默认 4；脚本传入超范围值也会限制</td>
+</tr>
+<tr>
+<td>TessellationEdgeLength</td>
+<td>屏幕边长目标 4..64 像素，默认 16；越小越密，仍受倍率上限约束</td>
+</tr>
+<tr>
+<td>TessellationSmooth</td>
+<td>Phong 曲面平滑 0..1，默认 0；独立于细分密度和高度</td>
+</tr>
+<tr>
+<td>UseGeometryMask / GeometryMask</td>
+<td>默认关闭；线性 RG：R 平滑、G 位移，B/A 不使用；白色允许两者，黑色保留原表面</td>
+</tr>
+<tr>
+<td>DisplacementMap</td>
+<td>线性 R 高度，不是法线贴图；使用 UV0，独立平铺和偏移</td>
+</tr>
+<tr>
+<td>DisplacementStrength</td>
+<td>有正负的世界空间尺度 -0.05..0.05，默认 0</td>
+</tr>
+<tr>
+<td>DisplacementMidlevel</td>
+<td>零高度参考 0..1，默认 0.5</td>
+</tr>
+<tr>
+<td>DisplacementMip</td>
+<td>高度图／几何蒙版显式 mip 0..8，默认 0；远景或噪声细节可调高</td>
+</tr>
+<tr>
+<td>DisplacementNormalStrength</td>
+<td>高度梯度法线修正 0..1，默认 1；0 保留插值网格法线</td>
+</tr>
+<tr>
+<td>TessellationBoundsPadding</td>
+<td>可选辅助组件额外扩展的世界空间包围盒余量 0..0.1，默认 0；不移动几何</td>
+</tr>
+</tbody>
+</table>
+<p>位移为 <code>(saturate(R) - Midlevel) * Strength * mask.G</code>，沿插值后的世界空间法线移动。例如白图、Strength=0.02、Midlevel=0.5 向外移动 0.01 Unity 世界单位。打包材质显式绑定精确线性 0.5 中性图。代码中直接新建材质时，应先绑定高度图再开位移，不能依赖引擎内置 gray 恰好中性。两张数据图都需要关闭 sRGB，ME 运行时导入也必须是数据采样。GeometryMask 独立使用 UV0 平铺和偏移；R 不控制细分密度，G 不改变干燥材质覆盖率。</p>
+<p>先将平滑、位移保持为零检查原外观，再分别增加密度、平滑和高度。颜色、ForwardAdd、轮廓、ShadowCaster 和 MainAlphaXTess 的可选深度预写使用同一变形，不通过 patch 视锥／背面剔除丢弃镜头外的投影物。屏幕边长模式的密度随视角变化，需要可复现拓扑时使用固定模式。单纯增加三角形不能恢复缺少的形状。高度法线是浅层梯度近似，不包含精确曲面法线传输或自相交处理。</p>
+<p>MainAlphaXTess 保留直通／预乘 AlphaBlendMode、全局 Alpha、可选颜色裁剪／ZWrite、DepthPrepass（默认关闭）、DepthShadowCutoff 和 CastShadows。深度与投影覆盖仍使用原 Alpha 规则，细分不会让半透明表面获得物理透射阴影。深度预写写入的是变形后表面，而不是原网格；细分不解决透明排序或网格交叉。本次不新增 BackFront、旧 2Pass、Hair、Eye 或 Liquid 的 Tess 入口。自动扩展 MainAlphaXTess 包围盒需使用 Tessellation Bounds 0.1.1 或更新版，替换旧 DLL，不要同时安装两份。</p>
+<p>通过片元裁剪停用的 Pass 功能仍可能执行几何阶段，包括 DepthPrepass=0；这类开关不保证该 Pass 的细分成本归零。完全移除细分阶段仍需选择普通 shader。</p>
+<p>包围盒支持：可选安装 <code>TomTessellation.dll</code> 到 <code>BepInEx/plugins/TomShadersX</code>，无需额外 helper AssetBundle；Unity 中可给 renderer 添加 <code>TomShadersX.TomTessellationBounds</code>。Shader 不依赖它才能渲染，但没有扩展 CPU 包围盒时，Unity 可能提前裁掉位移／平滑后的几何或投影。组件扩展 SkinnedMeshRenderer.localBounds；MeshRenderer 使用只修改 bounds 的私有 mesh 副本，不修改原共享网格。停用时恢复自己拥有的改动，并保留外部替换的网格／包围盒；与任意同时改写 mesh 的 mod 配合仍需验证。游戏插件约每秒发现一次活跃 Tess renderer，已附加组件每次 LateUpdate 更新包围盒。其 CPU 扫描和静态网格副本成本与细分 GPU 成本分开计算。</p>
+<p>不会自动焊接 UV 接缝、分裂法线、头身连接或不同材质。相邻边的高度与法线应一致，可用几何蒙版黑边保护接缝；突变仍可能开裂。平滑包围盒采用保守扩展，可能较宽。GPU 变形不修改碰撞体或 CPU 顶点。额外三角形、高度／梯度采样和多灯几何 Pass 需要按场景／设备实测，本次不认证全角色性能。若使用头骨方向 Face SDF，需升级到能识别 SkinXTess 的可选插件 0.1.1 或更新版。</p>
 </article></main></body></html>

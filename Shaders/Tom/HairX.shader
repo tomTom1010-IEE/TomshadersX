@@ -55,7 +55,7 @@ Shader "tom/HairX"
 		_RimShadowStrength ("Rim Shadow Strength", Range(0,1)) = 0
 
 		[Enum(Off,0,MatCap,1,Environment,2,MatCapAndEnvironment,3)] _ReflectionMode ("Reflection Mode", Float) = 0
-		[Enum(Multiply,0,Add,1)] _MatCapBlendMode ("MatCap Blend", Float) = 1
+		_MatCapBlendMode ("MatCap Blend", Range(0,1)) = 1
 		_MatCapIntensity ("MatCap Intensity", Range(0,2)) = 1
 		_MatCapMip ("MatCap Mip", Range(0,8)) = 0
 		_EnvironmentIntensity ("Environment Intensity", Range(0,4)) = 1
@@ -141,6 +141,46 @@ Shader "tom/HairX"
 		_ToonAA ("Toon Edge Anti Aliasing", Range(0,2)) = 1
 		_ToonShadeColor ("Toon Shade Color (RGB tint / A strength)", Color) = (0.35,0.35,0.35,0)
 		_ToonMinLighting ("Toon Minimum Lighting", Range(0,1)) = 0.15
+
+		[Enum(AxisCompatible,0,RootToTip,1)] _StrandDirectionMode ("Strand Direction Convention", Float) = 0
+		_HairHighlightShift ("Primary Highlight Shift (Degrees)", Range(-20,20)) = 0
+		_HairPrimaryLongitudinalWidth ("Primary Along-Strand Width", Range(0.25,4)) = 1
+		_HairPrimaryAzimuthalWidth ("Primary Across-Strand Width", Range(0.25,4)) = 1
+		_HairSecondaryWeight ("Secondary Highlight Share", Range(0,1)) = 0
+		_HairSecondaryShift ("Secondary Highlight Shift (Degrees)", Range(-20,20)) = 0
+		_HairSecondaryRoughnessOffset ("Secondary Roughness Offset", Range(-1,1)) = 0
+		_HairSecondaryToonBlend ("Secondary Highlight Toon Blend", Range(0,1)) = 1
+		_HairSecondarySize ("Secondary Highlight Size", Range(0,1)) = 0.5
+		_HairSecondaryThreshold ("Secondary Highlight Threshold", Range(0,1)) = 0.5
+		_HairSecondarySoftness ("Secondary Highlight Softness", Range(0.001,1)) = 0.15
+		_HairSecondaryLongitudinalWidth ("Secondary Along-Strand Width", Range(0.25,4)) = 1
+		_HairSecondaryAzimuthalWidth ("Secondary Across-Strand Width", Range(0.25,4)) = 1
+		[Gamma] _HairSecondaryColor ("Secondary Highlight Tint", Color) = (1,1,1,1)
+		_HairSecondaryBaseColorTint ("Secondary Effective Hair Color Tint", Range(0,1)) = 0
+		[MaterialToggle] _UseHairHighlightMap ("Use Local Highlight Controls", Float) = 0
+		_HairHighlightMap ("Highlight Controls (Shift1/Shift2/Mask1/Mask2)", 2D) = "white" {}
+		_HairPrimaryShiftMapScale ("Primary Local Shift (Degrees)", Range(0,20)) = 0
+		_HairSecondaryShiftMapScale ("Secondary Local Shift (Degrees)", Range(0,20)) = 0
+		_HairSpecularNormalInfluence ("Highlight Main Normal Influence", Range(0,1)) = 1
+		_HairSpecularDetailNormalInfluence ("Highlight Detail Normal Influence", Range(0,1)) = 1
+		_HairEnvironmentAnisotropy ("Environment Anisotropy Blend", Range(0,1)) = 0
+		[Enum(TomShadersX.TomHairHighlightDebug)] _HairHighlightDebugView ("Hair Highlight Debug", Float) = 0
+		_MatCapNormalInfluence ("MatCap Main Normal Influence", Range(0,1)) = 1
+		_MatCapDetailNormalInfluence ("MatCap Detail Normal Influence", Range(0,1)) = 1
+		[Gamma] _MatCapColor ("MatCap Color (RGB Tint / A Weight)", Color) = (1,1,1,1)
+		// Archived head-band IDs preserve saved values but are not read by the shader.
+		[HideInInspector] _HairHighlightPositionMode ("Highlight Position Mode", Float) = 0
+		[HideInInspector] _HairBandFrameSource ("Band Reference Frame", Float) = 1
+		[HideInInspector] _HairBandOrigin ("Band Origin (Local XYZ)", Vector) = (0,0,0,0)
+		[HideInInspector] _HairBandUp ("Band Up (Local XYZ)", Vector) = (0,1,0,0)
+		[HideInInspector] _HairBandHeightScale ("Band Height Unit (Local)", Range(0.001,10)) = 0.1
+		[HideInInspector] _HairPrimaryBandHeight ("Primary Band Height", Range(-4,4)) = 0.5
+		[HideInInspector] _HairPrimaryBandWidth ("Primary Band Half-Max Width", Range(0.01,2)) = 0.3
+		[HideInInspector] _HairSecondaryBandHeight ("Secondary Band Height", Range(-4,4)) = 0
+		[HideInInspector] _HairSecondaryBandWidth ("Secondary Band Half-Max Width", Range(0.01,2)) = 0.5
+		_HairPrimaryHeight ("Primary Surface Height Bias", Range(-1,1)) = 0
+		_HairSecondaryHeight ("Secondary Surface Height Bias", Range(-1,1)) = 0
+		_HairHeightAxisAngle ("Surface Height Axis (U=0, V=90)", Range(-180,180)) = 90
 	}
 
 	SubShader

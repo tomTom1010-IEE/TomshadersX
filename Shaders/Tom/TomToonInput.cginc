@@ -129,6 +129,10 @@ float4 _TomSHVolumeParams;
 float4 _SpecularColor;
 float _SpecularStrength;
 float _SpecularShadowStrength;
+#if !defined(TOM_HAIR)
+float _SpecularNormalInfluence;
+float _SpecularDetailNormalInfluence;
+#endif
 float _Metallic;
 float _Roughness;
 float _RoughnessBias;
@@ -145,6 +149,7 @@ float _RimShadowStrength;
 float _ReflectionMode;
 float _MatCapBlendMode;
 float _MatCapIntensity;
+float4 _MatCapColor;
 float _MatCapMip;
 float _EnvironmentIntensity;
 float _EnvironmentRoughness;
@@ -202,6 +207,8 @@ float _RimWidth;
 float _RimSoftness;
 float _RimLightInfluence;
 float _MatCapNormalSource;
+float _MatCapNormalInfluence;
+float _MatCapDetailNormalInfluence;
 float _EmissionKeepCol;
 float _OutlineNormalSource;
 float _DebugView;

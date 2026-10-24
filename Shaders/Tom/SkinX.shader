@@ -25,7 +25,7 @@ Shader "tom/SkinX"
 		[Gamma] _ShadowColor ("Shadow Color", Color) = (0.65,0.65,0.7,1)
 		_ShadowStrength ("Shadow Strength", Range(0,1)) = 1
 		[MaterialToggle] _UseRamp ("Use Toon Ramp", Float) = 1
-		[MaterialToggle] _UseRampForShadows ("Put Shadows Into Ramp", Float) = 1
+		[MaterialToggle] _UseRampForShadows ("Put Shadows Into Ramp", Float) = 0
 		_ShadowRemapStrength ("Shadow Remap Strength", Range(0,1)) = 0
 		_ShadowThreshold ("Shadow Threshold", Range(0,1)) = 0.5
 		_ShadowSoftness ("Shadow Softness", Range(0.001,1)) = 0.2
@@ -55,7 +55,7 @@ Shader "tom/SkinX"
 		_RimShadowStrength ("Rim Shadow Strength", Range(0,1)) = 0
 
 		[Enum(Off,0,MatCap,1,Environment,2,MatCapAndEnvironment,3)] _ReflectionMode ("Reflection Mode", Float) = 0
-		[Enum(Multiply,0,Add,1)] _MatCapBlendMode ("MatCap Blend", Float) = 1
+		_MatCapBlendMode ("MatCap Blend", Range(0,1)) = 1
 		_MatCapIntensity ("MatCap Intensity", Range(0,2)) = 1
 		_MatCapMip ("MatCap Mip", Range(0,8)) = 0
 		_EnvironmentIntensity ("Environment Intensity", Range(0,4)) = 1
@@ -199,6 +199,29 @@ Shader "tom/SkinX"
 		_ToonAA ("Toon Edge Anti Aliasing", Range(0,2)) = 1
 		_ToonShadeColor ("Toon Shade Color (RGB tint / A strength)", Color) = (0.35,0.35,0.35,0)
 		_ToonMinLighting ("Toon Minimum Lighting", Range(0,1)) = 0.15
+
+        [MaterialToggle] _UseFaceSDF ("Use Face SDF", Float) = 0
+        _FaceSDFTex ("Face SDF Threshold Map", 2D) = "white" {}
+        _FaceSDFMask ("Face SDF Region (R)", 2D) = "white" {}
+        _FaceSDFStrength ("Face SDF Blend", Range(0,1)) = 1
+        [Enum(R,0,G,1,B,2,A,3)] _FaceSDFChannel ("Face SDF Channel", Float) = 0
+        [Enum(Single,0,MirrorU,1,RGPair,2)] _FaceSDFSideMode ("Face SDF Left Right Source", Float) = 1
+        _FaceSDFMirrorU ("Face SDF Mirror Center U", Range(0,1)) = 0.5
+        [MaterialToggle] _FaceSDFInvert ("Invert Face SDF", Float) = 0
+        [Enum(Cosine,0,Angular,1)] _FaceSDFAngleMode ("Face SDF Angle Encoding", Float) = 0
+        _FaceSDFOffset ("Face SDF Threshold Offset", Range(-0.5,0.5)) = 0
+        _FaceSDFSoftness ("Face SDF Edge Softness", Range(0.001,0.5)) = 0.03
+        [Enum(RendererAxes,0,TrackedHead,1)] _FaceSDFDirectionSource ("Face SDF Direction Source", Float) = 1
+        _FaceSDFForward ("Face SDF Local Forward XYZ", Vector) = (0,0,1,0)
+        _FaceSDFUp ("Face SDF Local Up XYZ", Vector) = (0,1,0,0)
+        [Enum(Off,0,Region,1,Sample,2,Lighting,3)] _FaceSDFDebugView ("Face SDF Debug View", Float) = 0
+		_SpecularNormalInfluence ("Specular Main Normal Influence", Range(0,1)) = 1
+		_SpecularDetailNormalInfluence ("Specular Detail Normal Influence", Range(0,1)) = 1
+		_MatCapNormalInfluence ("MatCap Main Normal Influence", Range(0,1)) = 1
+		_MatCapDetailNormalInfluence ("MatCap Detail Normal Influence", Range(0,1)) = 1
+		[Gamma] _MatCapColor ("MatCap Color (RGB Tint / A Weight)", Color) = (1,1,1,1)
+        [Enum(FollowShadowColor,0,Independent,1)] _SkinShadeColorSource ("Painted Shade Color Source", Float) = 0
+        [Gamma] _SkinShadeColor ("Painted Shade Color (RGB / A Unused)", Color) = (0.65,0.65,0.7,1)
 	}
 
 	SubShader
@@ -289,6 +312,7 @@ Shader "tom/SkinX"
 				clip(0.5 - _DebugView);
 				clip(0.5 - _LiquidDebugView);
                 clip(0.5 - _SkinDebugView);
+                clip(0.5 - _FaceSDFDebugView);
                 clip(0.5 - _ClearCoatDebugView);
 				if (_CullOption > 0.5 && _CullOption < 1.5)
 					clip(faceSign);

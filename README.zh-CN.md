@@ -11,19 +11,19 @@
 96 张实际 Unity GPU 渲染，24 组对照。所有材质使用同一标准 UV 球网格与固定曝光，
 没有逐图提亮，也没有生成式示意图。打开交互式展示可查看原尺寸图片和完整材质参数。
 
-九款着色器覆盖不透明与裁切表面、三种透明策略、头发、眼周表面、瞳孔光学、脸部与身体共用皮肤，以及独立液体覆盖层。
+十二款着色器覆盖不透明与裁切表面、三种透明策略、头发、眼周表面、瞳孔光学、脸部与身体共用皮肤、独立液体覆盖层，以及三款独立 D3D11 细分与位移版本。
 共同功能包括 Toon 漫反射与高光、GGX、阴影风格化、SH 漫射、环境反射、MatCap、Clearcoat、
 Rim、描边与发光。HairX 提供各向异性；EyeX 提供无需额外网格的浅层视差、深度图和可选 RGB 色散。
 
 ## 使用与范围
 
-- **[下载 KKS 完整发布包](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.3.1-20261011)**
-  （2026-10-11 修订版），包含两个 zipmod、可选插件及所需资源包。
+- **[下载 KKS 完整发布包](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.4.0-20261024)**
+  包含两个 zipmod、可选插件及所需资源包。
   [发布说明与升级指引](Documents/ReleaseNotes.zh-CN.md)。
-- 本次加入 HairX 三色蒙版、现代液体层与 LiquidX、Toon 法线控制，以及默认
-  **0.15** 的 ToonMinLighting。已保存的覆盖值不变；未保存此参数的材质继承新默认值。
+- 本次加入独立 Tess 版本、Skin 面部 SDF、HairX 双高光瓣与表面高度偏置、
+  Specular／MatCap 独立法线控制、连续且可染色的 MatCap，以及独立皮肤绘制阴影颜色。Head Band 继续封存。
 
-- 当前版本：**0.3.1**，新材质的间接漫射增益默认为 **0.25**，保留已有材质保存的覆盖值。
+- 当前版本：**0.4.0**；ToonMinLighting 保持 **0.15**，间接漫射增益保持 **0.25**，保留已有材质保存的覆盖值。
 - 配合 Sideloader 与 MaterialEditor，将构建后的 zipmod 放入游戏 mods 目录。本仓库为源码包，
   不是完整 Unity 工程；生成 zipmod 的方法见构建指南。
 - 常规着色、Clearcoat 与 EyeX 光学不需要额外插件。HairFront 羽化与工作室光照探针物品

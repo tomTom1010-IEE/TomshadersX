@@ -40,6 +40,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _HairHighlightMap:
+        m_Texture: {fileID: 2800000, guid: f9a4d6cf1cdd4c34684a9ca29f860b75, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LayerMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -129,6 +133,7 @@ Material:
     - _EnvironmentToonBlend: 1
     - _FresnelStrength: 1
     - _HairAnisotropy: 0.8
+    - _HairEnvironmentAnisotropy: 0
     - _HairFeatherPower: 1
     - _HairFeatherThreshold: 0.5
     - _HairFeatherWidth: 8
@@ -137,6 +142,24 @@ Material:
     - _HairFrontMode: 0
     - _HairFrontOpacity: 0.5
     - _HairFrontZWrite: 1
+    - _HairHighlightDebugView: 0
+    - _HairHighlightShift: 0
+    - _HairPrimaryAzimuthalWidth: 1
+    - _HairPrimaryLongitudinalWidth: 1
+    - _HairPrimaryShiftMapScale: 0
+    - _HairSecondaryAzimuthalWidth: 1
+    - _HairSecondaryBaseColorTint: 0
+    - _HairSecondaryLongitudinalWidth: 1
+    - _HairSecondaryRoughnessOffset: 0
+    - _HairSecondaryShift: 0
+    - _HairSecondaryShiftMapScale: 0
+    - _HairSecondarySize: 0.5
+    - _HairSecondarySoftness: 0.15
+    - _HairSecondaryThreshold: 0.5
+    - _HairSecondaryToonBlend: 1
+    - _HairSecondaryWeight: 0
+    - _HairSpecularDetailNormalInfluence: 1
+    - _HairSpecularNormalInfluence: 1
     - _IndirectDiffuseIntensity: 0.25
     - _IndirectShadeLevel: 0.3
     - _IndirectToonBlend: 0
@@ -186,6 +209,7 @@ Material:
     - _SpecularToonBlend: 1
     - _StrandAngle: 90
     - _StrandDirectionBlend: 0
+    - _StrandDirectionMode: 0
     - _ToonAA: 1
     - _ToonDetailNormalInfluence: 1
     - _ToonMinLighting: 0.15
@@ -193,6 +217,7 @@ Material:
     - _ToonShadeLevel: 0.15
     - _ToonSoftness: 0.1
     - _ToonThreshold: 0.5
+    - _UseHairHighlightMap: 0
     - _UseMaterialRoughnessForEnvironment: 1
     - _UsePackedMaterialMap: 0
     - _UseRamp: 1
@@ -206,6 +231,7 @@ Material:
     - _Color3: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EnvironmentColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HairSecondaryColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.65, g: 0.65, b: 0.7, a: 1}

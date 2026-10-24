@@ -29,6 +29,12 @@ float3 TomSkinColor(TomVaryings i, float3 mainColor)
 
 void TomSkinApplySurface(TomVaryings i, float orientation, inout TomMaterialData m)
 {
+    m.skin.sdfUV = i.uv0 * _FaceSDFTex_ST.xy + _FaceSDFTex_ST.zw;
+    m.skin.sdfWeight = 0.0;
+    UNITY_BRANCH
+    if (_UseFaceSDF > 0.5 && _UseRamp > 0.0)
+        m.skin.sdfWeight = saturate(_FaceSDFMask.Sample(sampler_tom_liquid_linear_clamp,
+            i.uv0 * _FaceSDFMask_ST.xy + _FaceSDFMask_ST.zw).r) * saturate(_FaceSDFStrength);
     m.skin.detail = SAMPLE_TEX2D(_DetailMask, i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw);
     m.skin.lines = SAMPLE_TEX2D_SAMPLER(_LineMask, _DetailMask, i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw);
     m.skin.control = SAMPLE_TEX2D_SAMPLER(_SkinControlMap, _DetailMask, i.uv0 * _SkinControlMap_ST.xy + _SkinControlMap_ST.zw);
@@ -47,7 +53,9 @@ void TomSkinApplySurface(TomVaryings i, float orientation, inout TomMaterialData
     float lineBase = max(0.8 * (1.0 - saturate(_linewidthG)) + 0.2, 0.0001);
     float lineFactor = saturate(min(pow(lineBase, max(m.skin.lines.g, 0.0)), 1.0 - 0.5 * m.skin.lines.r * detail));
     float3 lineColor = lerp(_SkinLineColor.rgb, _LineColorG.rgb, saturate(_SkinGameLineColor));
-    m.skin.diffuseTint = lerp(1.0.xxx, _ShadowColor.rgb, saturate((1.0 - shade) * _SkinShadeStrength))
+    // Unset legacy materials retain their shared tint until independent mode is selected.
+    float3 shadeColor = _SkinShadeColorSource > 0.5 ? _SkinShadeColor.rgb : _ShadowColor.rgb;
+    m.skin.diffuseTint = lerp(1.0.xxx, shadeColor, saturate((1.0 - shade) * _SkinShadeStrength))
         * lerp(1.0.xxx, lineColor, saturate((1.0 - lineFactor) * _linetexon * _SkinLineStrength));
     float regionGloss = max(saturate(m.skin.detail.a) * max(_SpecularPower, 0.0),
         (1.0 - saturate(m.skin.detail.a)) * max(_SpecularPowerNail, 0.0));
