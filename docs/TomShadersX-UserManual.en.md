@@ -1,14 +1,14 @@
 # Tom Shaders X User Manual
 
 For Tom Shaders X **0.4.0**, Koikatsu Sunshine, Unity 2019.4 Built-in Forward.
-Optional companions: Hair Feather 0.3.0, Tom Lighting Probes 0.2.1, SkinX Face SDF head provider 0.1.1 and Tessellation Bounds 0.1.1. Independent Tess variants are included; this is not a new in-game/performance certification.
+Install TomRenderInfrastructure KKS 0.1.0 first: it supplies Core, Hair Feather 0.3.0, Tom Lighting Probes 0.2.2, SkinX Face SDF 0.1.1 and Tessellation Bounds 0.1.1. Infra1 shader releases no longer embed DLLs. Shader/Bundle bytes are unchanged; this is not a new whole-character performance certification.
 Property names below follow MaterialEditor (ME), without the leading underscore.
 
 The closing audit covers code, ME metadata and Unity rendering. It does not include a new in-game acceptance run or whole-character performance certification. Showcase spheres are reproducible examples, not presets automatically applied to characters.
 
 ## 1. Installation and Shader Selection
 
-Place the main zipmod in the game's `mods` directory. Sideloader and MaterialEditor register the shaders. The separated V+ LTS package can coexist with X; do not also install an older combined package that registers the same `tom/*` names.
+Install [TomRenderInfrastructure 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0), then place the main TomX zipmod in the game's `mods` directory. Sideloader and MaterialEditor register the shaders. The shader pack no longer includes helper DLLs or Probe resources; use the base once for both X and BSDF. The separated V+ LTS package can coexist with X; do not install an older combined package with duplicate `tom/*` registrations.
 
 | Shader | Purpose and distinction |
 | --- | --- |
@@ -27,7 +27,9 @@ Place the main zipmod in the game's `mods` directory. Sideloader and MaterialEdi
 
 Ordinary surface shading, Clearcoat and EyeX optics need no additional plugin. HairX Feather mode requires `TomHairFeather.dll` and `hairx-feather.unity3d` in the same plugin directory. Unsupported configurations fall back to a hard edge; feathering is not available automatically without its provider.
 
-For Studio probe items, install the separate Tom Lighting Probes zipmod and place `KKS_TomProbe.dll` and `TomProbe.Runtime.dll` in `BepInEx/plugins/TomProbe`. Do not keep duplicate older DLLs. Probe-control shaders belong on the probe items, not character materials.
+The base supplies the Tom Lighting Probes 0.2.2 zipmod and matching `KKS_TomProbe.dll` / `TomProbe.Runtime.dll` in `BepInEx/plugins/TomProbe`. Replace old 0.2.1 resources and DLLs together; do not keep duplicates. Probe-control shaders belong on probe items, not character materials.
+
+Maintainer source ownership: build TomHairFeather, TomSkinSDF and TomTessellation only in TomRenderInfrastructure. Infra1 requires one matching TomRender.Core.dll in BepInEx/plugins/TomRenderInfrastructure and the accepted provider/Probe cohort; Core has no BepInEx entry. TomX keeps its three Assembly-CSharp authoring mirrors, original metadata and Feather helper source. The old 0.4.0 Complete archive remains historical; new Infra1 shader archives omit providers. Controlled KKS regression covers native DOF/glass, Probe/SH and synthetic Feather/save-load, not all characters or GPU budgets. See the source build guide and base installation instructions.
 
 ## 2. A Consistent Editing Workflow
 

@@ -1,2 +1,6 @@
 # Export receipts describe exact artifact bytes on every checkout and on Pages.
 /docs/** -text
+# Accepted authoring mirrors are hash-bound to the infrastructure cohort.
+/Runtime/TomHairFeatherCamera.cs -text
+/Runtime/TomSkinSDFHead.cs -text
+/Runtime/TomTessellationBounds.cs -text

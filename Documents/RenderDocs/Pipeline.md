@@ -21,7 +21,7 @@ All paths below are relative to this shader package.
 | `TomEye*.cginc` | Eye-area coverage/stencil, iris inputs and shallow optics |
 | `TomSkin*.cginc` | Game skin layers/UVs, coverage, skin lighting and face SDF |
 | `TomTessellation.cginc`, `TomTessDomain.cginc` | Independent geometry stages wrapping the existing lighting |
-| `Runtime` | Optional feather, head-frame/SDF and CPU bounds providers |
+| `Runtime` | Accepted Core-dependent Unity component mirrors plus historical conditional adapter templates; canonical runtime/build ownership is TomRenderInfrastructure |
 | `manifest.xml`, `Tooltips` | ME registration, categories and explanatory text |
 
 Include paths in the table, other than `Runtime`, are under `Shaders/Tom` when no directory is given.
@@ -64,6 +64,11 @@ height-field first-hit solver, volumetric glass, or a new corneal mesh.
 
 ## Optional Services
 
+Infra1 distribution installs these helpers from
+[TomRenderInfrastructure KKS 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0)
+before the shader pack. Runtime DLLs and Probe/Feather resources are no longer
+embedded in the TomX shader archive; resource source ownership remains below.
+
 | Service | Extra dependency | Missing-service boundary |
 | --- | --- | --- |
 | Ordinary Toon/GGX, coat, eye optics | None beyond normal game/ME environment | Shader paths remain available |
@@ -75,6 +80,17 @@ height-field first-hit solver, volumetric glass, or a new corneal mesh.
 Head Band is archived: retain hidden compatibility IDs, but do not enable/rebuild the old provider
 or claim it is an active placement feature. Surface-height controls are the current texture-free
 hair reflection-frame bias. Optional services do not establish whole-character performance.
+
+The separate TomRenderInfrastructure project is now the sole development/build owner of the three
+TomX provider DLLs. Schema-2 staging requires the preserved ABI/serialization contract and all
+four accepted behavior steps. The migrated providers require one TomRender.Core.dll; it owns
+camera invocations, discovery candidates, exclusive resource leases, union bounds and field-scoped
+MPBs, not shader BRDFs or a new GPU pass. Consume accepted cohort bytes, never historical DLLs.
+The three authoring components remain Assembly-CSharp and retain their original metadata;
+do not replace them with game plugin DLLs. The three local conditional plugin adapters are
+historical templates only. TomX still owns the Feather helper shader/Bundle and shader-side
+consumers. The source build guide records Core/Probe dependency pins and the separate complete
+release/resource-review gate. Local runtime integration is not live Studio/package certification.
 
 ## Acceptance Boundaries
 

@@ -17,8 +17,9 @@ Rim、描边与发光。HairX 提供各向异性；EyeX 提供无需额外网格
 
 ## 使用与范围
 
-- **[下载 KKS 完整发布包](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.4.0-20261024)**
-  包含两个 zipmod、可选插件及所需资源包。
+- **先安装 [TomRenderInfrastructure KKS 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0)**，再安装
+  [TomX Infra1 Shader 包](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.4.0-infra.1)。
+  Shader 发布包不再内置 DLL 或 Probe 资源；渲染基座统一提供插件、Probe 0.2.2 和 Feather 辅助资源，TomX 与 BSDF 共用一份。
   [发布说明与升级指引](Documents/ReleaseNotes.zh-CN.md)。
 - 本次加入独立 Tess 版本、Skin 面部 SDF、HairX 双高光瓣与表面高度偏置、
   Specular／MatCap 独立法线控制、连续且可染色的 MatCap，以及独立皮肤绘制阴影颜色。Head Band 继续封存。

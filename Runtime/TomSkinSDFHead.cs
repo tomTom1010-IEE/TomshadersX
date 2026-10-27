@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TomRenderInfrastructure;
 using UnityEngine;
 
 namespace TomShadersX
@@ -10,6 +11,13 @@ namespace TomShadersX
         static readonly int HeadMatrix = Shader.PropertyToID("_TomFaceSDFHeadToWorld");
         static readonly int HeadValid = Shader.PropertyToID("_TomFaceSDFHeadValid");
         readonly List<Material> materials = new List<Material>();
+        sealed class FrameLease
+        {
+            public RendererPropertyBroker.Lease valid,frame;
+            public void Dispose() { frame.Dispose();valid.Dispose(); }
+        }
+        readonly Dictionary<int,FrameLease> properties = new Dictionary<int,FrameLease>();
+        readonly List<int> stale = new List<int>();
         MaterialPropertyBlock block;
         Renderer target;
 
@@ -65,30 +73,32 @@ namespace TomShadersX
             foreach (var m in materials) active |= UsesTrackedSDF(m);
             float valid = active && head ? 1f : 0f;
             Matrix4x4 frame = head ? Matrix4x4.Rotate(head.rotation) : Matrix4x4.identity;
-            target.GetPropertyBlock(block);
-            block.SetFloat(HeadValid, valid); block.SetMatrix(HeadMatrix, frame);
-            target.SetPropertyBlock(block);
+            Apply(-1, valid, frame);
             // Slot blocks override the renderer block. Preserve other providers' values.
             for (int i = 0; i < materials.Count; i++)
             {
                 target.GetPropertyBlock(block, i);
                 if (block.isEmpty) continue;
-                block.SetFloat(HeadValid, valid); block.SetMatrix(HeadMatrix, frame);
-                target.SetPropertyBlock(block, i);
+                Apply(i, valid, frame);
             }
+            stale.Clear();foreach(var pair in properties)if(pair.Key>=materials.Count)stale.Add(pair.Key);
+            foreach(var key in stale){properties[key].Dispose();properties.Remove(key);}
+        }
+
+        void Apply(int slot, float valid, Matrix4x4 frame)
+        {
+            FrameLease value;
+            if(!properties.TryGetValue(slot,out value))
+            {
+                value=new FrameLease { valid=RendererPropertyBroker.Float(target,HeadValid,valid,slot),frame=RendererPropertyBroker.Matrix(target,HeadMatrix,frame,slot) };
+                properties.Add(slot,value);
+            }
+            else { value.valid.Set(valid);value.frame.Set(frame); }
         }
 
         void OnDisable()
         {
-            if (!target || block == null) return;
-            target.GetPropertyBlock(block); block.SetFloat(HeadValid, 0f); target.SetPropertyBlock(block);
-            materials.Clear(); target.GetSharedMaterials(materials);
-            for (int i = 0; i < materials.Count; i++)
-            {
-                target.GetPropertyBlock(block, i);
-                if (block.isEmpty) continue;
-                block.SetFloat(HeadValid, 0f); target.SetPropertyBlock(block, i);
-            }
+            foreach(var value in properties.Values)value.Dispose();properties.Clear();
         }
     }
 }

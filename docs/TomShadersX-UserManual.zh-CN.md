@@ -1,7 +1,7 @@
 # Tom Shaders X 用户手册
 
 适用：Tom Shaders X **0.4.0**，Koikatsu Sunshine，Unity 2019.4 Built-in Forward。
-配套：Hair Feather 0.3.0；Tom Lighting Probes 0.2.1；SkinX Face SDF 头骨方向插件 0.1.1；Tessellation Bounds 0.1.1。发布包包含独立 Tess 版本，但不代表新增游戏内验收或性能认证。本文以 ME 中不带前导下划线的参数名为准。
+请先安装 TomRenderInfrastructure KKS 0.1.0，统一提供 Core、Hair Feather 0.3.0、Tom Lighting Probes 0.2.2、SkinX Face SDF 0.1.1 和 Tessellation Bounds 0.1.1。Infra1 Shader 包不再内置 DLL；Shader 与 Bundle 字节不变，不代表新增全角色性能认证。本文以 ME 中不带前导下划线的参数名为准。
 
 本次收尾只验证代码、ME 元数据和 Unity 渲染，不包含新一轮游戏内验收或全角色性能认证。
 展示球是可复现的功能示例，不是自动应用到角色上的默认预设。
@@ -27,7 +27,9 @@
 
 只使用一般表面、Clearcoat 或 EyeX 光学不需要额外插件。HairX 的 Feather 模式需要 `TomHairFeather.dll` 和同目录 `hairx-feather.unity3d`；缺少支持时回退硬边，不会自动得到柔化 stencil。
 
-工作室探针物品另装 Tom Lighting Probes 的 zipmod，并安装 `KKS_TomProbe.dll` 与 `TomProbe.Runtime.dll` 到 `BepInEx/plugins/TomProbe`。不要保留多份旧 DLL。控制 shader 只给探针物品用，不应替换角色材质。
+先安装 [TomRenderInfrastructure 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0)，再安装 TomX Shader 包；与 BSDF 共用一份基座。基座包含 Probe 0.2.2 zipmod 和 `BepInEx/plugins/TomProbe` 下的配套 DLL；请一起替换旧 0.2.1 资源与 DLL，避免重复。控制 shader 只给探针物品用，不应替换角色材质。
+
+维护职责：三个 provider 统一在 TomRenderInfrastructure 开发和构建。Infra1 使用同批唯一的 `BepInEx/plugins/TomRenderInfrastructure/TomRender.Core.dll`，不增加 BepInEx 入口。TomX 保留三个 Assembly-CSharp authoring 镜像、原 metadata 和 Feather 辅助资源源码；新的 Shader 包不内置 DLL，旧 0.4.0 Complete 包仅保留为历史版本。已完成受控 KKS 原生景深／玻璃、Probe／SH、合成 Feather 与保存重载回归，不代表任意角色、mod 或 GPU 预算均已验收。不要混装批次。
 
 ## 2. 通用调节顺序
 

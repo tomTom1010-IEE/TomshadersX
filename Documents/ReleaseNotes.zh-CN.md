@@ -1,5 +1,10 @@
 # Tom Shaders X 0.4.0
 
+## Infra1 分发更新 - 2026-10-28
+
+先安装 [TomRenderInfrastructure 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0)，再安装本次 Shader 包。
+Shader 包不再内置 DLL、Probe 或 Feather 辅助资源，统一由基座提供，TomX 与 BSDF 共用一份；请清除重复插件并一起替换 Probe 0.2.1 旧资源。Shader 版本和原 Bundle 字节不变，新标签为 `v0.4.0-infra.1`。可选景深原型单独下载、默认 Native；受控 KKS 回归不等于全角色／GPU 性能认证，下方历史验收保持原记录。
+
 [English](ReleaseNotes.en.md)
 
 面向 KKS、Unity 2019.4 Built-in Forward、D3D11。标签：`v0.4.0-20261024`。

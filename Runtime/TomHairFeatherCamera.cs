@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TomRenderInfrastructure;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -38,15 +39,30 @@ namespace TomShadersX
         Material fieldMaterial;
         Mesh fullscreen;
         RenderTexture mask, ping, pong, distance;
+        readonly List<RenderResourceLease> resources = new List<RenderResourceLease>();
+        IDisposable cameraRegistration;
+        long preparedInvocation;
         readonly List<Material> materials = new List<Material>();
         static readonly int Params = Shader.PropertyToID("_TomHairFeatherParams");
         static readonly int Distance = Shader.PropertyToID("_TomHairFeatherDistance");
 
-        void OnPreCull() { Prepare(); }
+        void OnEnable()
+        {
+            cameraComponent=GetComponent<Camera>();
+            FeatherCameraScopes.Acquire();
+            cameraRegistration=UnityCameraHub.Register(this,"Tom HairFront feather",400,
+                context=>{if(UnityCameraHub.Camera(context)==cameraComponent)Prepare();},null,
+                (context,aborted)=>{if(aborted && UnityCameraHub.Camera(context)==cameraComponent)Release();});
+        }
 
         public void Prepare()
         {
             cameraComponent = GetComponent<Camera>();
+            var context=UnityCameraHub.Coordinator.Find(cameraComponent);
+            if(CameraRoles.IsAuxiliaryCapture(cameraComponent)){Status="Hard: auxiliary capture";Release();return;}
+            if(context!=null && preparedInvocation==context.Id)return;
+            if(context!=null)preparedInvocation=context.Id;
+            foreach(var resource in resources)resource.Bind(context);
             SourceDraws = FilterPasses = 0;
             VisibleSources = LateSources = MissingPassSources = 0;
             EarliestHairQueue = int.MaxValue;
@@ -104,7 +120,13 @@ namespace TomShadersX
             int scale = Mathf.Clamp(downsample, 1, 4);
             int width = Mathf.Max(1, (screenWidth + scale - 1) / scale);
             int height = Mathf.Max(1, (screenHeight + scale - 1) / scale);
-            if (!mask || mask.width != width || mask.height != height) { Release(); Allocate(width, height); }
+            if (!mask || !mask.IsCreated() || !ping || !ping.IsCreated() || !pong || !pong.IsCreated() || !distance || !distance.IsCreated()
+                || mask.width != width || mask.height != height)
+            {
+                Release();
+                try { Allocate(width,height); }
+                catch(Exception error){Status="Hard: "+error.Message;Release();return;}
+            }
             if (!fieldMaterial) fieldMaterial = new Material(fieldShader) { hideFlags = HideFlags.HideAndDontSave };
             if (!fullscreen)
             {
@@ -217,16 +239,18 @@ namespace TomShadersX
             distance = Make(width, height, 0, RenderTextureFormat.RHalf, "Tom hair distance", FilterMode.Bilinear);
         }
 
-        static RenderTexture Make(int width, int height, int depth, RenderTextureFormat format, string name, FilterMode filter)
+        RenderTexture Make(int width, int height, int depth, RenderTextureFormat format, string name, FilterMode filter)
         {
-            var texture = new RenderTexture(width, height, depth, format, RenderTextureReadWrite.Linear) {
-                name = name, hideFlags = HideFlags.HideAndDontSave, antiAliasing = 1,
-                filterMode = filter, wrapMode = TextureWrapMode.Clamp
-            };
-            texture.Create(); return texture;
+            var lease=RenderResourceLease.Create(this,new RenderResourceDescriptor{width=width,height=height,depth=depth,format=format,
+                linear=true,filter=filter,purpose=name,stage="BeforeForwardOpaque/partial-immediate"});
+            resources.Add(lease);return lease.Texture;
         }
 
-        void OnDisable() { Release(); DestroyResource(fieldMaterial); DestroyResource(fullscreen); }
+        void OnDisable()
+        {
+            if(cameraRegistration!=null){cameraRegistration.Dispose();cameraRegistration=null;FeatherCameraScopes.Release();}
+            Release();DestroyResource(fieldMaterial);DestroyResource(fullscreen);fieldMaterial=null;fullscreen=null;
+        }
         void OnDestroy() { OnDisable(); }
         void Release()
         {
@@ -235,15 +259,45 @@ namespace TomShadersX
             if (cameraComponent && cleanup != null) cameraComponent.RemoveCommandBuffer(CameraEvent.AfterEverything, cleanup);
             if (commands != null) commands.Release(); if (publish != null) publish.Release(); if (cleanup != null) cleanup.Release();
             commands = publish = cleanup = null; commandsAttached = false;
-            DestroyResource(mask); DestroyResource(ping); DestroyResource(pong); DestroyResource(distance);
+            foreach(var resource in resources)resource.Dispose();resources.Clear();
             mask = ping = pong = distance = null;
-            Shader.SetGlobalVector(Params, Vector4.zero);
+            if(UnityCameraHub.Coordinator.ActiveDepth==0)Shader.SetGlobalVector(Params, Vector4.zero);
         }
         static void DestroyResource(UnityEngine.Object resource)
         {
             if (!resource) return;
             if (Application.isPlaying) UnityEngine.Object.Destroy(resource);
             else UnityEngine.Object.DestroyImmediate(resource);
+        }
+    }
+
+    // One global guard, including cameras without a helper. Child renders must
+    // not sample a parent's field, and child cleanup must restore its parent.
+    static class FeatherCameraScopes
+    {
+        sealed class State { internal long invocation;internal Vector4 parameters,layout;internal Matrix4x4 view;internal Texture distance; }
+        static readonly List<State> states=new List<State>();
+        static IDisposable registration;
+        static int owners;
+        static readonly int Parameters=Shader.PropertyToID("_TomHairFeatherParams");
+        static readonly int Layout=Shader.PropertyToID("_TomHairFeatherLayout");
+        static readonly int View=Shader.PropertyToID("_TomHairFeatherView");
+        static readonly int Distance=Shader.PropertyToID("_TomHairFeatherDistance");
+        internal static void Acquire()
+        {
+            if(owners++!=0)return;
+            registration=UnityCameraHub.Register(typeof(FeatherCameraScopes),"Tom Feather global scope",450,null,
+                context=>{states.Add(new State{invocation=context.Id,parameters=Shader.GetGlobalVector(Parameters),layout=Shader.GetGlobalVector(Layout),view=Shader.GetGlobalMatrix(View),distance=Shader.GetGlobalTexture(Distance)});Shader.SetGlobalVector(Parameters,Vector4.zero);},
+                (context,aborted)=>{
+                    if(states.Count==0 || states[states.Count-1].invocation!=context.Id)return;
+                    var state=states[states.Count-1];states.RemoveAt(states.Count-1);
+                    Shader.SetGlobalVector(Parameters,state.parameters);Shader.SetGlobalVector(Layout,state.layout);
+                    Shader.SetGlobalMatrix(View,state.view);Shader.SetGlobalTexture(Distance,state.distance);
+                });
+        }
+        internal static void Release()
+        {
+            if(--owners!=0)return;registration.Dispose();registration=null;states.Clear();Shader.SetGlobalVector(Parameters,Vector4.zero);
         }
     }
 }

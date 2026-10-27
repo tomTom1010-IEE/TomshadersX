@@ -9,9 +9,15 @@ Built-in Forward. It is not a complete Unity project.
   feather helper shader.
 - Material and Prefab: shader carrier materials/prefabs and neutral skin textures.
 - Tooltips: MaterialEditor help text.
-- Runtime: sources for the optional HairFront feather, SkinX head-direction and Tessellation Bounds providers.
+- Runtime: accepted Unity authoring component mirrors and retained historical
+  adapter templates. Canonical runtime development/build ownership belongs to
+  the separate TomRenderInfrastructure project.
 - manifest.xml: Sideloader shader registrations and material controls.
 - docs: the English/Chinese showcase and user manuals.
+
+After manual or installation edits, use the shared infrastructure
+`packaging/refresh_consumer_docs.py --tomx <this-root> --bsdf <BSDF-checkout>` to
+refresh the manual HTML and base-first notices without rerendering images.
 
 Read the [English manual](TomShadersX-UserManual.en.md) or
 [Chinese manual](TomShadersX-UserManual.zh-CN.md) for shader selection, maps,
@@ -23,7 +29,11 @@ Place this folder at Assets/Mods/TomShadersX in a compatible KKS Modding Tools
 Unity project. Preserve the supplied .meta files so shader, material and prefab
 references keep their GUIDs. Unity and game assemblies are external dependencies
 and are not distributed here. The shader sources do not require the Vanilla Plus
-source tree.
+source tree. The integrated authoring component mirrors require the single matching
+TomRender.Core.dll at Assets/TomRenderInfrastructure/Runtime/TomRender.Core.dll.
+Prepare/import it through the Infrastructure authoring workflow and Codex Bridge,
+not by adding game plugin DLLs to this package. Core is a helper dependency, not a
+mandatory replacement for the game's renderer or ordinary shader rendering.
 
 ## Shader Bundle
 
@@ -62,39 +72,113 @@ GUIDs when updating the package.
 
 ## Optional Runtime Provider
 
+For the supported Infra1 installation, install
+[TomRenderInfrastructure KKS 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0)
+first. Its base ZIP supplies all runtime DLLs, the Feather helper and Probe 0.2.2
+resources. TomX's new shader release contains no DLLs, Probe zipmod or helper
+Bundle. This distribution split does not change shader algorithms or require a
+new shader Bundle. The old Complete archive remains a historical release.
+
 Ordinary shading, Clearcoat and EyeX optics do not need a plugin.
 HairFront feathering uses the separate Runtime sources and the
 HiddenHairFeather shader bundle; hard stencil mode remains available without it.
 Building the runtime provider requires BepInEx and the matching Unity assemblies.
 Studio reflection/SH probe providers are separate products, not bundled here.
 
-For HairFeather, compile Runtime/TomHairFeatherCamera.cs and
-Runtime/TomHairFeatherPlugin.cs with TOM_X_BEPINEX defined, referencing BepInEx.dll,
-the matching UnityEngine assemblies and netstandard.dll. Build
-Shaders/Tom/HiddenHairFeather.shader into a separate hairx-feather.unity3d bundle
-for StandaloneWindows64. Keep that bundle beside TomHairFeather.dll; its field
-contract is version 2. Do not substitute the main tomx.unity3d for the helper.
+### Canonical Runtime Ownership
 
-SkinX Face SDF works with renderer axes without a plugin. Animated skinned heads
-use Runtime/TomSkinSDFHead.cs and Runtime/TomSkinSDFPlugin.cs. Compile both as
-TomSkinSDF.dll with TOM_X_BEPINEX defined, referencing BepInEx.dll, the matching
-UnityEngine assemblies and netstandard.dll from the KKS installation. Install
-the DLL under BepInEx/plugins. No additional shader bundle is needed. The adapter
-finds KKS cf_J_Head/cm_J_Head, humanoid Head, or common Head/mixamorig:Head bones;
-custom Unity rigs can assign TomSkinSDFHead.head explicitly. Tracking uses a
-per-renderer property block and does not clone or reset material values.
-Version 0.1.1 additionally recognizes SkinXTess; its plugin GUID is unchanged.
+Since the 2026-10-27 source consolidation, develop and compile TomHairFeather,
+TomSkinSDF and TomTessellation only in the separate **TomRenderInfrastructure**
+project, under `src/TomX`. Its README, `release.manifest.json`,
+`migration/source-manifest.json` and `docs/Build-and-Staging.md` are authoritative
+for builds, identities and audited DLL staging. The consumer now requires schema 2,
+the preserved nine-assembly ABI/serialization audit, and hash-bound acceptance of
+all four runtime-integration steps. Historical full-IL equality is not used as a
+substitute for the new behavior/lifecycle tests. Do not maintain a second implementation.
 
-Independent Tess shaders do not require a plugin to render. To expand CPU culling
-bounds for smoothing/height, compile Runtime/TomTessellationBounds.cs and
-Runtime/TomTessellationPlugin.cs as TomTessellation.dll with TOM_X_BEPINEX and
-the same game/BepInEx references. Install under BepInEx/plugins/TomShadersX.
-No helper AssetBundle is needed. In Unity, attach TomTessellationBounds directly.
-Provider 0.1.1 recognizes MainAlphaXTess as well as the existing two Tess entries;
-replace the previous DLL rather than installing duplicate plugin GUIDs.
-The provider reads shared material settings, expands skinned localBounds and uses
-a private bounds-only mesh clone for static renderers. It restores owned changes
-on disable; integrations with other mesh writers need explicit validation.
+| DLL / plugin version | Preserved BepInEx GUID | Destination |
+| --- | --- | --- |
+| TomHairFeather.dll / 0.3.0 | tom.shaders.x.hairfeather | BepInEx/plugins/TomHairFeather/ |
+| TomSkinSDF.dll / 0.1.1 | tom.shaders.x.facesdf | BepInEx/plugins/TomShadersX/ |
+| TomTessellation.dll / 0.1.1 | tom.shaders.x.tessbounds | BepInEx/plugins/TomShadersX/ |
+
+All three migrated providers require the one matching **TomRender.Core.dll** in
+`BepInEx/plugins/TomRenderInfrastructure/`. Core retains assembly version 1.0.0.0
+and has no BepInEx entry. The three provider assembly identities retain version
+0.0.0.0; plugin versions are separate.
+Keep the existing namespaces, component full names, serialized fields and paths.
+Replace a provider at its existing location, never install a duplicate GUID.
+The current central stage contains eight DLLs. TomX consumes six: Core, the three
+providers and the central Probe 0.2.2 DLL pair. BSDF and DOF DLLs are not pulled into
+TomX. Do not mix the migrated cohort with a historical Probe DLL pair. New public
+Infra1 packages use the separate base distribution; the old Complete archive and
+its pre-Core providers remain unchanged as historical artifacts.
+
+Three `.cs` files are indispensable **Unity authoring mirrors**:
+TomHairFeatherCamera, TomSkinSDFHead and TomTessellationBounds. They were updated
+through Bridge as part of the accepted integration, preserving their `.meta` GUIDs,
+file IDs and Assembly-CSharp identity. Keep them aligned with the accepted central
+authoring candidate. Do not delete them or replace them with plugin DLLs.
+The three conditional `*Plugin.cs` files remain frozen historical templates, not
+current runtime implementations or DLL inputs. Do not use them to build a second
+provider. Future mirror changes require coordinated authoring/assembly review and
+Bridge import. Inert Head Band compatibility files remain archived locally.
+
+### Consume Audited Dependencies
+
+Build/audit/stage from TomRenderInfrastructure using its existing commands and an
+explicit `current` stage. Its `with-prototypes` stage is not a TomX dependency.
+Maintainer workspaces retain local, unpublished integration scripts:
+
+```powershell
+./Tests/Import-XRenderInfrastructure.ps1 -InfrastructureRoot '<central-project>' `
+  -InfrastructureStage '<central-project>/artifacts/staging/<reviewed-current-stage>' `
+  -OutputDirectory '<Unity-project>/CodexBridge/Dependencies/<new-run>/Plugins'
+# Pass that explicit directory to the ordinary twelve-shader package gate:
+./Tests/Package-XRelease.ps1 -PluginDirectory '<Unity-project>/CodexBridge/Dependencies/<new-run>/Plugins' `
+  -ResourceReview '<reviewed-integrated-release.json>'
+```
+
+The importer checks central source/build/audit/stage fingerprints, frozen ABI
+provenance, all four accepted step receipts, exact accepted DLL bytes/identities,
+three authoring source/GUID/file-ID records and a unique matching authoring Core.
+It does not compile, import into Unity, build Bundles or deploy. No old local DLL
+folder or `Plugins/build-receipt.json` is an accepted fallback. The historical
+Build-XReleasePlugins name is import-only; the three per-plugin build scripts
+reject execution. Their original compiler scripts remain central migration
+controls, not active TomX entry points. The central active audit distinguishes
+current runtime integration from immutable phase-1 sources and retired build tools.
+
+The historical embedded-Complete packaging path additionally requires `-ResourceReview <review.json>` after
+real packaged-game, resource/version-pairing and licensing review. The consumer-owned
+review has schema 1, passed/licensingReviewed/packagedGameRegressionPassed flags,
+the dependency sourceFingerprint/runtimeAcceptanceSHA256, and exact
+mainBundleSHA256/featherBundleSHA256/previousCompletePackageSHA256 inputs. No such
+release approval is supplied by local integration acceptance. Old Shader build
+receipts become stale when authoring source dependencies change and are not bypassed.
+Do not use that legacy Complete path for new Infra1 releases. The central
+`packaging/package_release.py` produces the audited split archives from the frozen
+runtime/resource cohort and unchanged shader zipmods. It rejects plugin payloads
+in shader packs and records corresponding source commits. The old Probe 0.2.1
+resource archive must not be reused with the new cohort.
+Integrated archive checks require exactly one Core at its canonical destination;
+the historical 22-entry 0.4.0 layout remains a separately identified verification mode.
+
+### Shader-Owned Resources And Fallbacks
+
+TomX still owns `Shaders/Tom/HiddenHairFeather.shader` and its matching
+`hairx-feather.unity3d` (field contract 2). Keep the helper beside its DLL; do not
+substitute the main shader bundle or drop the helper during dependency cleanup.
+This ownership change does not rebuild or replace either Bundle.
+
+SkinX Face SDF works with renderer axes without a plugin. The existing head
+provider finds KKS cf_J_Head/cm_J_Head, humanoid Head or common Head/mixamorig:Head
+bones. Custom Unity rigs can assign TomSkinSDFHead.head. Tracking uses a preserving
+per-renderer property block; no additional helper Bundle or material reset.
+Independent Tess shaders render without the bounds provider, but expanded geometry
+can be culled by unchanged CPU bounds. The provider restores owned changes and
+needs separate compatibility checks with other mesh writers. In Unity the retained
+TomTessellationBounds authoring type remains available. No helper Bundle is needed.
 
 Tess variants target D3D11/SM5 in Base, Add, Outline and ShadowCaster, plus
 MainAlphaXTess's optional depth prepass. Their

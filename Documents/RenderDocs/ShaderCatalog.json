@@ -451,7 +451,7 @@
     },
     {
       "path": "Runtime/TomHairFeatherCamera.cs",
-      "sha256": "322b0b0741dec5f7a88d3c6f66adfacf5291da19e114f73df46f86df3b50d867"
+      "sha256": "54c806b93615466b280ec73f15ee0ed2113949844d8717eaef4a9aa2a37f23f6"
     },
     {
       "path": "Runtime/TomHairFeatherPlugin.cs",
@@ -467,7 +467,7 @@
     },
     {
       "path": "Runtime/TomSkinSDFHead.cs",
-      "sha256": "fc5afa98b40b59b4c1770379c6143e04baf8f9be4a9f1edf59ac89fe558ae9a2"
+      "sha256": "adcaf5527287feb74c51828b7c9870bd493ec1f836280383a923e4b11df2e2a2"
     },
     {
       "path": "Runtime/TomSkinSDFPlugin.cs",
@@ -475,7 +475,7 @@
     },
     {
       "path": "Runtime/TomTessellationBounds.cs",
-      "sha256": "3b7a406ffe77b84813f14a6096c15bc38f8df1cc02fac962e2f9701f6bcaf7c3"
+      "sha256": "1f638e95593b3d1d80d0c9199bfe4c16fa34252b215cd207a15a8bf011608090"
     },
     {
       "path": "Runtime/TomTessellationPlugin.cs",

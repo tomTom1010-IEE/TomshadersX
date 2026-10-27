@@ -29,8 +29,10 @@ EyeX adds shader-only shallow parallax, depth maps and optional RGB dispersion.
 
 ## Use and Scope
 
-- **[Download the complete KKS package](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.4.0-20261024)**
-  Includes both zipmods, optional plugins and required bundles.
+- **Install [TomRenderInfrastructure KKS 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0) first**, then
+  [download the TomX Infra1 shader pack](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/v0.4.0-infra.1).
+  The shader pack no longer embeds DLLs or Probe resources. The shared base supplies
+  those once for TomX and BSDF, including the matching Feather helper.
   [Release notes and upgrade instructions](Documents/ReleaseNotes.en.md).
 - This revision adds independent Tess variants, Skin face SDF, dual-lobe HairX
   controls and surface-height bias, independent specular/MatCap normal controls,

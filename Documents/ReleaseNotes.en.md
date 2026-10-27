@@ -1,5 +1,17 @@
 # Tom Shaders X 0.4.0
 
+## Infra1 Distribution Update - 2026-10-28
+
+Install [TomRenderInfrastructure 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0)
+first, then this release's shader ZIP/zipmod. Infra1 removes embedded helper DLLs,
+Probe resources and the Feather helper from the shader archive; the base supplies
+the tested cohort once for both TomX and BSDF. Remove old duplicate providers and
+Probe 0.2.1 resources. Shader version 0.4.0 and its accepted Bundle are unchanged.
+The optional native-DOF prototype is a separate base add-on, Native by default.
+Controlled KKS regression covers native DOF/glass, Probe/SH and synthetic Feather
+with save/reload; it does not certify whole-character performance. The historical
+release and acceptance below remain intact; current tag: `v0.4.0-infra.1`.
+
 [简体中文](ReleaseNotes.zh-CN.md)
 
 KKS / Unity 2019.4 Built-in Forward / D3D11. Tag: `v0.4.0-20261024`.
