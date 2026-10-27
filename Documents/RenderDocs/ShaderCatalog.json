@@ -1,0 +1,669 @@
+{
+  "schemaVersion": 2,
+  "hashContract": "sha256-utf8-lf-no-bom",
+  "excludedSourcePaths": [
+    "Shaders/Tom/HiddenEyeStencilProbe.shader"
+  ],
+  "reviewDate": "2026-10-27",
+  "scope": "Static source/manifest/carrier inventory; not compilation, runtime acceptance or delivered-bytecode audit.",
+  "packageGuid": "tom.Shaders.X",
+  "packageVersion": "0.4.0",
+  "game": "Koikatsu Sunshine",
+  "registeredShaderCount": 12,
+  "registeredPropertyCount": 1847,
+  "entries": [
+    {
+      "name": "tom/MainOpaqueX",
+      "source": "Shaders/Tom/MainOpaqueX.shader",
+      "sourceSha256": "d0b6aa887d4fd74ca346cf7a7c5d07625a8e607b370ac3751d64ee7a0530adde",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomMainOpaqueX",
+      "carrier": "Prefab/a_TomMainOpaqueX.prefab",
+      "propertyCount": 148,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "KKS Liquid"
+      ],
+      "declaredPassNames": [
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/MainAlphaX",
+      "source": "Shaders/Tom/MainAlphaX.shader",
+      "sourceSha256": "ad963da2d849446136f82526d57329d56ea8c65b9753b85b6259a30b5628d9b2",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomMainAlphaX",
+      "carrier": "Prefab/a_TomMainAlphaX.prefab",
+      "propertyCount": 155,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "KKS Liquid"
+      ],
+      "declaredPassNames": [
+        "DEPTH_PREPASS",
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/MainAlphaX2Pass",
+      "source": "Shaders/Tom/MainAlphaX2Pass.shader",
+      "sourceSha256": "8ffedb88804a0bb8e4e7f8e6c4a8bdf544f2e2653053f2ec26902fc11a86f7d7",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomMainAlphaX2Pass",
+      "carrier": "Prefab/a_TomMainAlphaX2Pass.prefab",
+      "propertyCount": 154,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "KKS Liquid"
+      ],
+      "declaredPassNames": [
+        "DEPTH_PREPASS",
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/MainAlphaXBackFront",
+      "source": "Shaders/Tom/MainAlphaXBackFront.shader",
+      "sourceSha256": "2a9f181664f1e7036b2b91e23949b690f65f8b6d6110f64b17a2a1323381439f",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomMainAlphaXBackFront",
+      "carrier": "Prefab/a_TomMainAlphaXBackFront.prefab",
+      "propertyCount": 155,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "KKS Liquid"
+      ],
+      "declaredPassNames": [
+        "FORWARD_BACK",
+        "FORWARDADD_BACK",
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/HairX",
+      "source": "Shaders/Tom/HairX.shader",
+      "sourceSha256": "64757787bae98e6032d307266c87e8dc781fb9f704652d35bf519b69d2e7df62",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomHairX",
+      "carrier": "Prefab/a_TomHairX.prefab",
+      "propertyCount": 167,
+      "hiddenPropertyCount": 9,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Hair Direction",
+        "Hair Highlight",
+        "Hair Secondary Highlight",
+        "Hair Local Controls",
+        "HairFront",
+        "Clearcoat",
+        "Hair Band Position"
+      ],
+      "declaredPassNames": [
+        "OUTLINE_BODY",
+        "FORWARD_BODY",
+        "FORWARDADD_BODY",
+        "OUTLINE_FRONT",
+        "FORWARD_FRONT",
+        "FORWARDADD_FRONT",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/EyeWX",
+      "source": "Shaders/Tom/EyeWX.shader",
+      "sourceSha256": "b5ed96e6272d979798ebbe0a268dd64fae3381cce07b4252a2bb69374853cb06",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomEyeWX",
+      "carrier": "Prefab/a_TomEyeWX.prefab",
+      "propertyCount": 113,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "Eye Surface"
+      ],
+      "declaredPassNames": [
+        "StencilMask",
+        "FORWARD",
+        "FORWARDADD"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/EyeX",
+      "source": "Shaders/Tom/EyeX.shader",
+      "sourceSha256": "1fdd9d956cb57bfa6c0e447fb18a0ce3c3fc3b178b2a55d4f8d182f88d51c8a4",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomEyeX",
+      "carrier": "Prefab/a_TomEyeX.prefab",
+      "propertyCount": 141,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "Eye Surface"
+      ],
+      "declaredPassNames": [
+        "StencilMask",
+        "FORWARD",
+        "FORWARDADD"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/SkinX",
+      "source": "Shaders/Tom/SkinX.shader",
+      "sourceSha256": "2f4e263d6154e9c83ba1c29f87742f8ba776af3bad8b30808abe045a6952e884",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomSkinX",
+      "carrier": "Prefab/a_TomSkinX.prefab",
+      "propertyCount": 209,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "Skin Response",
+        "KKS Color Layers",
+        "KKS Clothing Coverage",
+        "KKS Gloss",
+        "KKS Liquid",
+        "Skin Wet Surface",
+        "Face SDF"
+      ],
+      "declaredPassNames": [
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/LiquidX",
+      "source": "Shaders/Tom/LiquidX.shader",
+      "sourceSha256": "307a088d14e2e1ca347320d205d10882a49bab4df1c92608b7ba484b7a04f31c",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomLiquidX",
+      "carrier": "Prefab/a_TomLiquidX.prefab",
+      "propertyCount": 57,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Render Options",
+        "Base Color",
+        "KKS Liquid",
+        "Lighting",
+        "Toon Shading",
+        "Material"
+      ],
+      "declaredPassNames": [
+        "FORWARD",
+        "FORWARDADD"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/MainOpaqueXTess",
+      "source": "Shaders/Tom/MainOpaqueXTess.shader",
+      "sourceSha256": "d3be36aff6a7544c38e7c3a8455b3d13daf8d2182c3eed8096c72f958262f75e",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomMainOpaqueXTess",
+      "carrier": "Prefab/a_TomMainOpaqueXTess.prefab",
+      "propertyCount": 160,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "KKS Liquid",
+        "Tessellation",
+        "Geometry Mask",
+        "Displacement",
+        "Geometry Bounds"
+      ],
+      "declaredPassNames": [
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/SkinXTess",
+      "source": "Shaders/Tom/SkinXTess.shader",
+      "sourceSha256": "612f14ec6a5e184676a98633639bbd17779103e1968739bf90b26a55107ffe3e",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomSkinXTess",
+      "carrier": "Prefab/a_TomSkinXTess.prefab",
+      "propertyCount": 221,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "Skin Response",
+        "KKS Color Layers",
+        "KKS Clothing Coverage",
+        "KKS Gloss",
+        "KKS Liquid",
+        "Skin Wet Surface",
+        "Face SDF",
+        "Tessellation",
+        "Geometry Mask",
+        "Displacement",
+        "Geometry Bounds"
+      ],
+      "declaredPassNames": [
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    },
+    {
+      "name": "tom/MainAlphaXTess",
+      "source": "Shaders/Tom/MainAlphaXTess.shader",
+      "sourceSha256": "17756f5567616b3b0b601c4af82853b01a42d9e5338f457450cbcb6990983006",
+      "assetBundle": "chara/tom/shaders/tomx.unity3d",
+      "asset": "a_TomMainAlphaXTess",
+      "carrier": "Prefab/a_TomMainAlphaXTess.prefab",
+      "propertyCount": 167,
+      "hiddenPropertyCount": 0,
+      "categories": [
+        "Textures",
+        "Base Color",
+        "Render Options",
+        "Toon Shading",
+        "Lighting",
+        "Material",
+        "Direct Specular",
+        "Environment Reflection",
+        "MatCap",
+        "Rim",
+        "Outline",
+        "Emission",
+        "Debug",
+        "Clearcoat",
+        "KKS Liquid",
+        "Tessellation",
+        "Geometry Mask",
+        "Displacement",
+        "Geometry Bounds"
+      ],
+      "declaredPassNames": [
+        "DEPTH_PREPASS",
+        "OUTLINE",
+        "FORWARD",
+        "FORWARDADD",
+        "SHADOWCASTER"
+      ],
+      "usePass": []
+    }
+  ],
+  "inputs": [
+    {
+      "path": "manifest.xml",
+      "sha256": "7e916ae1e319697c90029860232516d3b6b44975407f76e45089323481d6023e"
+    },
+    {
+      "path": "Runtime/TomHairFeatherCamera.cs",
+      "sha256": "322b0b0741dec5f7a88d3c6f66adfacf5291da19e114f73df46f86df3b50d867"
+    },
+    {
+      "path": "Runtime/TomHairFeatherPlugin.cs",
+      "sha256": "dc45732cf4c1a27f3bf39c4c0da9f87683ff1554647785328ff5c55b295ef77b"
+    },
+    {
+      "path": "Runtime/TomHairHeadBand.cs",
+      "sha256": "6da7847443256f8e846f9bc66858aaa2f0db663bb8cda9d0fe798e839ab117f8"
+    },
+    {
+      "path": "Runtime/TomHairHeadBandPlugin.cs",
+      "sha256": "205faf54c0a4068ab41e441139c0c3660b28cbad8f748cfdfe5ca0de135441aa"
+    },
+    {
+      "path": "Runtime/TomSkinSDFHead.cs",
+      "sha256": "fc5afa98b40b59b4c1770379c6143e04baf8f9be4a9f1edf59ac89fe558ae9a2"
+    },
+    {
+      "path": "Runtime/TomSkinSDFPlugin.cs",
+      "sha256": "45797e18c840dabf58880e901d6603a4b2979b82d418f93580872a1839ee6515"
+    },
+    {
+      "path": "Runtime/TomTessellationBounds.cs",
+      "sha256": "3b7a406ffe77b84813f14a6096c15bc38f8df1cc02fac962e2f9701f6bcaf7c3"
+    },
+    {
+      "path": "Runtime/TomTessellationPlugin.cs",
+      "sha256": "3fbba434d7e97c509708fa1977881ba07ddbe83addad6cd227ec66bf27487eb3"
+    },
+    {
+      "path": "Shaders/KKPDeclarations.cginc",
+      "sha256": "4e384b9590d1f6b6bfb6ec5b7df5b471607986a13fcd474b40bfb586cd148521"
+    },
+    {
+      "path": "Shaders/Tom/EyeWX.shader",
+      "sha256": "b5ed96e6272d979798ebbe0a268dd64fae3381cce07b4252a2bb69374853cb06"
+    },
+    {
+      "path": "Shaders/Tom/EyeX.shader",
+      "sha256": "1fdd9d956cb57bfa6c0e447fb18a0ce3c3fc3b178b2a55d4f8d182f88d51c8a4"
+    },
+    {
+      "path": "Shaders/Tom/HairX.shader",
+      "sha256": "64757787bae98e6032d307266c87e8dc781fb9f704652d35bf519b69d2e7df62"
+    },
+    {
+      "path": "Shaders/Tom/HiddenHairFeather.shader",
+      "sha256": "092fd6f279fa8fa350ca546df9c3cad1fbcff68fe81d59bed3139929998ce031"
+    },
+    {
+      "path": "Shaders/Tom/LiquidX.shader",
+      "sha256": "307a088d14e2e1ca347320d205d10882a49bab4df1c92608b7ba484b7a04f31c"
+    },
+    {
+      "path": "Shaders/Tom/MainAlphaX.shader",
+      "sha256": "ad963da2d849446136f82526d57329d56ea8c65b9753b85b6259a30b5628d9b2"
+    },
+    {
+      "path": "Shaders/Tom/MainAlphaX2Pass.shader",
+      "sha256": "8ffedb88804a0bb8e4e7f8e6c4a8bdf544f2e2653053f2ec26902fc11a86f7d7"
+    },
+    {
+      "path": "Shaders/Tom/MainAlphaXBackFront.shader",
+      "sha256": "2a9f181664f1e7036b2b91e23949b690f65f8b6d6110f64b17a2a1323381439f"
+    },
+    {
+      "path": "Shaders/Tom/MainAlphaXTess.shader",
+      "sha256": "17756f5567616b3b0b601c4af82853b01a42d9e5338f457450cbcb6990983006"
+    },
+    {
+      "path": "Shaders/Tom/MainOpaqueX.shader",
+      "sha256": "d0b6aa887d4fd74ca346cf7a7c5d07625a8e607b370ac3751d64ee7a0530adde"
+    },
+    {
+      "path": "Shaders/Tom/MainOpaqueXTess.shader",
+      "sha256": "d3be36aff6a7544c38e7c3a8455b3d13daf8d2182c3eed8096c72f958262f75e"
+    },
+    {
+      "path": "Shaders/Tom/SkinX.shader",
+      "sha256": "2f4e263d6154e9c83ba1c29f87742f8ba776af3bad8b30808abe045a6952e884"
+    },
+    {
+      "path": "Shaders/Tom/SkinXTess.shader",
+      "sha256": "612f14ec6a5e184676a98633639bbd17779103e1968739bf90b26a55107ffe3e"
+    },
+    {
+      "path": "Shaders/Tom/TomAlphaBackFront.cginc",
+      "sha256": "afcce357a184264d7165ee8be4472feea4590074d9becaac40a08c4bf92b9c6a"
+    },
+    {
+      "path": "Shaders/Tom/TomAlphaCommon.cginc",
+      "sha256": "8ad71ecc3be5299a2aafac540646f5ba85906def9eb0a12582fb0691a9cc3c18"
+    },
+    {
+      "path": "Shaders/Tom/TomAlphaDepth.cginc",
+      "sha256": "6b927df829c070adc585a3f19af7a667f702111bba51bf781eb85cf96dc72d73"
+    },
+    {
+      "path": "Shaders/Tom/TomAlphaOutline.cginc",
+      "sha256": "a0aae685699391a3862161321aae31b5eb76b666e1cb37a7a8864975c79a8781"
+    },
+    {
+      "path": "Shaders/Tom/TomAlphaShadow.cginc",
+      "sha256": "4d5deb58dc3645094d6c287f3775102c5d82a4f4dadede533c8b6523a60eab1d"
+    },
+    {
+      "path": "Shaders/Tom/TomClearcoat.cginc",
+      "sha256": "349a4e33efbc2d19cbeb3270f395859f91958d32e27ac905571fd62f9ce0eeb4"
+    },
+    {
+      "path": "Shaders/Tom/TomEyeCoverage.cginc",
+      "sha256": "8fb4b21e63da6ac3210b420018c4e881e233bdb918ee6eab238f62d335c49d5a"
+    },
+    {
+      "path": "Shaders/Tom/TomEyeForward.cginc",
+      "sha256": "5496b44495ab4688ae140224db10b87da97b3088aa0badb677043789a4d5f592"
+    },
+    {
+      "path": "Shaders/Tom/TomEyeInput.cginc",
+      "sha256": "d1ebec3ebda08adcb5836465c971ac07c9196695efced13b59f9cd8e5718e924"
+    },
+    {
+      "path": "Shaders/Tom/TomEyeOptics.cginc",
+      "sha256": "93b0abb841f73faeb203a7a134b4a1c4e950c5368405b88b7b42122739dbdd01"
+    },
+    {
+      "path": "Shaders/Tom/TomEyeSurface.cginc",
+      "sha256": "2ed0dda14c16a0dc941c578fc1079dd2f296273fe72255e8f02a4d4d139ed7d7"
+    },
+    {
+      "path": "Shaders/Tom/TomHairBRDF.cginc",
+      "sha256": "2a7ed53eaa479a219560a92bfc35035bbc90ac378b2b10d0de4f93281b850b2d"
+    },
+    {
+      "path": "Shaders/Tom/TomHairCoverage.cginc",
+      "sha256": "b882b9b3791f3db5c0e1bee20b57f33bb9303bd56cdcb5ce090be26f27c58941"
+    },
+    {
+      "path": "Shaders/Tom/TomHairForward.cginc",
+      "sha256": "41fa4a4f3fd96e03f20dd1946b9530afb61c1d61322c8508c87caebad4b49b64"
+    },
+    {
+      "path": "Shaders/Tom/TomHairOutline.cginc",
+      "sha256": "d47bcef888a458f07de5e60c9a41630d91df32faf4c1b9a9d8afebd4eadfd651"
+    },
+    {
+      "path": "Shaders/Tom/TomHairShadow.cginc",
+      "sha256": "fff198a238e66bf351a702de4f1774d89e8eca129c114481340c794aa2a5d99c"
+    },
+    {
+      "path": "Shaders/Tom/TomLiquid.cginc",
+      "sha256": "1b16a26d6e79c8f2b959b6c2861a33ddbeb05ca3c120e126c377f708058bb871"
+    },
+    {
+      "path": "Shaders/Tom/TomLiquidInput.cginc",
+      "sha256": "f2600387a934f005c1d7bf0d9caa77ac013f8807a3d964b67f776aaf077d31e6"
+    },
+    {
+      "path": "Shaders/Tom/TomLiquidOverlay.cginc",
+      "sha256": "296d4ec199509b560ab3afdcdd85e4916698049cd0990cd7141645525968c065"
+    },
+    {
+      "path": "Shaders/Tom/TomSkinCoverage.cginc",
+      "sha256": "008b20743b99c8a865b20728ca8f90169c82c4f622afc7a420c7cfa7f58f9657"
+    },
+    {
+      "path": "Shaders/Tom/TomSkinDepth.cginc",
+      "sha256": "1adde2960ef37b278b415b9fe0994896c37ab150c7f561b5ca8e83cbb532a8d3"
+    },
+    {
+      "path": "Shaders/Tom/TomSkinInput.cginc",
+      "sha256": "3760b00e083be2121f0743d7c576698b82710f518fae4d5de19fbcd23b20f90d"
+    },
+    {
+      "path": "Shaders/Tom/TomSkinLighting.cginc",
+      "sha256": "0f225b783cf7ef58fb1771f0841714f7f3dbecc44838a7e0b54147bf5c334f8c"
+    },
+    {
+      "path": "Shaders/Tom/TomSkinSDF.cginc",
+      "sha256": "dcbadd507c32e187335d1984804a025227cf17fe673975189d8a750d20115770"
+    },
+    {
+      "path": "Shaders/Tom/TomSkinSurface.cginc",
+      "sha256": "54181fda63768ef1749ddde8fe64f0f675f103adcb0cff1df98131fe29178dcb"
+    },
+    {
+      "path": "Shaders/Tom/TomTessDomain.cginc",
+      "sha256": "e69c12c861db826e97195ac3931e457e167fe3b84795ee9fe40ab10717ccc05a"
+    },
+    {
+      "path": "Shaders/Tom/TomTessellation.cginc",
+      "sha256": "a950328af7830c7c6e10b9372f165aec2c4746aeeb4f470a57943341aaba3c2a"
+    },
+    {
+      "path": "Shaders/Tom/TomToonBRDF.cginc",
+      "sha256": "925bfd617c4c211f80d360770082dbdc3729d8b674e5188af8e1b6bb9dfaf2cf"
+    },
+    {
+      "path": "Shaders/Tom/TomToonInput.cginc",
+      "sha256": "e38dfadb57e29e4827907c25b8e405591b03ba83bf7a2689c3b09eba4eaa46c1"
+    },
+    {
+      "path": "Shaders/Tom/TomToonLighting.cginc",
+      "sha256": "77b5f3dd9caf7d109ef7a0323b517ccf21a54e6bb186b2341ee03eba4938f8fb"
+    },
+    {
+      "path": "Shaders/Tom/TomToonStyle.cginc",
+      "sha256": "7d5a82990389df546100910415bee672fc3cae2f45dbb226d18dbcac591a175d"
+    },
+    {
+      "path": "Tooltips/tom_x_tooltips.xml",
+      "sha256": "a4d07e425fa54646a4dc9814a24638db0f1b17dae33e1f29850ecbc61fd8a12a"
+    }
+  ]
+}

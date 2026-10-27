@@ -8,6 +8,13 @@ Toon-first shaders for Koikatsu Sunshine and Unity 2019.4 Built-in Forward.
 [User manual](https://tomtom1010-iee.github.io/TomshadersX/UserManual.html) ·
 [Source and build guide](Documents/Development.md)
 
+**For agents and source readers:** start with the self-contained
+[Rendering documentation](Documents/RenderDocs/README.md). It explains current pipelines, texture
+contracts, compatibility limits and a read-only source/manifest audit without requiring chat history.
+New environment: [Blender-to-Unity-to-Studio setup](Documents/RenderDocs/EnvironmentSetup.md).
+The [standalone setup skill](https://github.com/tomTom1010-IEE/TomshadersX/releases/tag/scene-pipeline-setup-20261027)
+is a separate documentation download, not a shader update.
+
 96 actual Unity GPU renders, in 24 comparisons. Every subject uses the same
 standard UV sphere and fixed exposure. No per-image brightening or generated
 illustrations. Open the interactive showcase for full-resolution images and complete
