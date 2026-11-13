@@ -60,11 +60,28 @@ These are diagnostic starting points, not universal character presets. Keep ligh
 
 ## 3. Lighting and Stylization
 
-**Toon Shading:** `UseRamp` blends continuous diffuse with Toon shading. `RampMode=0` uses procedural thresholds; 1 uses the R channel of RampTex. SecondaryRamp is blended through LayerMask R and SecondaryToneStrength. RampTex is a light-response curve, not a directly applied multicolor gradient.
+**Toon Shading:** `UseRamp` blends continuous diffuse with Toon shading. `RampMode=0` uses procedural thresholds; 1 samples RampTex. SecondaryRamp is blended through LayerMask R and SecondaryToneStrength. RampTex is a direct diffuse-response curve, not an emission or final-screen color replacement.
+
+**Ramp angle and color:** All eleven substrate shaders, including Tess, expose two independent controls in Toon Shading. Both default to 0, preserving existing materials. LiquidX is excluded.
+
+| Control | 0 (default) | 1 |
+| --- | --- | --- |
+| `RampInputMode` | Legacy clamped normal input, Skin Wrap and Toon geometry horizon | Full-angle signed Toon N dot L: back=0, side=0.5, front=1; no square |
+| `RampColorMode` | Scalar red channel | Sampled RGB diffuse multiplier, each channel clamped to 0..1; alpha ignored |
+
+Full Angle removes only the Toon diffuse front-hemisphere cutoff. Continuous diffuse, normal selection, specular/coat guards, culling and real received shadows stay unchanged. Skin Wrap is not applied a second time to this Toon coordinate; continuous Skin shading and warmth remain separate. `UseRamp=0` bypasses both new modes. Procedural ramps stay gray in RGB mode; texture RGB is used directly, not multiplied by red again. Secondary sampling, ST and masking keep their existing meanings.
+
+The new coordinate changes threshold meaning. For an unwrapped normal without shadow/SDF remapping, use `newThreshold=(oldThreshold+1)/2`, `newSoftness=oldSoftness/2` as a starting point: Skin's 0.1 / 0.1 becomes 0.55 / 0.05. This is not an exact old-look conversion because Full Angle intentionally removes the old horizon cutoff. No defaults, saved values or texture imports are automatically migrated. Author texture ramps across the whole back-to-front range; at grazing light, the middle of the ramp is sampled.
+
+In RGB mode, the largest RGB component is the scalar response amplitude. `ToonMinLighting` (still 0.15) remaps this amplitude and retains the sampled hue; very near black it smoothly approaches a neutral fallback to avoid division instability. This is neither a per-channel RGB floor nor a luminance guarantee. ToonShadeColor remains independent optional fill, with its mask derived from response amplitude. CastShadowColor follows actual shadows after the minimum response. SH, indirect diffuse, specular, reflections, additive MatCap, rim, emission and separate coat/liquid lobes are not automatically ramp-colored. Integrated liquid pigment keeps its legacy scalar Toon inheritance; the underlying substrate uses the new modes.
+
+Face SDF continues to own its replaced boundary and blends the primary/secondary ramp's two RGB endpoints, not its intermediate bands. The SDF region is not converted to a second full-angle normal curve. Normal cast shadows remain applied afterward.
+
+Optional examples are in `Material/Ramps`: FullAngleGray is linear data; FullAngleColor is an sRGB color texture. Both use Clamp, Bilinear, no mipmaps and no compression. For matching linear responses, equal RGB and red-channel modes use the same texture/import settings. Respect the authored color space when importing other ramps; the shader adds no manual gamma conversion. Start with `UseRamp=1`, `RampMode=1`, `RampInputMode=1`, `RampColorMode=1`, assign FullAngleColor to RampTex, and keep ToonShadeColor A=0. These modes need no new plugin, sampler, Pass or keyword.
 
 **Toon normals and soft edges:** MainOpaqueX, the three Alpha variants, HairX, EyeWX, EyeX and SkinX share this path. `ToonNormalInfluence` (0..1, default 1) controls the main normal in direct Toon diffuse only. `ToonDetailNormalInfluence` (0..1, default 1) independently controls detail normals; SkinX reuses `SkinDiffuseNormalDetail` instead, with its existing diffuse/SH behavior. Main influence 0 does not disable the detail input. Global NormalMapScale/DetailNormalMapScale still determine the source normal strength. Specular, environment and Clearcoat retain their full normal inputs. EyeX Toon normals follow the refracted iris sample without changing refraction itself.
 
-Toon diffuse now uses one mesh-horizon transition driven by ToonSoftness, without multiplying the mapped-normal horizon again. NormalHorizonFade still protects continuous diffuse, specular, Clearcoat and liquid. `ToonAA` (0..2, default 1) adds a pixel-derivative minimum width to the procedural band and diffuse horizon. Texture ramps retain their own filtering; AA cannot repair compression blocks or erase large authored bumps. For cleaner skin boundaries, try ToonNormalInfluence=0.25, SkinDiffuseNormalDetail=0.1 and ToonSoftness=0.12, then adjust for the asset. Glossy detail is preserved without disabling normal maps globally.
+Toon diffuse in Legacy angle mode uses one mesh-horizon transition driven by ToonSoftness, without multiplying the mapped-normal horizon again. NormalHorizonFade still protects continuous diffuse, specular, Clearcoat and liquid. `ToonAA` (0..2, default 1) adds a pixel-derivative minimum width to the procedural band and diffuse horizon. Texture ramps retain their own filtering; AA cannot repair compression blocks or erase large authored bumps. For cleaner skin boundaries, try ToonNormalInfluence=0.25, SkinDiffuseNormalDetail=0.1 and ToonSoftness=0.12, then adjust for the asset. Glossy detail is preserved without disabling normal maps globally.
 
 **Toon minimum lighting:** `ToonMinLighting` (0..1, default 0.15; set 0 to disable) remaps the main-light Toon diffuse response after the mesh horizon and cast shadows: `u' = m + (1-m)*u`. It lifts self-shadowed and externally shadowed regions while retaining the fully lit endpoint. Start at 0.1..0.25 with ToonShadeColor A=0. Bundled carriers use 0.15. Explicitly saved values are preserved; older materials without a saved value inherit the new default. This is a normalized diffuse-response floor, not a final pixel RGB floor or a GI/emission control. Albedo, main light color/intensity, distance/cookie, diffuse material weight and later coating/MatCap attenuation still apply. No light means no lift. UseRamp=0 disables it; partial UseRamp blends its contribution. It runs once in Base, respects baked direct ownership and does not alter continuous diffuse, Add lighting, SH, specular or reflection lobes. ToonShadeLevel still controls the procedural ramp before the horizon and shadows.
 
@@ -77,6 +94,12 @@ Fill follows the ForwardBase main light's color, MainLightIntensity, distance/co
 Clearcoat and clear integrated liquid attenuate colored fill and minimum-response lift as broad substrate illumination, not as a back-facing specular ray. Their actual reflection lobes and horizon protection are unchanged. Pigmented liquid can replace the substrate contribution as before. The separate LiquidX overlay retains its accepted pigment path and does not expose these substrate controls. The minimum defaults to 0.15; set it to zero to disable the lift. Explicitly saved values are preserved.
 
 **Shadows:** ShadowStrength controls diffuse shadow participation. ShadowRemapStrength / Threshold / Softness reshape shadow visibility. UseRampForShadows controls how shadows enter the Toon curve. External occlusion is distinct from the unlit side of a curved surface. Direct Clearcoat highlights remain shadowed; they are not unshadowed emission.
+
+**Cast-shadow color:** `CastShadowColor` in Toon Shading is a received-shadow tint for substrate diffuse, shared by all eleven substrate shaders, including Tess. RGB is a multiplicative tint clamped to 0..1; A is its blend weight, not opacity. The default is white/A=0, preserving existing materials. A=0, white RGB or ShadowStrength=0 leaves this tint neutral. It uses each light's shadow visibility after ShadowRemapStrength / Threshold / Softness and ShadowStrength, not NdotL, a Toon band or the secondary ramp. It needs an actual received-shadow signal; it does not change casting, engine sampling, transparency/depth limitations or enable unsupported shadow reception.
+
+Base applies the tint once to main diffuse, its Toon fill/minimum compensation and main-shadowed indirect diffuse. ForwardAdd applies it only to that lamp's diffuse, without repeating indirect light or minimum compensation. Specular, probe/additive MatCap, rim, coat reflection, liquid pigment/reflections, emission and the unshadowed vertex-light fallback remain separate. The diffuse substrate beneath coat or clear liquid still carries the tint. LiquidX has no substrate control and does not expose this property. There is no separate secondary shadow color.
+
+Tune visibility and ShadowStrength first, then ToonMinLighting (still 0.15), then CastShadowColor RGB/A. The minimum is a response floor **before tint/layers**, not a guaranteed final brightness: a dark tint can reduce it; tint cannot create light where there is none. Legacy ShadowColor still additionally tints Base indirect diffuse. Set it to white only when deliberately removing that extra tint, not as an automatic migration. On old Skin materials with SkinShadeColorSource=0, first copy the old ShadowColor to SkinShadeColor and select source 1 before changing ShadowColor, to preserve painted shade. ToonShadeColor stays optional colored fill, not the cast-shadow color.
 
 **SkinX grazing-light shadows:** SkinX now defaults to `UseRampForShadows=0`, including its bundled carrier. The surface still uses Toon lighting, but cast-shadow visibility multiplies the result without also crossing the Toon threshold. Set 1 to restore the previous routing. Explicitly saved scene/card values are not migrated; other shader families keep their defaults. `ToonMinLighting` remains 0.15. For cleaner grazing-angle self-shadows, select **Soft Shadows on the light** and keep ShadowRemapStrength=0 as a starting point. ToonSoftness and ShadowSoftness do not enable the engine's shadow filtering. The shader does not modify scene lights or force a shadow quality setting. Raw shadow-map striping can still exist, especially with Hard Shadows; decoupling the ramp is not a replacement shadow filter. Tune Light Bias and Normal Bias independently only as needed, checking nose/contact shadows and thin external casters. Excessive bias or ShadowOffset can detach or erase valid shadows; their defaults are unchanged.
 
@@ -223,6 +246,44 @@ This is not POM and does not guarantee that a near-side cavity wall hides far-si
 
 ## 8. SkinX and Standard Character Textures
 
+Experimental `SkinFaceShadowProtection` in **Skin Response** defaults to 0/off on SkinX and
+SkinXTess. It uses `NormalMask.B` to set a local minimum for diffuse cast visibility, after
+shadow remapping and before ShadowStrength. Inspect `SkinDebugView=14` first, then compare
+0 / 0.25 / 0.5 / 1 with the same light. White permits full protection, black does nothing.
+This weakens ALL received shadows in that region, including bangs/external objects, not just
+self-shadow. It does not move Toon boundaries, change caster geometry, or bypass independent
+specular/coat/liquid shadows. No FaceShadowG global, extra plugin or texture replacement.
+Keep body materials off unless an appropriate mask is explicitly supplied; ToonMinLighting stays 0.15.
+
+**Accepted scope (2026-11-06):** retain this opt-in control with default 0 and start
+around 0.5 only on a verified face mask. Keep ordinary face/body shadow casting and
+all accepted shared-lighting defaults. SDF remains a separate optional way to author
+Toon contours, not a shadow-acne fix. This compromise does not cure hard-shadow stripes.
+Disabling the face renderer's ShadowCaster while leaving receiveShadows enabled removes
+that renderer's self-casting and still permits bangs shadows, but also removes its shadows
+onto the body, hair and scene. It is an explicit scene trade-off, not our default strategy.
+Only requiring the face to keep casting onto other objects while excluding its own shadow
+from itself needs separate shadow-source/receiver handling, outside this material scope.
+Earlier Toon threshold calibration moves the normal-driven mouth boundary, not the shadow map.
+The existing test bundle's experimental label is retained; no automatic migration occurs.
+
+Moving the ShadowCaster Pass before ForwardBase in the shader file does not provide this
+separation: Unity schedules shadow-map rendering before Forward receivers, using LightMode
+rather than that textual order. See [Unity Pass tags](https://docs.unity3d.com/2019.4/Documentation/Manual/SL-PassTags.html#lightmode-tag)
+and [Built-in render-loop order](https://docs.unity3d.com/es/2019.4/Manual/GraphicsCommandBuffers.html).
+
+**Calibrated global defaults:** SkinX and SkinXTess now use `ToonThreshold=0.1`,
+`ToonSoftness=0.1` and `ToonMinLighting=0.15`, including their carrier materials.
+These are shared face/body defaults, not an automatic mesh-dependent face preset.
+The threshold revision moves the procedural Toon boundary toward the outer cheek;
+it does not smooth mesh normals, change the lighting algorithm or disable cast shadows.
+Texture ramps (`RampMode=1`) retain their own threshold data. Other shader families
+keep their existing defaults. Explicitly saved scene/card/material values are not
+overwritten; set ToonThreshold to 0.1 manually to adopt this calibration, or retain
+0.5 for the previous authored placement. No plugin or automatic migration is added.
+Large side-light angles and head rotations can still reveal mouth/nose geometry;
+this is not a guarantee of an SDF-like contour at every angle.
+
 The game already composites main skin color into MainTex. BaseColor is an additional tint, not a replacement for that composition. ColMask provides optional extra regional tinting; it is not the game texture compositor's ColorMask.
 
 | Input | Purpose |
@@ -230,7 +291,7 @@ The game already composites main skin color into MainTex. BaseColor is an additi
 | ColMask + Col0..3 | Blend Col0 toward Col1 by R, then Col2 by G, then Col3 by B |
 | DetailMask | R painted-highlight/specular gating, G painted shadow, B Rim/Outline suppression, A skin versus nail/lip gloss |
 | LineMask | R internal lines, G game line-width exponent, B detail shadow; A unused |
-| NormalMask | G can reduce diffuse normal detail; not a normal map and does not inherit the legacy B shadow fallback |
+| NormalMask | G can reduce diffuse normal detail; B supplies experimental diffuse shadow protection. Not a normal map. Both controls default off. |
 | overtex1 | UV1 (Unity UV2), controlled by vertex R; body nipple / face lip layers, with legacy tex1mask RG encoding |
 | overtex2 | UV2 (Unity UV3), controlled by vertex B; the corresponding body layer or dynamic face blush |
 | overtex3 | UV3 (Unity UV4); face eyeshadow, with body meaning dependent on the asset |

@@ -77,4 +77,19 @@ float TomSkinSDFResponse(TomMaterialData m, float3 lightDir, float diffuseShadow
     return normalResponse;
 }
 
+void TomSkinSDFColorResponse(TomMaterialData m, float3 lightDir, float diffuseShadow,
+    inout float3 rampColor, inout float3 normalResponse)
+{
+    UNITY_BRANCH
+    if (_UseFaceSDF > 0.5 && _UseRamp > 0.0)
+    {
+        float4 sdf = TomSkinFaceSDF(m, lightDir);
+        float lit = sdf.x * lerp(1.0, diffuseShadow, saturate(_UseRampForShadows));
+        float3 shade = TomSampleRampColor(0.0, m.secondaryToneMask, 0.0);
+        float3 bright = TomSampleRampColor(1.0, m.secondaryToneMask, 0.0);
+        float3 response = lerp(shade, bright, lit);
+        rampColor = lerp(rampColor, response, sdf.y);
+        normalResponse = lerp(normalResponse, response, sdf.y);
+    }
+}
 #endif

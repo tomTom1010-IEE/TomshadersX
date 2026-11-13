@@ -23,12 +23,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -180,12 +183,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -336,12 +342,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -493,12 +502,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -646,12 +658,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -810,12 +825,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -924,12 +942,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -1066,12 +1087,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -1197,6 +1221,7 @@
       <Property Name="SkinShadeColor" Category="Skin Response" Type="Color" />
       <Property Name="SkinDiffuseNormalDetail" Category="Skin Response" Type="Float" Range="0,1" />
       <Property Name="SkinFaceNormalStrength" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinFaceShadowProtection" Category="Skin Response" Type="Float" Range="0,1" />
       <Property Name="SkinControlMap" Category="Skin Response" Type="Texture" />
       <Property Name="SkinStrength" Category="Skin Response" Type="Float" Range="0,1" />
       <Property Name="SkinWrap" Category="Skin Response" Type="Float" Range="0,1" />
@@ -1220,7 +1245,7 @@
       <Property Name="SkinCoatCoverage" Category="Skin Wet Surface" Type="Float" Range="0,3" />
       <Property Name="SkinWetness" Category="Skin Wet Surface" Type="Float" Range="0,1" />
       <Property Name="SkinLiquidCoatNormal" Category="KKS Liquid" Type="Float" Range="0,1" />
-      <Property Name="SkinDebugView" Category="Debug" Type="Float" Range="0,13" />
+      <Property Name="SkinDebugView" Category="Debug" Type="Float" Range="0,14" />
       <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
       <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
       <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
@@ -1338,12 +1363,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -1499,12 +1527,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
@@ -1630,6 +1661,7 @@
       <Property Name="SkinShadeColor" Category="Skin Response" Type="Color" />
       <Property Name="SkinDiffuseNormalDetail" Category="Skin Response" Type="Float" Range="0,1" />
       <Property Name="SkinFaceNormalStrength" Category="Skin Response" Type="Float" Range="0,1" />
+      <Property Name="SkinFaceShadowProtection" Category="Skin Response" Type="Float" Range="0,1" />
       <Property Name="SkinControlMap" Category="Skin Response" Type="Texture" />
       <Property Name="SkinStrength" Category="Skin Response" Type="Float" Range="0,1" />
       <Property Name="SkinWrap" Category="Skin Response" Type="Float" Range="0,1" />
@@ -1653,7 +1685,7 @@
       <Property Name="SkinCoatCoverage" Category="Skin Wet Surface" Type="Float" Range="0,3" />
       <Property Name="SkinWetness" Category="Skin Wet Surface" Type="Float" Range="0,1" />
       <Property Name="SkinLiquidCoatNormal" Category="KKS Liquid" Type="Float" Range="0,1" />
-      <Property Name="SkinDebugView" Category="Debug" Type="Float" Range="0,13" />
+      <Property Name="SkinDebugView" Category="Debug" Type="Float" Range="0,14" />
       <Property Name="LiquidDiffuseNormal" Type="Float" Category="KKS Liquid" Range="0,1" />
       <Property Name="LiquidSpecularStrength" Type="Float" Category="KKS Liquid" Range="0,2" />
       <Property Name="LiquidNormalEncoding" Type="Float" Category="KKS Liquid" Range="0,2" />
@@ -1728,12 +1760,15 @@
       <Property Name="SecondaryRamp" Category="Toon Shading" Type="Texture" />
       <Property Name="UseRamp" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="RampMode" Category="Toon Shading" Type="Float" Range="0, 1" />
+      <Property Name="RampInputMode" Type="Float" Range="0,1" Category="Toon Shading" />
+      <Property Name="RampColorMode" Type="Float" Range="0,1" Category="Toon Shading" />
       <Property Name="ToonThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ToonSoftness" Category="Toon Shading" Type="Float" Range="0.001, 1" />
       <Property Name="ToonShadeLevel" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="SecondaryToneStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="UseRampForShadows" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowColor" Category="Toon Shading" Type="Color" />
+      <Property Name="CastShadowColor" Type="Color" Category="Toon Shading" />
       <Property Name="ShadowStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowRemapStrength" Category="Toon Shading" Type="Float" Range="0, 1" />
       <Property Name="ShadowThreshold" Category="Toon Shading" Type="Float" Range="0, 1" />

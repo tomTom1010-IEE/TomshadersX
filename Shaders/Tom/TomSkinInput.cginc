@@ -20,6 +20,7 @@ float _linetexon, _linewidthG, _SkinLineStrength, _SkinShadeStrength, _SkinGameL
 float4 _LineColorG, _SkinLineColor, _SkinShadeColor;
 float _SkinShadeColorSource;
 float _SkinDiffuseNormalDetail, _SkinFaceNormalStrength;
+float _SkinFaceShadowProtection;
 float _SkinStrength, _SkinWrap, _SkinWarmth, _SkinWarmWidth;
 float4 _SkinWarmColor;
 float _SkinWetness, _SkinCoatCoverage, _SkinLiquidCoatNormal, _SkinDebugView;
@@ -42,6 +43,7 @@ struct TomSkinData
     float liquidCoverage, gloss, coatCoverage;
     float2 sdfUV;
     float sdfWeight;
+    float faceShadowMask;
     float3 debug;
 };
 #endif

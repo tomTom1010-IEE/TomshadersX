@@ -159,6 +159,9 @@ Shader "tom/MainOpaqueXTess"
 		_MatCapNormalInfluence ("MatCap Main Normal Influence", Range(0,1)) = 1
 		_MatCapDetailNormalInfluence ("MatCap Detail Normal Influence", Range(0,1)) = 1
 		[Gamma] _MatCapColor ("MatCap Color (RGB Tint / A Weight)", Color) = (1,1,1,1)
+		_CastShadowColor ("Cast Shadow Color (RGB Tint / A Weight)", Color) = (1,1,1,0)
+		[Enum(Legacy,0,FullAngle,1)] _RampInputMode ("Toon Ramp Angle Domain", Float) = 0
+		[Enum(RedChannel,0,RGB,1)] _RampColorMode ("Toon Ramp Color Mode", Float) = 0
 	        [Enum(Fixed,0,ScreenEdge,1)] _TessellationMode ("Tessellation Density Mode", Float) = 1
         _TessellationFactor ("Tessellation Maximum Factor", Range(1,16)) = 4
         _TessellationEdgeLength ("Tessellation Edge Length (Pixels)", Range(4,64)) = 16

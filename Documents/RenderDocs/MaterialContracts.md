@@ -23,6 +23,25 @@ the [full manual](../TomShadersX-UserManual.en.md). Equal labels in V+ or BSDF a
 Some masks share samplers to fit D3D11 limits. Shared wrap/filter does not imply shared ST. Skin UV0
 atlases need compatible sampler settings; never reinterpret Skin's game DetailMask as MaterialMap.
 Skin preserves game overlay UV streams and vertex color, and also has a separate SkinControlMap.
+
+Experimental SkinX/SkinXTess `SkinFaceShadowProtection` defaults to 0. It reads sampled
+NormalMask B (UV0, its own ST, DetailMask sampler) and raises remapped diffuse cast visibility
+to `max(visibility, saturate(B * protection))`, before ShadowStrength. Debug 14 displays B
+regardless of protection. This is not SDF, a normal change, depth bias, or self-only exclusion:
+bangs and external blockers are weakened in the same receiver region. Existing caster geometry,
+raw visibility and independent reflection lobes are unchanged. No global FaceShadowG is read.
+Do not enable on body materials or an unverified/null mask; inspect B and bind suitable data
+explicitly. No runtime texture replacement or migration is performed.
+
+Retention accepted on 2026-11-06 with the same default 0 and current test-bundle labels.
+0.5 is an optional face tuning start, not a universal preset. Preserve normal face/body
+casting and ToonMinLighting=0.15. SDF, Toon contour calibration and receiver protection
+have separate responsibilities; none certifies that native hard-shadow acne is cured.
+Turning the face renderer's caster off while leaving receiveShadows on can remove its
+self-casting and retain bangs reception, at the cost of all that renderer's outgoing shadows.
+This scene-level trade-off is not enabled by default. Excluding only self-reception while
+also retaining the face's casting onto other objects requires separate source/receiver
+handling, outside the current material contract.
 Read their dedicated sections before replacing any body/face map.
 
 ## Normal Routing
@@ -51,10 +70,34 @@ MatCapColor RGB tints the one sampled map; A weights the whole appearance effect
 Black RGB can darken Multiply and is not an off switch. Use A=0 or intensity=0 to disable it.
 Multiply modulates per-light diffuse; Add stays Base-only. LiquidX does not expose the common MatCap.
 
+RampInputMode and RampColorMode default to 0 on all eleven substrates, including Tess.
+Mode 1 opts into full-angle Toon input or RGB response respectively. No saved values,
+texture color spaces or ramp thresholds are migrated; LiquidX exposes neither control.
+See the manual for threshold conversion, RGB minimum hue and SDF/liquid boundaries.
+
 ToonMinLighting defaults to 0.15 and IndirectDiffuseIntensity to 0.25. These do not overwrite saved
 values. ToonShadeColor A is artistic fill strength, not V+'s reverse ShadowColor alpha or mesh alpha.
 The earlier ToonDarkFillColor name is retired; old game cards are not automatically migrated.
 Dark-side fill and minimum response are not BSSRDF/SSS or emission.
+
+CastShadowColor is independent of those fill controls and the legacy ShadowColor. Its default
+is white/A=0; RGB is clamped to 0..1 and A weights a multiplicative diffuse tint. It follows
+effective remapped cast visibility and ShadowStrength, never the Toon dark band. Base tints main
+diffuse, fill/minimum compensation and indirect diffuse once; Add tints only its own diffuse.
+ToonMinLighting is a response floor before this tint and coating, not a final RGB floor. No tint
+is applied to specular/reflection/coat or liquid pigment lobes, emission or vertex-light fallback.
+All eleven substrates expose it, including Tess; LiquidX does not. A=0, white RGB or Strength=0
+is neutral. It cannot create light or enable unsupported shadow reception. ShadowColor still
+multiplies the main-shadowed indirect diffuse separately, so the two controls can stack. Do not
+silently reset it: SkinShadeColorSource=0 also uses it for painted shade. Preserve existing
+values and use Independent skin shade before manually removing legacy indirect tint.
+
+SkinX and SkinXTess use the calibrated global `ToonThreshold=0.1`, with
+`ToonSoftness=0.1` and `ToonMinLighting=0.15`. Their carriers match these defaults.
+Face and body share them; there is no mesh-based preset selection. Explicitly saved
+values are preserved. Other families retain their existing threshold defaults.
+This only relocates the procedural ramp boundary; texture ramps, normal routing,
+cast-shadow visibility and the shared lighting algorithm are unchanged.
 
 SpecularToonBlend mixes GGX and shaped Toon highlights. Roughness, SpecularSize and SpecularStrength
 control different aspects. Hair dual lobes redistribute a shared direct budget; Surface Height

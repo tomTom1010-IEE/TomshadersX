@@ -60,11 +60,28 @@
 
 ## 3. 光照与风格
 
-**Toon Shading**：`UseRamp` 混合连续漫反射与 Toon 明暗。`RampMode=0` 使用程序化阈值，1 使用 RampTex 的 R 通道；SecondaryRamp 通过 LayerMask R 和 SecondaryToneStrength 混合。RampTex 是明暗曲线，不是直接彩色渐变染色。
+**Toon Shading**：`UseRamp` 混合连续漫反射与 Toon 明暗。`RampMode=0` 使用程序化阈值，1 采样 RampTex；SecondaryRamp 通过 LayerMask R 和 SecondaryToneStrength 混合。RampTex 控制直接漫反射响应，不是自发光或最终屏幕颜色替换。
+
+**Ramp 角度与颜色**：十一款底材 Shader（含 Tess）在 Toon Shading 中增加两个独立控制，默认均为 0，保持旧材质。LiquidX 不加入。
+
+| 参数 | 0（默认） | 1 |
+| --- | --- | --- |
+| `RampInputMode` | Legacy：原截断法线输入、Skin Wrap 和 Toon 网格背光限制 | Full Angle：有符号 Toon N dot L 映射，背光=0、侧光=0.5、正光=1；不平方 |
+| `RampColorMode` | 原 R 通道标量响应 | RGB 漫反射乘数，各通道限制在 0..1；忽略 Alpha |
+
+Full Angle 只去除 Toon 漫反射的正半球截断；连续漫反射、法线选择、高光／涂层背光保护、剔除和真实接收投影不变。Skin 的该 Toon 坐标不再叠加 Skin Wrap；连续皮肤光照和暖色仍独立。`UseRamp=0` 绕过两个新模式。程序化 Ramp 在 RGB 模式下仍为灰度；贴图 RGB 直接参与响应，不再重复乘 R。次级采样、ST 和蒙版保持原义。
+
+完整角度改变阈值含义。在无 Wrap、投影／SDF 重映射的法线条件下，可从 `新阈值=(旧阈值+1)/2`、`新柔和度=旧柔和度/2` 起调：Skin 的 0.1 / 0.1 对应 0.55 / 0.05。这不是旧外观的精确转换，因为完整角度有意取消原网格背光截断。不自动迁移默认值、保存值或贴图导入设置。完整角度 Ramp 应覆盖背光至正光全范围，侧光读取中段。
+
+RGB 最大分量定义标量响应幅度；`ToonMinLighting`（仍为 0.15）重映射幅度并保留所采样色相，接近纯黑时平滑回退到中性色以避免除法不稳定。它不是逐通道 RGB 下限，也不保证亮度值。ToonShadeColor 仍是独立可选补光，遮罩从响应幅度得到；CastShadowColor 在下限之后按实际投影染色。SH、间接漫反射、高光、反射、加算 MatCap、Rim、自发光及独立涂层／液体波瓣不会自动被 Ramp 染色。集成液体颜料继续继承旧标量 Toon 响应，其下的底材采用新模式。
+
+Face SDF 继续负责被替换区域的分界，只混合主／次 Ramp 的两个 RGB 端点，不重播中间色阶，也不对 SDF 再套一次法线全角度曲线。真实投影仍在后面参与。
+
+可选示例位于 `Material/Ramps`：FullAngleGray 为线性数据，FullAngleColor 为 sRGB 颜色贴图；均采用 Clamp、Bilinear、无 mipmap、无压缩。比较等值 RGB 与 R 通道响应时，应使用相同贴图和导入设置。其他 Ramp 按作者编码设置色彩空间，Shader 不额外手动转换 gamma。起步可用 `UseRamp=1`、`RampMode=1`、`RampInputMode=1`、`RampColorMode=1`，将 FullAngleColor 绑定到 RampTex，并保持 ToonShadeColor A=0。不增加新插件、采样器、Pass 或关键字。
 
 **Toon 法线与柔和边界**：MainOpaqueX、三个 Alpha 变体、HairX、EyeWX、EyeX 和 SkinX 共享这条路径。`ToonNormalInfluence`（0..1，默认 1）只控制主法线对直接 Toon 漫反射的影响；`ToonDetailNormalInfluence`（0..1，默认 1）独立控制细节法线。SkinX 复用现有 `SkinDiffuseNormalDetail`，并保留其原有的漫反射/SH 行为，不增加重复滑条。主法线影响为 0 不会同时关闭细节输入。NormalMapScale/DetailNormalMapScale 仍决定源法线强度。高光、环境反射和 Clearcoat 保留完整法线；EyeX 的 Toon 法线跟随折射后的虹膜采样，但这些控制不改变折射位移。
 
-Toon 漫反射改为单层网格明暗交界过渡，由 ToonSoftness 控制，不再额外乘一次贴图法线的窄交界。NormalHorizonFade 仍保护连续漫反射、高光、Clearcoat 和液体。`ToonAA`（0..2，默认 1）为程序化明暗边界与网格交界提供基于屏幕导数的最小过渡宽度；贴图 Ramp 保留自身采样过滤。它不能修复压缩方块，也不会抹掉大尺度的凹凸。皮肤可从 ToonNormalInfluence=0.25、SkinDiffuseNormalDetail=0.1、ToonSoftness=0.12 开始调节，不需要关闭全局法线来换取干净的明暗边界。
+Legacy 角度模式的 Toon 漫反射使用单层网格明暗交界过渡，由 ToonSoftness 控制，不再额外乘一次贴图法线的窄交界。NormalHorizonFade 仍保护连续漫反射、高光、Clearcoat 和液体。`ToonAA`（0..2，默认 1）为程序化明暗边界与网格交界提供基于屏幕导数的最小过渡宽度；贴图 Ramp 保留自身采样过滤。它不能修复压缩方块，也不会抹掉大尺度的凹凸。皮肤可从 ToonNormalInfluence=0.25、SkinDiffuseNormalDetail=0.1、ToonSoftness=0.12 开始调节，不需要关闭全局法线来换取干净的明暗边界。
 
 **Toon 最低明暗响应**：`ToonMinLighting`（0..1，默认 0.15；设为 0 可关闭）在网格背光限制和投影之后重映射主光 Toon 漫反射：`u' = m + (1-m)*u`。自投影和外部遮挡中的暗部都会被抬起，全亮端不变。建议先把 ToonShadeColor 的 A 设为 0，再从 0.1..0.25 调起。配套材质预设使用 0.15；显式保存的值不变，未保存此参数的旧材质会继承新默认值。这是归一化明暗响应下限，不是最终像素 RGB 下限，也不是 GI 或自发光。底色、主光颜色/强度、距离/cookie、漫反射材质权重及后续涂层/MatCap 衰减仍有效；没有主光不会凭空发亮。UseRamp=0 时禁用，部分 UseRamp 按比例混合。只在 Base 计算一次并遵循烘焙主光归属，不改变连续漫反射、附加灯、SH、高光和反射波瓣。ToonShadeLevel 仍控制背光和投影之前的程序化 Ramp 暗端。
 
@@ -77,6 +94,12 @@ Toon 漫反射改为单层网格明暗交界过渡，由 ToonSoftness 控制，�
 Clearcoat 与集成透明液体把彩色补光和下限增量作为宽分布的底材照明进行衰减，不会当成背面入射的高光光线再次归零；实际反射波瓣和背光保护不变。有色液体仍可替换底材贡献。独立 LiquidX 保留已验收的染色路径，不增加这些底材控制。下限默认 0.15，设为 0 可关闭提亮，不覆盖明确保存的参数。
 
 **阴影**：ShadowStrength 调漫反射阴影参与度；ShadowRemapStrength / Threshold / Softness 重映射阴影可见度。UseRampForShadows 控制阴影进入 Toon 曲线。外部遮挡与曲面自身背光不是同一件事。Clearcoat 直接高光仍受物理阴影约束，不应把它当作无阴影发光。
+
+**投影颜色**：Toon Shading 中的 `CastShadowColor` 控制底材漫反射的接收投影染色，十一款底材 Shader 共用，包括 Tess。RGB 是限制在 0..1 的乘算色，A 是混合权重，不是透明度；默认白色、A=0，保持旧材质效果。A=0、RGB 为白色或 ShadowStrength=0 时，此染色中性。区域取自每盏灯经过 ShadowRemapStrength / Threshold / Softness 与 ShadowStrength 处理后的阴影可见度，不取自 NdotL、Toon 色阶或次级 Ramp。它需要实际接收到的投影信号，不改变投射、引擎采样、透明／深度限制，也不能让原本不支持的接收阴影自动生效。
+
+Base 对主光漫反射、主光 Toon 补光／最低明暗补偿、主光投影区域的间接漫反射各染色一次。ForwardAdd 只染当前灯的漫反射，不重复间接光或最低明暗补偿。高光、Probe／加算 MatCap、Rim、涂层反射、液体颜料／反射、自发光及不带投影的顶点灯回退保持独立；涂层或透明液体下面的底材仍携带染色。LiquidX 没有此底材控制，不暴露该参数。不增加第二套次级投影颜色。
+
+建议先调阴影可见度与 ShadowStrength，再调 ToonMinLighting（仍为 0.15），最后调 CastShadowColor 的 RGB／A。最低明暗是**染色和涂层之前**的响应下限，不保证最终亮度：深色会继续压暗；无光处也不能靠染色发亮。旧 ShadowColor 仍会额外染色 Base 间接漫反射，需要去掉这层叠色时才手动设为白色，不自动迁移。旧 Skin 材质若 SkinShadeColorSource=0，应先将旧 ShadowColor 复制给 SkinShadeColor、来源切到 1，再改 ShadowColor，以保留绘制阴影。ToonShadeColor 仍是可选彩色补光，不是投影颜色。
 
 **SkinX 斜光投影**：SkinX 及其配套材质现在默认 `UseRampForShadows=0`。表面明暗仍使用 Toon，但投影可见度在其后相乘，不再同时跨越 Toon 阈值。设为 1 可恢复原路由；不迁移场景或人物卡中明确保存的值，其他 shader 系列的默认值不变。`ToonMinLighting` 保持 0.15。斜光自投影建议从光源的 **Soft Shadows（软阴影）** 和 ShadowRemapStrength=0 开始；ToonSoftness、ShadowSoftness 都不能代替引擎阴影采样过滤。Shader 不会强改场景光源或阴影质量。原始阴影贴图的条纹仍可能存在，尤其在 Hard Shadows 下；分离 Ramp 不等于替换阴影过滤算法。仅在需要时分别调整光源 Bias 与 Normal Bias，并检查鼻子、接触处和薄片外部投影。过大的 Bias 或 ShadowOffset 会造成阴影脱离或丢失，本次不提高这些默认值。
 
@@ -223,6 +246,37 @@ EyeDispersion=0 单路，正值采用三条 RGB 光线的几何近似。它不�
 
 ## 8. SkinX 标准角色贴图
 
+实验参数 `SkinFaceShadowProtection` 位于 **Skin Response**，SkinX 与 SkinXTess 默认均为 0（关闭）。
+使用 `NormalMask.B` 在阴影重映射之后、ShadowStrength 之前为漫反射投影可见度设置局部下限。
+先用 `SkinDebugView=14` 查看实际 B 通道，再固定灯光比较 0 / 0.25 / 0.5 / 1。
+白色允许完全保护，黑色不生效；它同时减弱该区域的自投影、刘海和外部物体投影，并非只去除自阴影。
+不移动 Toon 分界、不改变 Caster 几何，不绕过独立高光、涂层和液体的遮挡。
+不依赖 FaceShadowG 全局参数或新插件，不替换已有贴图。身体在没有明确适配的遮罩时保持关闭；ToonMinLighting 仍为 0.15。
+
+**收尾范围（2026-11-06）**：保留此可选控制，默认 0；仅在验证过脸部遮罩后从 0.5 左右调起。
+正常脸部／身体 Caster 和已验收的共享光照默认值保持不变。SDF 继续独立可选，用于设计 Toon
+轮廓，不是阴影痤疮修复器。该折中不根治硬阴影条纹。
+关闭脸部 Renderer 的 ShadowCaster、保持 receiveShadows 开启，可以去掉该 Renderer 的自投影，
+同时继续接收刘海投影；代价是脸也不再向身体、头发和场景投影。这是显式的场景取舍，不是默认策略。
+只有同时要求“脸仍向其他对象正常投影，却唯独不接收自身投影”，才需要独立的投影来源／接收路径，
+超出当前材质功能范围。此前 Toon 阈值校准移动的是法线驱动的嘴角分界，不是阴影贴图轮廓。
+已有测试包沿用实验标签，不做自动迁移。
+
+把 Shader 文件中的 ShadowCaster Pass 移到 ForwardBase 前也不能实现这种分离：Unity 本来就先渲染
+阴影贴图、再执行 Forward 接收，阶段由 LightMode 决定，不由这两段代码的文本顺序决定。参见
+[Unity Pass 标签](https://docs.unity3d.com/2019.4/Documentation/Manual/SL-PassTags.html#lightmode-tag) 与
+[Built-in 渲染顺序](https://docs.unity3d.com/es/2019.4/Manual/GraphicsCommandBuffers.html)。
+
+**校准后的全局默认值**：SkinX、SkinXTess 及其模板材质统一使用
+`ToonThreshold=0.1`、`ToonSoftness=0.1`、`ToonMinLighting=0.15`。
+这是脸部与身体共用的默认值，不是按网格自动识别的脸部专用预设。
+本次阈值校准将程序化 Toon 分界移向脸部外侧，不平滑网格法线、不修改光照算法，
+也不关闭正常投影。贴图 Ramp（`RampMode=1`）仍使用其自身阈值数据，其他 Shader
+系列的默认值不变。场景、角色卡和材质中显式保存的值不会被覆盖；已有材质可手动
+将 ToonThreshold 设为 0.1 采用此校准，保留 0.5 则维持原有分界位置。
+不增加插件或自动迁移。大角度侧光、转头时仍可能显露嘴鼻几何轮廓，
+不保证所有角度都得到类似 SDF 的平滑分界。
+
 游戏已经将主皮肤颜色合成到 MainTex；BaseColor 是额外乘色，不应重复替代游戏合成过程。ColMask 是可选额外分区染色，不是游戏贴图合成器的 ColorMask。
 
 | 输入 | 作用 |
@@ -230,7 +284,7 @@ EyeDispersion=0 单路，正值采用三条 RGB 光线的几何近似。它不�
 | ColMask + Col0..3 | 先从 Col0 按 R 混合 Col1，再按 G 混合 Col2、B 混合 Col3 |
 | DetailMask | R 画入高光/高光门控，G 画入阴影，B 抑制 Rim/Outline，A 区分皮肤与指甲/嘴唇光泽 |
 | LineMask | R 内部线条，G 游戏线宽指数，B 细节阴影；A 不用 |
-| NormalMask | G 可用来减弱漫射法线细节；不是普通法线贴图，也不继承旧版 B 阴影兜底 |
+| NormalMask | G 可用来减弱漫射法线细节；B 提供实验性的漫反射投影保护。不是法线贴图，两项控制默认均关闭。 |
 | overtex1 | UV1（Unity UV2），顶点 R 控制；身体乳头/脸部嘴唇等，支持 tex1mask 的旧 RG 编码 |
 | overtex2 | UV2（Unity UV3），顶点 B 控制；身体对应层或脸部动态腮红 |
 | overtex3 | UV3（Unity UV4）；脸部眼影等，身体含义依资产而定 |

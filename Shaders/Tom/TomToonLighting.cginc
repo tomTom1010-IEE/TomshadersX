@@ -80,10 +80,13 @@ struct TomSurfaceLightTerms
 {
 	float artisticShadowAttenuation;
 	float diffuseShadowAttenuation;
+	float3 castShadowTint;
 	float shadingNdotL;
 	float geometricNdotL;
 	float horizon;
 	float toonVisibility;
+	float3 diffuseVisibility;
+	float3 toonMinimumTint;
 	float toonDarkWeight;
 	float toonShadowedResponse;
 };
@@ -459,6 +462,40 @@ float TomSampleRamp(float value, float secondaryMask, float aa)
 	return ramp;
 }
 
+float3 TomSampleRampColor(float value, float secondaryMask, float aa)
+{
+	UNITY_BRANCH
+	if (_RampColorMode < 0.5) return TomSampleRamp(value, secondaryMask, aa).xxx;
+	float width = max(_ToonSoftness, fwidth(value) * max(aa, 0.0));
+	float3 ramp = lerp(_ToonShadeLevel, 1.0, TomSoftBand(value, _ToonThreshold, width)).xxx;
+	UNITY_BRANCH
+	if (_RampMode > 0.5)
+	{
+		float2 uv = float2(saturate(value), 0.5) * _RampTex_ST.xy + _RampTex_ST.zw;
+		ramp = saturate(SAMPLE_TEX2D(_RampTex, uv).rgb);
+	}
+	UNITY_BRANCH
+	if (_SecondaryToneStrength > 0.0 && secondaryMask > 0.0)
+	{
+		float2 uv = float2(saturate(value), 0.5) * _SecondaryRamp_ST.xy + _SecondaryRamp_ST.zw;
+		float3 secondary = saturate(SAMPLE_TEX2D_SAMPLER(_SecondaryRamp, _MainTex, uv).rgb);
+		ramp = lerp(ramp, secondary, saturate(_SecondaryToneStrength * secondaryMask));
+	}
+	return ramp;
+}
+
+float TomRampAmplitude(float3 color)
+{
+	return max(color.r, max(color.g, color.b));
+}
+
+float3 TomRampMinimumTint(float3 color)
+{
+	float peak = TomRampAmplitude(color);
+	// Preserve hue without amplifying near-black noise; exact black keeps the old neutral floor.
+	return 1.0.xxx + (color - peak.xxx) / max(peak, 0.0001);
+}
+
 float TomShapeShadow(float physicalShadow)
 {
 	physicalShadow = saturate(physicalShadow);
@@ -540,16 +577,44 @@ TomRawLightData TomBuildRawLightData(
 #include "TomSkinLighting.cginc"
 #endif
 
+float TomLegacyToonResponse(TomMaterialData material, TomRawLightData light,
+	float diffuseShadow, float toonHorizon)
+{
+	float toonNL = saturate(dot(material.toonNormalWS, light.direction));
+#if defined(TOM_SKIN)
+	toonNL = TomSkinDiffuseNL(material, material.toonNormalWS, light.direction);
+#endif
+	float rampInput = toonNL * lerp(1.0, diffuseShadow, saturate(_UseRampForShadows));
+	float ramp = light.physicalShadowAttenuation;
+	UNITY_BRANCH
+	if (_UseRamp > 0.0) ramp = TomSampleRamp(rampInput, material.secondaryToneMask, _ToonAA);
+	float response = ramp * toonHorizon;
+#if defined(TOM_SKIN)
+	response = TomSkinSDFResponse(material, light.direction, diffuseShadow, response);
+#endif
+	return response;
+}
+
 TomSurfaceLightTerms TomBuildSurfaceLightTerms(
 	TomMaterialData material,
 	TomRawLightData light)
 {
 	TomSurfaceLightTerms surface;
 	surface.artisticShadowAttenuation = TomShapeShadow(light.physicalShadowAttenuation);
+	float diffuseShadow = surface.artisticShadowAttenuation;
+#if defined(TOM_SKIN)
+	// Receiver-region protection affects all casters, not just the face's own mesh.
+	UNITY_BRANCH
+	if (_SkinFaceShadowProtection > 0.0)
+		diffuseShadow = max(diffuseShadow, saturate(material.skin.faceShadowMask * _SkinFaceShadowProtection));
+#endif
 	surface.diffuseShadowAttenuation = lerp(
 		1.0,
-		surface.artisticShadowAttenuation,
+		diffuseShadow,
 		saturate(_ShadowStrength));
+	// Receiver diffuse tint only; reuse visibility, never infer shadows from NdotL.
+	surface.castShadowTint = lerp(1.0.xxx, saturate(_CastShadowColor.rgb),
+		saturate(_CastShadowColor.a) * (1.0 - surface.diffuseShadowAttenuation));
 
 	surface.shadingNdotL = saturate(dot(material.shadingNormalWS, light.direction));
 	surface.geometricNdotL = saturate(dot(material.geometricNormalWS, light.direction));
@@ -559,27 +624,37 @@ TomSurfaceLightTerms TomBuildSurfaceLightTerms(
 	surface.horizon = shadingHorizon * geometricHorizon;
 
 	float continuous = surface.shadingNdotL * surface.horizon;
-	float toonNL = saturate(dot(material.toonNormalWS, light.direction));
 #if defined(TOM_SKIN)
 	continuous = TomSkinContinuousVisibility(material, light.direction);
-	toonNL = TomSkinDiffuseNL(material, material.toonNormalWS, light.direction);
 #endif
-	float rampInput = toonNL * lerp(
-		1.0,
-		surface.diffuseShadowAttenuation,
-		saturate(_UseRampForShadows));
-	float ramp = light.physicalShadowAttenuation;
-	UNITY_BRANCH
-	if (_UseRamp > 0.0)
-		ramp = TomSampleRamp(rampInput, material.secondaryToneMask, _ToonAA);
 	// A single diffuse macro-horizon, using Toon softness rather than the specular guard.
 	float geometricNL = dot(material.geometricNormalWS, light.direction);
 	float toonWidth = max(max(_ToonSoftness, 0.001), fwidth(geometricNL) * max(_ToonAA, 0.0));
 	float toonHorizon = smoothstep(0.0, toonWidth, geometricNL);
-	float toonResponse = ramp * toonHorizon;
+	bool extendedRamp = _UseRamp > 0.0 && (_RampInputMode > 0.5 || _RampColorMode > 0.5);
+	float toonResponse;
+	float3 toonColor = 0.0;
+	surface.toonMinimumTint = 1.0;
+	UNITY_BRANCH
+	if (extendedRamp)
+	{
+		float signedNL = dot(material.toonNormalWS, light.direction);
+		float toonNL = saturate(signedNL);
 #if defined(TOM_SKIN)
-	toonResponse = TomSkinSDFResponse(material, light.direction, surface.diffuseShadowAttenuation, toonResponse);
+		toonNL = TomSkinDiffuseNL(material, material.toonNormalWS, light.direction);
 #endif
+		if (_RampInputMode > 0.5) toonNL = saturate(signedNL * 0.5 + 0.5);
+		float input = toonNL * lerp(1.0, surface.diffuseShadowAttenuation, saturate(_UseRampForShadows));
+		float3 rampColor = TomSampleRampColor(input, material.secondaryToneMask, _ToonAA);
+		toonColor = rampColor * (_RampInputMode > 0.5 ? 1.0 : toonHorizon);
+#if defined(TOM_SKIN)
+		TomSkinSDFColorResponse(material, light.direction, surface.diffuseShadowAttenuation, rampColor, toonColor);
+#endif
+		toonResponse = TomRampAmplitude(toonColor);
+		if (_RampColorMode > 0.5) surface.toonMinimumTint = TomRampMinimumTint(rampColor);
+	}
+	else
+		toonResponse = TomLegacyToonResponse(material, light, surface.diffuseShadowAttenuation, toonHorizon);
 	surface.toonDarkWeight = saturate(1.0 - toonResponse) * saturate(_UseRamp);
 	float toonNdotL = lerp(continuous, toonResponse, saturate(_UseRamp));
 	float shadowOutsideRamp = lerp(
@@ -592,6 +667,25 @@ TomSurfaceLightTerms TomBuildSurfaceLightTerms(
 		* light.distanceAttenuation
 		* light.cookieAttenuation
 		* min(shadowOutsideRamp, surface.diffuseShadowAttenuation);
+	surface.diffuseVisibility = surface.toonVisibility.xxx;
+	UNITY_BRANCH
+	if (extendedRamp)
+	{
+		surface.diffuseVisibility = lerp(continuous.xxx, toonColor, saturate(_UseRamp))
+			* light.distanceAttenuation * light.cookieAttenuation
+			* min(shadowOutsideRamp, surface.diffuseShadowAttenuation);
+#if defined(TOM_LIQUID)
+		// Optional liquid Toon inheritance keeps its pre-extension scalar contract.
+		UNITY_BRANCH
+		if (_SkinLiquidMaterial > 0.0 && _LiquidToonBlend > 0.0)
+		{
+			float legacy = TomLegacyToonResponse(material, light, surface.diffuseShadowAttenuation, toonHorizon);
+			surface.toonVisibility = lerp(continuous, legacy, saturate(_UseRamp))
+				* light.distanceAttenuation * light.cookieAttenuation
+				* min(shadowOutsideRamp, surface.diffuseShadowAttenuation);
+		}
+#endif
+	}
 	return surface;
 }
 
@@ -619,7 +713,7 @@ float3 TomEvaluateToonMinimum(TomMaterialData material, TomRawLightData light,
 #if defined(TOM_SKIN)
 		* material.skin.diffuseTint
 #endif
-		* lift * light.color * light.distanceAttenuation * light.cookieAttenuation;
+		* lift * light.color * light.distanceAttenuation * light.cookieAttenuation * surface.toonMinimumTint;
 }
 
 TomLightingResult TomEvaluateDirectLight(
@@ -653,7 +747,7 @@ TomLightingResult TomEvaluateDirectLight(
 	float vDotH = saturate(dot(viewDir, halfDir)) * halfIsValid;
 	float3 fresnel = TomFresnelSchlick(vDotH, material.f0, _FresnelStrength);
 	result.diffuse = material.albedo * TomDiffuseWeight(fresnel, material.metallic)
-		* light.color * surface.toonVisibility;
+		* light.color * surface.diffuseVisibility * surface.castShadowTint;
 #if defined(TOM_SKIN)
 	result.diffuse *= material.skin.diffuseTint * TomSkinWarmTint(material, light.direction);
 #endif
@@ -1095,13 +1189,13 @@ float4 TomFragBase(TomVaryings i, fixed faceSign : VFACE) : SV_Target
 	float mainDirectOwnership = TomGetMainDirectOwnership();
 	direct.diffuse *= mainDirectOwnership;
 	direct.specular *= mainDirectOwnership;
-	toonDarkFill *= mainDirectOwnership;
+	toonDarkFill *= mainDirectOwnership * mainSurface.castShadowTint;
 
 	float3 shadowTint = lerp(
 		_ShadowColor.rgb,
 		1.0,
 		mainSurface.diffuseShadowAttenuation);
-	shadowTint = lerp(1.0.xxx, shadowTint, mainDirectOwnership);
+	shadowTint = lerp(1.0.xxx, shadowTint * mainSurface.castShadowTint, mainDirectOwnership);
 	float3 matcapSample = TomMatCapSampleForPass(i, material);
 	float3 matcapMultiplier = TomMatCapMultiplier(matcapSample, material);
 	float3 body = (indirectDiffuse * shadowTint + vertexLightDiffuse + direct.diffuse + toonDarkFill) * matcapMultiplier;

@@ -1,5 +1,76 @@
 # Tom Shaders X 0.4.0
 
+## 2026-11-13 Shader Update
+
+- Publishes the manually built twelve-shader zipmod with Full-Angle/RGB ramps,
+  CastShadowColor, calibrated Skin defaults and optional face shadow protection below.
+- Distribution tag: v0.4.0-20261113; embedded Sideloader version remains 0.4.0.
+  Replace the previous tom.Shaders.X zipmod; do not install duplicate copies.
+- This is a shader update, not a new complete runtime distribution. Keep the Infra1
+  companion plugins/resources. No new plugin DLL is included or installed.
+- Uses prior bounded Unity/Studio acceptance; the manual rebuild has archive/metadata
+  checks, not a newly repeated GPU or game acceptance. Hard-shadow acne is not cured.
+
+## Unreleased - Skin Shadow Protection Closure - 2026-11-06
+
+- Retain SkinFaceShadowProtection on SkinX/SkinXTess as an opt-in NormalMask B
+  diffuse receiver floor. Default remains 0; 0.5 is a starting point only for
+  faces with suitable masks, not a new global face/body preset. Debug 14 shows B.
+- Preserve shared lighting and accepted defaults, including ToonMinLighting 0.15.
+  Do not automatically disable face/body shadow casting or replace user textures.
+- Protection weakens self, bangs and external-object shadows in the same receiver
+  region. It does not repair hard-shadow sampling artifacts or distinguish casters.
+- Face SDF remains a separate optional control for authored Toon boundaries, not
+  an acne fix. With receiveShadows on, explicitly disabling a face renderer's caster
+  retains bangs reception but removes all its outgoing shadows, not just self-casting.
+  Keeping its shadows onto other objects while excluding only self-reception needs
+  separate source/receiver handling, outside this shader scope. This clarification
+  does not change defaults or the existing test bundle.
+- The earlier mouth-corner Toon contour and later shadow-map stripes are distinct
+  cases. Toon threshold calibration relocates the former boundary; it does not
+  correct the latter's depth comparison or cast-shadow geometry.
+- Existing source/packaged GPU checks and bounded Studio comparisons support this
+  closure, not universal asset or performance certification. The delivered delta
+  retains its experimental labels; no new bundle, installation or GitHub release
+  is performed by this documentation-only closure.
+
+## Unreleased - Full-Angle And RGB Toon Ramps - 2026-11-05
+
+- Added RampInputMode and RampColorMode to all eleven substrate shaders, including
+  Tess. Both default to Legacy/Red Channel (0); existing values are not migrated.
+- Full Angle maps signed Toon N dot L across back/side/front. Only the Toon diffuse
+  hemisphere cutoff is removed; normal cast shadows and other light lobes remain.
+- RGB reuses the two ramp textures and secondary mask. Alpha is ignored; procedural
+  ramps stay gray. ToonMinLighting remains 0.15 and preserves the RGB response hue.
+- SDF retains endpoint ownership. Liquid pigment keeps its legacy scalar inheritance;
+  LiquidX is unchanged. No new sampler, Pass, keyword or plugin is required.
+- Updated ME help and bilingual manuals, with optional gray/color ramp examples.
+  This is an opt-in test update, not a GitHub release or a replacement infrastructure pack.
+
+## Unreleased - Cast-Shadow Diffuse Tint - 2026-11-05
+
+- Added CastShadowColor RGBA to all eleven substrate shaders and ME, including Tess.
+  White/A=0 is neutral. RGB is a bounded multiplicative tint; A weights the effect.
+- Mask follows remapped received-shadow visibility and ShadowStrength. Base tints main
+  diffuse, Toon fill/minimum and indirect diffuse once; Add tints only its own diffuse.
+  No secondary shadow color, new texture, Pass, keyword or plugin is introduced.
+- Specular, reflection, rim, emission, coat and liquid pigment/reflection controls remain
+  independent. LiquidX is unchanged. ShadowColor retains its legacy indirect tint and
+  Skin compatibility link; no stored values are overwritten.
+- ToonMinLighting remains 0.15, before tint and layer attenuation. Actual casting and
+  existing engine/transparent shadow-reception limitations are unchanged. This is a
+  source update, not a new installed or published bundle.
+
+## Unreleased - Skin Toon Defaults - 2026-11-04
+
+- SkinX and SkinXTess shader/carrier defaults now use ToonThreshold 0.1 instead of
+  0.5. ToonSoftness stays 0.1 and ToonMinLighting stays 0.15.
+- This is a global face/body default, not a mesh-dependent preset. Explicit saved
+  material/card/scene values are preserved; no migration plugin is added.
+- Other shader defaults, shared lighting and normal cast shadows are unchanged.
+  The calibration improves ordinary face contours but does not guarantee smooth
+  mouth/nose boundaries at every head/light angle. No new published bundle yet.
+
 ## Infra1 Distribution Update - 2026-10-28
 
 Install [TomRenderInfrastructure 0.1.0](https://github.com/tomTom1010-IEE/TomRenderInfrastructure/releases/tag/v0.1.0)

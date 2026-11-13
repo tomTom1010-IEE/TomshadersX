@@ -43,6 +43,7 @@ namespace TomShadersX
         IDisposable cameraRegistration;
         long preparedInvocation;
         readonly List<Material> materials = new List<Material>();
+        readonly Plane[] planes = new Plane[6];
         static readonly int Params = Shader.PropertyToID("_TomHairFeatherParams");
         static readonly int Distance = Shader.PropertyToID("_TomHairFeatherDistance");
 
@@ -69,7 +70,7 @@ namespace TomShadersX
             SearchRadiusPixels = 32;
             WidthBudgetClamped = false;
             float requestedRadius = 32f;
-            var planes = GeometryUtility.CalculateFrustumPlanes(cameraComponent);
+            GeometryUtility.CalculateFrustumPlanes(cameraComponent, planes);
             bool needed = false;
             int earliestHairQueue = int.MaxValue;
             foreach (Renderer renderer in receivers)
@@ -78,7 +79,7 @@ namespace TomShadersX
                 materials.Clear(); renderer.GetSharedMaterials(materials);
                 foreach (Material material in materials)
                 {
-                    if (!material || !material.shader || material.shader.name != "tom/HairX"
+                    if (!material || SceneDiscovery.ShaderName(material.shader) != "tom/HairX"
                         || material.GetFloat("_HairFrontMode") <= 1.5f) continue;
                     bool world = material.HasProperty("_HairFeatherWidthMode") && material.GetFloat("_HairFeatherWidthMode") > .5f;
                     float requestedWidth = material.GetFloat(world ? "_HairFeatherWorldWidth" : "_HairFeatherWidth");

@@ -297,7 +297,7 @@ Material:
     - _ToonNormalInfluence: 1
     - _ToonShadeLevel: 0.15
     - _ToonSoftness: 0.1
-    - _ToonThreshold: 0.5
+    - _ToonThreshold: 0.1
     - _UseDetailRAsSpecularMap: 0
     - _UseFaceSDF: 0
     - _UseGeometryMask: 0

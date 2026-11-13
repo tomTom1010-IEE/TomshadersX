@@ -4,22 +4,22 @@
   "excludedSourcePaths": [
     "Shaders/Tom/HiddenEyeStencilProbe.shader"
   ],
-  "reviewDate": "2026-10-27",
+  "reviewDate": "2026-11-06",
   "scope": "Static source/manifest/carrier inventory; not compilation, runtime acceptance or delivered-bytecode audit.",
   "packageGuid": "tom.Shaders.X",
   "packageVersion": "0.4.0",
   "game": "Koikatsu Sunshine",
   "registeredShaderCount": 12,
-  "registeredPropertyCount": 1847,
+  "registeredPropertyCount": 1882,
   "entries": [
     {
       "name": "tom/MainOpaqueX",
       "source": "Shaders/Tom/MainOpaqueX.shader",
-      "sourceSha256": "d0b6aa887d4fd74ca346cf7a7c5d07625a8e607b370ac3751d64ee7a0530adde",
+      "sourceSha256": "ebe71cef614ffbccdb836aa2d3a4abc1bbef97b9a3620a9cc5f8364ad5061472",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomMainOpaqueX",
       "carrier": "Prefab/a_TomMainOpaqueX.prefab",
-      "propertyCount": 148,
+      "propertyCount": 151,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -49,11 +49,11 @@
     {
       "name": "tom/MainAlphaX",
       "source": "Shaders/Tom/MainAlphaX.shader",
-      "sourceSha256": "ad963da2d849446136f82526d57329d56ea8c65b9753b85b6259a30b5628d9b2",
+      "sourceSha256": "26de440d5884093d663d40190dc7580efaca8942c40156b0bb9edeb1aff71de2",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomMainAlphaX",
       "carrier": "Prefab/a_TomMainAlphaX.prefab",
-      "propertyCount": 155,
+      "propertyCount": 158,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -84,11 +84,11 @@
     {
       "name": "tom/MainAlphaX2Pass",
       "source": "Shaders/Tom/MainAlphaX2Pass.shader",
-      "sourceSha256": "8ffedb88804a0bb8e4e7f8e6c4a8bdf544f2e2653053f2ec26902fc11a86f7d7",
+      "sourceSha256": "146ae64e6cc1e5ea6d6285062cc2772f7c5eef3a6fcbad51fd361e1b1e14142a",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomMainAlphaX2Pass",
       "carrier": "Prefab/a_TomMainAlphaX2Pass.prefab",
-      "propertyCount": 154,
+      "propertyCount": 157,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -119,11 +119,11 @@
     {
       "name": "tom/MainAlphaXBackFront",
       "source": "Shaders/Tom/MainAlphaXBackFront.shader",
-      "sourceSha256": "2a9f181664f1e7036b2b91e23949b690f65f8b6d6110f64b17a2a1323381439f",
+      "sourceSha256": "a5c3652b5c470e2e4beb939b1287a37cf1d8edba35acd6bd477257ecbe4eaaf9",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomMainAlphaXBackFront",
       "carrier": "Prefab/a_TomMainAlphaXBackFront.prefab",
-      "propertyCount": 155,
+      "propertyCount": 158,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -155,11 +155,11 @@
     {
       "name": "tom/HairX",
       "source": "Shaders/Tom/HairX.shader",
-      "sourceSha256": "64757787bae98e6032d307266c87e8dc781fb9f704652d35bf519b69d2e7df62",
+      "sourceSha256": "a8fcd3aec647f2afb17d8d0654050b59aa606e06ef92828825ce20be5c582e0e",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomHairX",
       "carrier": "Prefab/a_TomHairX.prefab",
-      "propertyCount": 167,
+      "propertyCount": 170,
       "hiddenPropertyCount": 9,
       "categories": [
         "Textures",
@@ -197,11 +197,11 @@
     {
       "name": "tom/EyeWX",
       "source": "Shaders/Tom/EyeWX.shader",
-      "sourceSha256": "b5ed96e6272d979798ebbe0a268dd64fae3381cce07b4252a2bb69374853cb06",
+      "sourceSha256": "e5f7125cf20b6dea08357cc60651219e336d4f54b445baa18d5aee1b1c8fa67c",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomEyeWX",
       "carrier": "Prefab/a_TomEyeWX.prefab",
-      "propertyCount": 113,
+      "propertyCount": 116,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -229,11 +229,11 @@
     {
       "name": "tom/EyeX",
       "source": "Shaders/Tom/EyeX.shader",
-      "sourceSha256": "1fdd9d956cb57bfa6c0e447fb18a0ce3c3fc3b178b2a55d4f8d182f88d51c8a4",
+      "sourceSha256": "aeb175373a5271b95d954541939d3dc3a3aafdb311e955fdd728e91e3bca328a",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomEyeX",
       "carrier": "Prefab/a_TomEyeX.prefab",
-      "propertyCount": 141,
+      "propertyCount": 144,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -261,11 +261,11 @@
     {
       "name": "tom/SkinX",
       "source": "Shaders/Tom/SkinX.shader",
-      "sourceSha256": "2f4e263d6154e9c83ba1c29f87742f8ba776af3bad8b30808abe045a6952e884",
+      "sourceSha256": "9cbc057d089db16ec768ba7c579147cc023f388405d92bd8291dbba82470241b",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomSkinX",
       "carrier": "Prefab/a_TomSkinX.prefab",
-      "propertyCount": 209,
+      "propertyCount": 213,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -325,11 +325,11 @@
     {
       "name": "tom/MainOpaqueXTess",
       "source": "Shaders/Tom/MainOpaqueXTess.shader",
-      "sourceSha256": "d3be36aff6a7544c38e7c3a8455b3d13daf8d2182c3eed8096c72f958262f75e",
+      "sourceSha256": "8ab97a25b062a7fbc33812f58c116fb6207dee506532713d3e80d8a61ef8a4dd",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomMainOpaqueXTess",
       "carrier": "Prefab/a_TomMainOpaqueXTess.prefab",
-      "propertyCount": 160,
+      "propertyCount": 163,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -363,11 +363,11 @@
     {
       "name": "tom/SkinXTess",
       "source": "Shaders/Tom/SkinXTess.shader",
-      "sourceSha256": "612f14ec6a5e184676a98633639bbd17779103e1968739bf90b26a55107ffe3e",
+      "sourceSha256": "533eb277c649f302260756d12c0eb7b150b1e258938f613e2cc749fad3478f9c",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomSkinXTess",
       "carrier": "Prefab/a_TomSkinXTess.prefab",
-      "propertyCount": 221,
+      "propertyCount": 225,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -407,11 +407,11 @@
     {
       "name": "tom/MainAlphaXTess",
       "source": "Shaders/Tom/MainAlphaXTess.shader",
-      "sourceSha256": "17756f5567616b3b0b601c4af82853b01a42d9e5338f457450cbcb6990983006",
+      "sourceSha256": "2c72678d719d1ecfd564570514e324ba25642ebf7945bde2f7ff648173db5da5",
       "assetBundle": "chara/tom/shaders/tomx.unity3d",
       "asset": "a_TomMainAlphaXTess",
       "carrier": "Prefab/a_TomMainAlphaXTess.prefab",
-      "propertyCount": 167,
+      "propertyCount": 170,
       "hiddenPropertyCount": 0,
       "categories": [
         "Textures",
@@ -447,11 +447,11 @@
   "inputs": [
     {
       "path": "manifest.xml",
-      "sha256": "7e916ae1e319697c90029860232516d3b6b44975407f76e45089323481d6023e"
+      "sha256": "4c1a5fb34838c7924fdb841751acd58cb627ca19f2de661d8955f9dcc7ff9ee3"
     },
     {
       "path": "Runtime/TomHairFeatherCamera.cs",
-      "sha256": "54c806b93615466b280ec73f15ee0ed2113949844d8717eaef4a9aa2a37f23f6"
+      "sha256": "62bde890e8fda302c17e7d71e0a5e76624dc840bca84b242644154051cffebab"
     },
     {
       "path": "Runtime/TomHairFeatherPlugin.cs",
@@ -467,7 +467,7 @@
     },
     {
       "path": "Runtime/TomSkinSDFHead.cs",
-      "sha256": "adcaf5527287feb74c51828b7c9870bd493ec1f836280383a923e4b11df2e2a2"
+      "sha256": "78e1752020ebda9e8b5b68fc177289d78d82a99af4f3a042128696e07d86525d"
     },
     {
       "path": "Runtime/TomSkinSDFPlugin.cs",
@@ -475,7 +475,7 @@
     },
     {
       "path": "Runtime/TomTessellationBounds.cs",
-      "sha256": "1f638e95593b3d1d80d0c9199bfe4c16fa34252b215cd207a15a8bf011608090"
+      "sha256": "57c177d7fd8bceddf933a8b0723c0b8cf9094b6dad23f8f652f6b4c5c698bca1"
     },
     {
       "path": "Runtime/TomTessellationPlugin.cs",
@@ -487,15 +487,15 @@
     },
     {
       "path": "Shaders/Tom/EyeWX.shader",
-      "sha256": "b5ed96e6272d979798ebbe0a268dd64fae3381cce07b4252a2bb69374853cb06"
+      "sha256": "e5f7125cf20b6dea08357cc60651219e336d4f54b445baa18d5aee1b1c8fa67c"
     },
     {
       "path": "Shaders/Tom/EyeX.shader",
-      "sha256": "1fdd9d956cb57bfa6c0e447fb18a0ce3c3fc3b178b2a55d4f8d182f88d51c8a4"
+      "sha256": "aeb175373a5271b95d954541939d3dc3a3aafdb311e955fdd728e91e3bca328a"
     },
     {
       "path": "Shaders/Tom/HairX.shader",
-      "sha256": "64757787bae98e6032d307266c87e8dc781fb9f704652d35bf519b69d2e7df62"
+      "sha256": "a8fcd3aec647f2afb17d8d0654050b59aa606e06ef92828825ce20be5c582e0e"
     },
     {
       "path": "Shaders/Tom/HiddenHairFeather.shader",
@@ -507,35 +507,35 @@
     },
     {
       "path": "Shaders/Tom/MainAlphaX.shader",
-      "sha256": "ad963da2d849446136f82526d57329d56ea8c65b9753b85b6259a30b5628d9b2"
+      "sha256": "26de440d5884093d663d40190dc7580efaca8942c40156b0bb9edeb1aff71de2"
     },
     {
       "path": "Shaders/Tom/MainAlphaX2Pass.shader",
-      "sha256": "8ffedb88804a0bb8e4e7f8e6c4a8bdf544f2e2653053f2ec26902fc11a86f7d7"
+      "sha256": "146ae64e6cc1e5ea6d6285062cc2772f7c5eef3a6fcbad51fd361e1b1e14142a"
     },
     {
       "path": "Shaders/Tom/MainAlphaXBackFront.shader",
-      "sha256": "2a9f181664f1e7036b2b91e23949b690f65f8b6d6110f64b17a2a1323381439f"
+      "sha256": "a5c3652b5c470e2e4beb939b1287a37cf1d8edba35acd6bd477257ecbe4eaaf9"
     },
     {
       "path": "Shaders/Tom/MainAlphaXTess.shader",
-      "sha256": "17756f5567616b3b0b601c4af82853b01a42d9e5338f457450cbcb6990983006"
+      "sha256": "2c72678d719d1ecfd564570514e324ba25642ebf7945bde2f7ff648173db5da5"
     },
     {
       "path": "Shaders/Tom/MainOpaqueX.shader",
-      "sha256": "d0b6aa887d4fd74ca346cf7a7c5d07625a8e607b370ac3751d64ee7a0530adde"
+      "sha256": "ebe71cef614ffbccdb836aa2d3a4abc1bbef97b9a3620a9cc5f8364ad5061472"
     },
     {
       "path": "Shaders/Tom/MainOpaqueXTess.shader",
-      "sha256": "d3be36aff6a7544c38e7c3a8455b3d13daf8d2182c3eed8096c72f958262f75e"
+      "sha256": "8ab97a25b062a7fbc33812f58c116fb6207dee506532713d3e80d8a61ef8a4dd"
     },
     {
       "path": "Shaders/Tom/SkinX.shader",
-      "sha256": "2f4e263d6154e9c83ba1c29f87742f8ba776af3bad8b30808abe045a6952e884"
+      "sha256": "9cbc057d089db16ec768ba7c579147cc023f388405d92bd8291dbba82470241b"
     },
     {
       "path": "Shaders/Tom/SkinXTess.shader",
-      "sha256": "612f14ec6a5e184676a98633639bbd17779103e1968739bf90b26a55107ffe3e"
+      "sha256": "533eb277c649f302260756d12c0eb7b150b1e258938f613e2cc749fad3478f9c"
     },
     {
       "path": "Shaders/Tom/TomAlphaBackFront.cginc",
@@ -623,7 +623,7 @@
     },
     {
       "path": "Shaders/Tom/TomSkinInput.cginc",
-      "sha256": "3760b00e083be2121f0743d7c576698b82710f518fae4d5de19fbcd23b20f90d"
+      "sha256": "448ee255f6ea210fed5d0401476e5bd8256947aefe05a3f778f09bde30347def"
     },
     {
       "path": "Shaders/Tom/TomSkinLighting.cginc",
@@ -631,11 +631,11 @@
     },
     {
       "path": "Shaders/Tom/TomSkinSDF.cginc",
-      "sha256": "dcbadd507c32e187335d1984804a025227cf17fe673975189d8a750d20115770"
+      "sha256": "9adf4cca5ab97c6c3bfd068ed639c60e40f70ab58f053dfe1f409b97af3f4f3b"
     },
     {
       "path": "Shaders/Tom/TomSkinSurface.cginc",
-      "sha256": "54181fda63768ef1749ddde8fe64f0f675f103adcb0cff1df98131fe29178dcb"
+      "sha256": "5780373e6265758ae2e85a9e5ddb442562486d27fdb194394931322735d33080"
     },
     {
       "path": "Shaders/Tom/TomTessDomain.cginc",
@@ -651,11 +651,11 @@
     },
     {
       "path": "Shaders/Tom/TomToonInput.cginc",
-      "sha256": "e38dfadb57e29e4827907c25b8e405591b03ba83bf7a2689c3b09eba4eaa46c1"
+      "sha256": "e7d980880ba6d94ebc95fdb602efe6a41c429ab4ee92f9100d86dbab8b4f78f4"
     },
     {
       "path": "Shaders/Tom/TomToonLighting.cginc",
-      "sha256": "77b5f3dd9caf7d109ef7a0323b517ccf21a54e6bb186b2341ee03eba4938f8fb"
+      "sha256": "375f90d5cfec88d286e94d8b9fbbfbe62e1f49914c966ca37771549098dfa51d"
     },
     {
       "path": "Shaders/Tom/TomToonStyle.cginc",
@@ -663,7 +663,7 @@
     },
     {
       "path": "Tooltips/tom_x_tooltips.xml",
-      "sha256": "a4d07e425fa54646a4dc9814a24638db0f1b17dae33e1f29850ecbc61fd8a12a"
+      "sha256": "78316b4e21a10f3055f9ae9c4ab93aa005aa0330315f4690348cbab0a89151f7"
     }
   ]
 }

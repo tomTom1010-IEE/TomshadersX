@@ -13,8 +13,9 @@ namespace TomShadersX
 
         public static bool IsTessellationMaterial(Material m)
         {
-            return m && m.shader && (m.shader.name == "tom/MainOpaqueXTess" || m.shader.name == "tom/SkinXTess"
-                || m.shader.name == "tom/MainAlphaXTess");
+            if (!m) return false;
+            string name = SceneDiscovery.ShaderName(m.shader);
+            return name == "tom/MainOpaqueXTess" || name == "tom/SkinXTess" || name == "tom/MainAlphaXTess";
         }
 
         static float Finite(float value)

@@ -39,12 +39,49 @@ by a sibling-relative path or assume maintaining one copy updates the other.
 - Geometric horizon guards protect physically facing lobes separately from normal-map styling.
   Toon diffuse uses its own remapped response. `ToonMinLighting=0.15` is Base/main-light-only, not
   an emission term or final RGB floor, and cannot create illumination without that light.
+- CastShadowColor is a bounded diffuse receiver tint, evaluated from each light's remapped
+  visibility after ShadowStrength. It does not read NdotL or secondary-ramp masks. Base tints
+  main diffuse, Toon fill/minimum compensation and main-shadowed indirect diffuse once; Add
+  tints only that lamp's diffuse. Baked main ownership still gates Base contributions. Vertex
+  lights, specular, additive MatCap, rim, emission and separate coat/liquid lobes are excluded.
+  Coated/wet substrate retains its tint; liquid pigment uses LiquidShadowColor instead.
+  There is no new sample, Pass or keyword; shadow reception/depth limitations are unchanged.
+- Skin's experimental FaceShadowProtection is a diffuse-only receiver floor from NormalMask B,
+  default zero. Base/Add use the protected diffuse visibility; existing main diffuse tint/indirect
+  routing follows it. Specular, coat, liquid, raw-shadow diagnostics and caster geometry retain
+  their original shadow signal. It cannot identify which renderer caused an occlusion.
+  Retention was accepted on 2026-11-06 without changing the default or implementation.
+  Do not disable face/body casters automatically or turn SDF into a shadow-map repair.
+  Explicitly disabling the face renderer's caster while retaining receiveShadows removes
+  its self-casting and still receives bangs, but also removes its shadows onto other objects.
+  Preserving those outgoing shadows while excluding only self-reception requires separate
+  source/receiver handling, outside this closure. Hard-shadow acne remains a limitation.
 - Outline, caster, optional depth and stencil paths have separate visibility contracts. Preserve
   coverage and actual deformation across every active path; do not infer them from the color Pass.
+
+ShadowCaster and ForwardBase scheduling follows LightMode, not their textual order in a shader.
+The Built-in Forward loop renders shadow maps before its opaque receiver shading; moving the
+caster declaration earlier does not isolate self-shadow sources. See [Pass tags](https://docs.unity3d.com/2019.4/Documentation/Manual/SL-PassTags.html#lightmode-tag)
+and [render-loop order](https://docs.unity3d.com/es/2019.4/Manual/GraphicsCommandBuffers.html).
 
 TomX's GGX helper follows its Unity-compatible color-response implementation, including a
 `UNITY_COLORSPACE_GAMMA` branch. It is not TomBSDF's explicit KKSLinear-v1 adapter. Avoid transplanting
 that adapter or legacy V+ artistic gamma conversions into TomX as a scene-tuning shortcut.
+
+## Toon Ramp Contract
+
+RampInputMode/RampColorMode default to 0 on the eleven substrates, not LiquidX.
+FullAngle uses `(dot(toonNormal, lightDirection)+1)/2` without squaring or Skin Wrap,
+and bypasses only the Toon geometry horizon. Continuous/specular/coat horizons and
+actual shadow visibility are retained. RGB samples the existing ramps once per path;
+procedural response stays gray, alpha is unused, RGB is bounded and no extra R or
+manual gamma multiplication is applied. Secondary mask/ST/weight remain unchanged.
+The maximum component drives dark weight and minimum amplitude; the minimum retains
+the response hue, smoothly becoming neutral close to black. The 0.15 minimum remains
+Base-only, before received-shadow tint and coating. SDF replaces the normal split using
+RGB endpoints, not a re-evaluation of intermediate bands. Integrated liquid pigment
+retains the legacy scalar response; dry substrate diffuse uses the vector response.
+SH, vertex-light fallback and independent lobes do not inherit RGB ramp coloration.
 
 ## Geometry And Transparency
 

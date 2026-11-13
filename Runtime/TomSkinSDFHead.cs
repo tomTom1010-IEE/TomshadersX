@@ -23,7 +23,7 @@ namespace TomShadersX
 
         public static bool UsesTrackedSDF(Material material)
         {
-            return material && material.shader && (material.shader.name == "tom/SkinX" || material.shader.name == "tom/SkinXTess")
+            return material && material.shader && (SceneDiscovery.ShaderName(material.shader) == "tom/SkinX" || SceneDiscovery.ShaderName(material.shader) == "tom/SkinXTess")
                 && material.HasProperty("_UseFaceSDF") && material.GetFloat("_UseFaceSDF") > .5f
                 && material.GetFloat("_FaceSDFDirectionSource") > .5f;
         }

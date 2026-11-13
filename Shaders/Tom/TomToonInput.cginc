@@ -98,8 +98,11 @@ float _DetailNormalMapScale;
 
 float4 _AmbientColor;
 float4 _ShadowColor;
+float4 _CastShadowColor;
 float _ShadowStrength;
 float _UseRamp;
+float _RampInputMode;
+float _RampColorMode;
 float _UseRampForShadows;
 float _ShadowRemapStrength;
 float _ShadowThreshold;

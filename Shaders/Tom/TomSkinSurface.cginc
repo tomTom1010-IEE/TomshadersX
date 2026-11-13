@@ -39,14 +39,19 @@ void TomSkinApplySurface(TomVaryings i, float orientation, inout TomMaterialData
     m.skin.lines = SAMPLE_TEX2D_SAMPLER(_LineMask, _DetailMask, i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw);
     m.skin.control = SAMPLE_TEX2D_SAMPLER(_SkinControlMap, _DetailMask, i.uv0 * _SkinControlMap_ST.xy + _SkinControlMap_ST.zw);
     m.skin.diffuseNormalWS = normalize(lerp(m.mainNormalWS, m.shadingNormalWS, saturate(_SkinDiffuseNormalDetail)));
+    m.skin.faceShadowMask = 0.0;
     UNITY_BRANCH
-    if (_SkinFaceNormalStrength > 0.0)
+    if (_SkinFaceNormalStrength > 0.0 || _SkinFaceShadowProtection > 0.0 || _SkinDebugView > 13.5)
     {
-        float face = SAMPLE_TEX2D_SAMPLER(_NormalMask, _DetailMask, i.uv0 * _NormalMask_ST.xy + _NormalMask_ST.zw).g;
-        m.skin.diffuseNormalWS = normalize(lerp(m.skin.diffuseNormalWS, m.geometricNormalWS,
-            saturate(face * _SkinFaceNormalStrength)));
-        m.toonNormalWS = normalize(lerp(m.toonNormalWS, m.geometricNormalWS,
-            saturate(face * _SkinFaceNormalStrength)));
+        float3 face = SAMPLE_TEX2D_SAMPLER(_NormalMask, _DetailMask, i.uv0 * _NormalMask_ST.xy + _NormalMask_ST.zw).rgb;
+        m.skin.faceShadowMask = saturate(face.b);
+        if (_SkinFaceNormalStrength > 0.0)
+        {
+            m.skin.diffuseNormalWS = normalize(lerp(m.skin.diffuseNormalWS, m.geometricNormalWS,
+                saturate(face.g * _SkinFaceNormalStrength)));
+            m.toonNormalWS = normalize(lerp(m.toonNormalWS, m.geometricNormalWS,
+                saturate(face.g * _SkinFaceNormalStrength)));
+        }
     }
     float detail = max(_DetailNormalMapScale, 0.0);
     float shade = saturate(min(1.0 - m.skin.detail.g, 1.0 - m.skin.lines.b * detail));
@@ -97,5 +102,6 @@ void TomSkinFinishMaterial(TomVaryings i, inout TomMaterialData m)
     else if (debug == 11) m.skin.debug = TomSkinCoverage(i.uv0).xxx;
     else if (debug == 12) m.skin.debug = m.skin.liquidNormalWS * 0.5 + 0.5;
     else if (debug == 13) m.skin.debug = m.skin.diffuseTint;
+    else if (debug == 14) m.skin.debug = m.skin.faceShadowMask.xxx;
 }
 #endif

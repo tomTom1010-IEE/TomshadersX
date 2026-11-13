@@ -79,7 +79,7 @@ Shader "tom/SkinX"
 		_OutlineWidthMask ("Outline Width Mask", 2D) = "white" {}
 		_DiffuseEnergyBlend ("Physical Diffuse Suppression", Range(0,1)) = 0
 		[Enum(Procedural,0,Texture,1)] _RampMode ("Toon Ramp Source", Float) = 0
-		_ToonThreshold ("Toon Threshold", Range(0,1)) = 0.5
+		_ToonThreshold ("Toon Threshold", Range(0,1)) = 0.1
 		_ToonSoftness ("Toon Softness", Range(0.001,1)) = 0.1
 		_ToonShadeLevel ("Toon Shade Level", Range(0,1)) = 0.15
 		_SecondaryToneStrength ("Secondary Tone Strength", Range(0,1)) = 0
@@ -222,6 +222,10 @@ Shader "tom/SkinX"
 		[Gamma] _MatCapColor ("MatCap Color (RGB Tint / A Weight)", Color) = (1,1,1,1)
         [Enum(FollowShadowColor,0,Independent,1)] _SkinShadeColorSource ("Painted Shade Color Source", Float) = 0
         [Gamma] _SkinShadeColor ("Painted Shade Color (RGB / A Unused)", Color) = (0.65,0.65,0.7,1)
+		_CastShadowColor ("Cast Shadow Color (RGB Tint / A Weight)", Color) = (1,1,1,0)
+		[Enum(Legacy,0,FullAngle,1)] _RampInputMode ("Toon Ramp Angle Domain", Float) = 0
+		[Enum(RedChannel,0,RGB,1)] _RampColorMode ("Toon Ramp Color Mode", Float) = 0
+		_SkinFaceShadowProtection ("Experimental Face Shadow Protection (NormalMask B)", Range(0,1)) = 0
 	}
 
 	SubShader

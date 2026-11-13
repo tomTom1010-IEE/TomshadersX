@@ -181,6 +181,9 @@ Shader "tom/HairX"
 		_HairPrimaryHeight ("Primary Surface Height Bias", Range(-1,1)) = 0
 		_HairSecondaryHeight ("Secondary Surface Height Bias", Range(-1,1)) = 0
 		_HairHeightAxisAngle ("Surface Height Axis (U=0, V=90)", Range(-180,180)) = 90
+		_CastShadowColor ("Cast Shadow Color (RGB Tint / A Weight)", Color) = (1,1,1,0)
+		[Enum(Legacy,0,FullAngle,1)] _RampInputMode ("Toon Ramp Angle Domain", Float) = 0
+		[Enum(RedChannel,0,RGB,1)] _RampColorMode ("Toon Ramp Color Mode", Float) = 0
 	}
 
 	SubShader
